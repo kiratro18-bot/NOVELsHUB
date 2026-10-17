@@ -291,6 +291,21 @@ function syncCaseClosedOccasion() {
     }
 }
 
+function syncVol2Announcement() {
+    var banner = document.getElementById('vol2Announcement');
+    if (!banner) return;
+    // The announcement runs for 25 days from Oct 17, 2026, then disappears.
+    var ends = new Date(2026, 10, 11, 0, 0, 0);
+    var now = new Date();
+    var remaining = Math.ceil((ends.getTime() - now.getTime()) / 86400000);
+    banner.hidden = remaining <= 0;
+    if (remaining > 0) {
+        var label = document.getElementById('vol2AnnouncementRemaining');
+        if (label) label.textContent = remaining === 1 ? 'last day' : remaining + ' days left';
+        window.setTimeout(syncVol2Announcement, Math.min(60000, ends.getTime() - now.getTime() + 100));
+    }
+}
+
 /* ============================================================
    3D TILT
    ============================================================ */
@@ -1523,6 +1538,7 @@ window.addEventListener('load', function () {
     document.getElementById('motionToggle').setAttribute('aria-checked', String(motionEnabled));
     initTheme();
     syncCaseClosedOccasion();
+    syncVol2Announcement();
 
     paintAurora(moodColors.all);
     renderHero();
