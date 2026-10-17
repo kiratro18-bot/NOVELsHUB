@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!doctype html>
 <html lang="en">
 <head>
@@ -454,4 +455,462 @@
     });
 </script>
 </body>
+=======
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Him and Her — Vol. 3, Ch. 3: Wondered?</title>
+<link
+  href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap"
+  rel="stylesheet" />
+<style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --bg: #faf7f2;
+      --cream: #f4ede0;
+      --ink: #241c10;
+      --ink-soft: rgba(36, 28, 16, 0.5);
+      --ink-faint: rgba(36, 28, 16, 0.07);
+      --rose: #b85c6e;
+      --rose-dim: rgba(184, 92, 110, 0.22);
+      --plum: #6b3050;
+      --mauve: #9b6b80;
+      --warm: #c49a6c;
+      --sage: #7a8c75;
+      --mist: rgba(250, 247, 242, 0.96);
+      --surface: #fff;
+      --sh-md: 0 8px 32px rgba(92, 61, 82, 0.12);
+      --tr: 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.dark {
+      --bg: #120e0c;
+      --cream: #1c1410;
+      --ink: #f0e8e0;
+      --ink-soft: rgba(240, 232, 224, 0.5);
+      --ink-faint: rgba(240, 232, 224, 0.06);
+      --surface: #1c1410;
+      --mist: rgba(18, 14, 12, 0.97);
+      --sh-md: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+      min-height: 100vh;
+    }
+
+    #petalCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.45;
+    }
+
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 58px;
+      background: var(--mist);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--ink-faint);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--rose);
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      transition: gap var(--tr), color var(--tr);
+    }
+
+    .back-link:hover { gap: 13px; color: var(--plum); }
+    .back-link:hover .back-arrow { transform: translateX(-3px); }
+    .back-arrow { transition: transform var(--tr); }
+
+    .nav-center {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--ink-faint);
+      background: var(--cream);
+      color: var(--ink);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      transition: all var(--tr);
+    }
+
+    .icon-btn:hover { transform: scale(1.08); background: var(--surface); }
+
+    .page {
+      position: relative;
+      z-index: 2;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 5.5rem 1.75rem 5rem;
+    }
+
+    .chapter-hero {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .kicker {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--rose);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 1.1rem;
+    }
+
+    .kicker::before, .kicker::after {
+      content: "";
+      width: 22px;
+      height: 1px;
+      background: var(--rose-dim);
+    }
+
+    h1.chapter-title {
+      font-family: "DM Serif Display", serif;
+      font-weight: 400;
+      font-size: clamp(1.9rem, 5.5vw, 2.7rem);
+      line-height: 1.18;
+      color: var(--plum);
+      margin: 0 0 1rem;
+    }
+
+    h1.chapter-title em {
+      font-style: italic;
+      color: var(--rose);
+    }
+
+    .chapter-tag {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      padding: 4px 14px;
+      border-radius: 50px;
+      background: rgba(122, 140, 117, 0.12);
+      color: var(--sage);
+    }
+
+    main.story {
+      font-size: 1.08rem;
+      line-height: 1.85;
+      color: var(--ink);
+    }
+
+    main.story p { margin: 0 0 0.9em; }
+
+    main.story p.dialogue {
+      color: var(--plum);
+    }
+
+    main.story p.inner {
+      font-family: "Cormorant Garamond", serif;
+      font-style: italic;
+      font-size: 1.2rem;
+      color: var(--mauve);
+    }
+
+    main.story p.trail {
+      font-family: "Cormorant Garamond", serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--mauve);
+      margin-top: 1.4em;
+      margin-bottom: 0;
+    }
+
+    .scene-card {
+      text-align: center;
+      margin: 2.6em auto;
+      padding: 1.4em 0;
+      border-top: 1px solid var(--ink-faint);
+      border-bottom: 1px solid var(--ink-faint);
+    }
+
+    .scene-loc {
+      font-family: "DM Serif Display", serif;
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+      color: var(--plum);
+      margin-bottom: 4px;
+    }
+
+    .scene-pov {
+      font-family: "Cormorant Garamond", serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--rose);
+    }
+
+    .chapter-end {
+      text-align: center;
+      margin-top: 3.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--ink-faint);
+    }
+
+    .chapter-end .mark {
+      display: block;
+      width: 8px;
+      height: 8px;
+      margin: 0 auto 1rem;
+      background: var(--rose);
+      border-radius: 2px;
+      transform: rotate(45deg);
+    }
+
+    .chapter-end p {
+      font-family: "DM Serif Display", serif;
+      font-size: 0.95rem;
+      letter-spacing: 0.06em;
+      color: var(--ink-soft);
+    }
+
+    .vol-nav {
+      max-width: 640px;
+      margin: 2.5rem auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .vol-nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-size: 13px;
+      letter-spacing: 0.03em;
+      border: 1px solid var(--ink-faint);
+      background: rgba(36, 28, 16, 0.05);
+      color: var(--ink-soft);
+      transition: all var(--tr);
+    }
+
+    .vol-nav-btn:hover {
+      background: var(--rose);
+      color: white;
+      border-color: var(--rose);
+    }
+
+    .vol-nav-btn.locked {
+      opacity: 0.45;
+      pointer-events: none;
+      filter: grayscale(0.3);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .chapter-hero { animation: none; }
+    }
+
+    @media (max-width: 560px) {
+      .site-nav { padding: 0 18px; }
+      .nav-center { display: none; }
+      .page { padding: 4.5rem 1.25rem 4rem; }
+      main.story { font-size: 1.02rem; }
+    }
+</style>
+</head>
+<body>
+  <canvas id="petalCanvas"></canvas>
+
+  <nav class="site-nav">
+    <a href="hahv3.html" class="back-link"><span class="back-arrow">←</span><span>Volume 3</span></a>
+    <div class="nav-center">Him and Her · Vol. 3</div>
+    <button class="icon-btn" id="themeBtn" onclick="toggleDark()">🌙</button>
+  </nav>
+
+  <div class="page">
+
+    <header class="chapter-hero">
+      <p class="kicker">Him and Her · Volume Three</p>
+      <h1 class="chapter-title">Chapter 3 — <em>Wondered?</em></h1>
+    </header>
+
+    <main class="story">
+    <div class="scene-card">
+      <div class="scene-loc">Lunch Time</div>
+      <div class="scene-pov">Rika’s POV</div>
+    </div>
+    <p class="inner">Well… that went smoothly.</p>
+    <p class="dialogue">“Aoi: What are you talking about, Rika?”</p>
+    <p>“Nothing, Aoi,” I said quickly.</p>
+    <p class="dialogue">“Let’s just eat.”</p>
+    <div class="scene-card">
+      <div class="scene-pov">Sayori’s POV</div>
+    </div>
+    <p>It was lunch time.</p>
+    <p>For some reason, I started wandering around the school.</p>
+    <p>I didn’t know why. My feet just kept moving.</p>
+    <p>Then I found a place.</p>
+    <p>A sakura tree.</p>
+    <p>And a vending machine beside it.</p>
+    <p class="inner">This place exists? I thought.</p>
+    <p>It was quiet.</p>
+    <p>Too quiet for a school.</p>
+    <p>There was a bench under the tree.</p>
+    <p>The place felt beautiful.</p>
+    <p class="inner">But also… strangely familiar.</p>
+    <p>I sat down.</p>
+    <p>The silence felt peaceful.</p>
+    <p class="inner">For a moment I wondered if a place like this could really exist in a busy school.</p>
+    <p>But it clearly did.</p>
+    <p>Rika told me earlier that I used to be popular in this high school.</p>
+    <p class="inner">Maybe she was right.</p>
+    <p>Random students kept coming up to me, asking what really happened during the accident.</p>
+    <p>I didn’t know what to say to them.</p>
+    <p>After a while, someone walked toward the bench.</p>
+    <p>That boy.</p>
+    <p>He walked like he didn’t care that I was sitting there.</p>
+    <p>Then he sat down beside me.</p>
+    <p>“This is my place,” he said.</p>
+    <p class="dialogue">“When the world feels too noisy, I come here to sit.”</p>
+    <p>He paused for a moment.</p>
+    <p class="dialogue">“And Sayori… you can share this place with me. You can come here anytime you want.”</p>
+    <p class="inner">Those words felt…</p>
+    <p class="inner">too familiar.</p>
+    <p class="inner">Like I had heard them before.</p>
+    <p class="inner">I knew something like this had happened before.</p>
+    <p class="inner">But when?</p>
+    <p>I turned toward him.</p>
+    <p>And asked him something.</p>
+    <p class="trail">Even I was surprised by the question.</p>
+    </main>
+
+    <footer class="chapter-end">
+      <span class="mark"></span>
+      <p>End of Chapter 3</p>
+    </footer>
+
+    <div class="vol-nav">
+      <a href="hah2.html" class="vol-nav-btn">← Chapter 2</a>
+      <a href="hah4.html" class="vol-nav-btn ">Chapter 4 </a>
+    </div>
+
+  </div>
+
+  <script>
+    var canvas = document.getElementById("petalCanvas"),
+      ctx = canvas.getContext("2d"),
+      petals = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    var pColors = ["#ffb7c5", "#f4a7c3", "#e8b4d8", "#ffd4e8"];
+
+    function spawnPetal() {
+      petals.push({
+        x: Math.random() * canvas.width,
+        y: -20,
+        size: Math.random() * 9 + 4,
+        speedY: Math.random() * 0.9 + 0.4,
+        speedX: (Math.random() - 0.5) * 0.5,
+        rot: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.025,
+        color: pColors[Math.floor(Math.random() * pColors.length)],
+        opacity: Math.random() * 0.28 + 0.1,
+      });
+    }
+
+    function drawPetals() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      petals.forEach(function (p, i) {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.globalAlpha = p.opacity;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, p.size, p.size * 0.52, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+        p.y += p.speedY;
+        p.x += p.speedX + Math.sin(p.y * 0.018) * 0.3;
+        p.rot += p.rotSpeed;
+        if (p.y > canvas.height + 20) petals.splice(i, 1);
+      });
+      if (Math.random() < 0.055) spawnPetal();
+      requestAnimationFrame(drawPetals);
+    }
+    for (var i = 0; i < 6; i++) {
+      spawnPetal();
+      petals[petals.length - 1].y = Math.random() * canvas.height;
+    }
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      drawPetals();
+    }
+
+    function toggleDark() {
+      document.body.classList.toggle("dark");
+      var on = document.body.classList.contains("dark");
+      document.getElementById("themeBtn").textContent = on ? "\u2600\ufe0f" : "\ud83c\udf19";
+      try { localStorage.setItem("darkMode", on ? "on" : "off"); } catch (e) {}
+    }
+
+    try {
+      if (localStorage.getItem("darkMode") === "on") {
+        document.body.classList.add("dark");
+      }
+    } catch (e) {}
+    window.addEventListener("load", function () {
+      if (document.body.classList.contains("dark")) {
+        document.getElementById("themeBtn").textContent = "\u2600\ufe0f";
+      }
+    });
+</script>
+</body>
+>>>>>>> origin/main
 </html>
