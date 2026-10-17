@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Novels by AKA — Original Fiction Reading Lounge</title>
+    <meta name="description"
+        content="Original fiction by AKA. Romance, drama, and slice-of-life novels, reimagined as a living reading dashboard." />
+    <!-- Security: restricts where scripts/styles/images/fonts/network calls can come from.
+         'unsafe-inline' is required for script-src/style-src because this page relies on
+         inline onclick="" handlers and inline style="" attributes throughout its markup.
+         That does not disable this CSP — it still blocks loading any external script,
+         stylesheet, font, image, or fetch/XHR target that isn't this origin (or Google Fonts),
+         which stops the most common data-exfiltration and script-injection vectors. -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=Sora:wght@300;400;500;600;700;800&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+    <!-- THE EYE AWAKENS -->
+<div id="eyeEvent" class="eye-event" aria-hidden="true">
+  <div class="eye-fog"></div>
+  <div id="eyePupil" class="eye-pupil"></div>
+</div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- ============ COMMAND-K ============ -->
+    <div class="cmdk-overlay" id="cmdkOverlay" onclick="closeCmdk()"></div>
+    <div class="cmdk-panel" id="cmdkPanel" role="dialog" aria-modal="true" aria-label="Search">
+        <div class="cmdk-input-row">
+            <span aria-hidden="true">🔍</span>
+            <input id="cmdkInput" placeholder="Search novels, genres, moods…" oninput="cmdkRender()" autocomplete="off"
+                aria-label="Search">
+            <span class="kbd">Esc</span>
+        </div>
+        <div class="cmdk-results" id="cmdkResults"></div>
+    </div>
+
+    <!-- ============ SETTINGS ============ -->
+    <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
+    <aside class="settings-panel" id="settingsPanel" role="dialog" aria-label="Settings">
+        <div class="sph-header">
+            <div class="sph-title">Settings</div>
+            <button class="icon-btn" onclick="closeSettings()" aria-label="Close settings">✕</button>
+        </div>
+        <div class="sph-body">
+            <section class="sph-section" id="readerProfileSettings" aria-labelledby="readerProfileHeading">
+                <h2 class="sph-section-title" id="readerProfileHeading">Reader profile</h2>
+                <label class="profile-field">Display name
+                    <input id="readerProfileNameInput" type="text" maxlength="32" autocomplete="nickname" placeholder="Your name">
+                </label>
+                <label class="profile-field">About you
+                    <textarea id="readerProfileBioInput" rows="3" maxlength="140" placeholder="What do you like to read?"></textarea>
+                </label>
+                <div class="profile-form-footer">
+                    <span class="sph-help">Saved only in this browser.</span>
+                    <button class="pill-btn" type="button" onclick="saveReaderProfile()">Save profile</button>
+                </div>
+            </section>
+            <section class="sph-section" aria-labelledby="settingsAppearanceTitle">
+                <h2 class="sph-section-title" id="settingsAppearanceTitle">Appearance</h2>
+                <div class="sph-row">
+                    <div class="sph-copy"><span class="sph-row-label">Light mode</span><span class="sph-help">Use a brighter reading surface.</span></div>
+                    <button class="toggle" id="lightToggle" onclick="toggleLight()" role="switch" aria-checked="false" aria-label="Toggle light mode"></button>
+                </div>
+            </section>
+
+            <section class="sph-section" aria-labelledby="settingsExperienceTitle">
+                <h2 class="sph-section-title" id="settingsExperienceTitle">Experience</h2>
+                <div class="sph-row">
+                    <div class="sph-copy"><span class="sph-row-label">Featured story rotation</span><span class="sph-help">Automatically cycle the featured story.</span></div>
+                    <button class="toggle on" id="motionToggle" onclick="toggleMotionPref()" role="switch" aria-checked="true" aria-label="Toggle featured story rotation"></button>
+                </div>
+            </section>
+
+            <section class="sph-section sph-data-section" aria-labelledby="settingsDataTitle">
+                <h2 class="sph-section-title" id="settingsDataTitle">Your data</h2>
+                <p class="sph-data-copy">Reading progress, bookmarks, your queue, and private notes are stored in this browser only. They are not sent to a server.</p>
+                <button class="pill-btn" id="clearDataBtn" onclick="confirmClearLocalData()">Clear local data</button>
+            </section>
+            <div class="sph-version">
+                Version 3.8 · Oct 2026
+            </div>
+        </div>
+    </aside>
+
+    <!-- ============ SPOTLIGHT ============ -->
+    <div class="spotlight-overlay" id="spotlightOverlay" onclick="closeSpotlight()"></div>
+    <aside class="spotlight-panel" id="spotlightPanel" role="dialog" aria-label="Novel details">
+        <div class="sp-cover" id="spCover">
+            <div id="spCoverBg" style="width:100%;height:100%;position:absolute;inset:0"></div>
+            <div class="sp-cover-grad"></div>
+            <button class="sp-close" onclick="closeSpotlight()" aria-label="Close">✕</button>
+        </div>
+        <div class="sp-body">
+            <div class="sp-status-row" id="spStatusRow"></div>
+            <div class="sp-title" id="spTitle"></div>
+            <div class="sp-byline" id="spByline"></div>
+            <p class="sp-desc" id="spDesc"></p>
+            <div class="side-label">Your progress</div>
+            <div class="challenge-bar" style="margin-bottom:6px">
+                <div class="challenge-fill" id="spFill"
+                    style="width:0%;background:linear-gradient(90deg,var(--rose),var(--gold))"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+                <span class="cr-sub" id="spChRead"></span>
+                <div style="display:flex;gap:6px">
+                    <button class="nc-qbtn" style="background:var(--panel-2);color:var(--ink)" onclick="spAdjust(-1)"
+                        id="spMinus" aria-label="Unread chapter">−</button>
+                    <button class="nc-qbtn" style="background:var(--panel-2);color:var(--ink)" onclick="spAdjust(1)"
+                        id="spPlus" aria-label="Read chapter">+</button>
+                </div>
+            </div>
+            <div class="sp-chapters" id="spChapterList"></div>
+
+            <div class="sp-private-notes">
+                <div class="sp-private-notes-head">
+                    <div>
+                        <div class="side-label"> · Private reader notes</div>
+                        <div class="sp-notes-title">Leave yourself a little bookmark.</div>
+                    </div>
+                    <span class="sp-notes-saved" id="spNotesSaved">Saved locally</span>
+                </div>
+                <textarea id="spPrivateNote" class="sp-private-note"
+                    placeholder="A thought, favorite moment, theory, or something to remember…" maxlength="1000"
+                    aria-label="Private reader note"></textarea>
+                <div class="sp-notes-footer">
+                    <span id="spNotesCount">0 / 1000</span>
+                    <button class="pill-btn" onclick="savePrivateNote()">Save note</button>
+                </div>
+            </div>
+
+            <div class="sp-actions">
+                <button class="sp-btn primary" id="spReadBtn" onclick="goToNovel()">Start Reading →</button>
+                <button class="sp-btn ghost" id="spBookmarkBtn" onclick="toggleBookmark()">🔖 Set as Currently
+                    Reading</button>
+                <button class="sp-btn ghost" id="spQueueBtn" onclick="toggleReadingQueue()" aria-pressed="false">＋ Add to reading queue</button>
+                <button class="sp-btn ghost" onclick="shareNovel()">↗ Share this story</button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ============ FOCUS READING MODE ============ -->
+    <div class="reader-mode-overlay" id="readerModeOverlay" onclick="closeReaderMode()"></div>
+    <article class="reader-mode-panel" id="readerModePanel" role="dialog" aria-modal="true"
+        aria-label="Focus reading mode">
+        <header class="reader-mode-header">
+            <div class="reader-mode-brand"><span class="reader-mode-mark">✦</span><span>Focus Reading</span></div>
+            <div class="reader-mode-header-actions">
+                <button class="reader-mode-icon" onclick="adjustReaderFont(-1)"
+                    aria-label="Decrease text size">A−</button>
+                <button class="reader-mode-icon" onclick="adjustReaderFont(1)"
+                    aria-label="Increase text size">A+</button>
+                <button class="reader-mode-icon" onclick="closeReaderMode()"
+                    aria-label="Close focus reading mode">✕</button>
+            </div>
+        </header>
+        <div class="reader-mode-scroll">
+            <div class="reader-mode-progress-wrap">
+                <div class="reader-mode-progress-label"><span id="readerModeProgressLabel">Chapter 1</span><span
+                        id="readerModeProgressPct">0%</span></div>
+                <div class="reader-mode-progress"><span id="readerModeProgressFill"></span></div>
+            </div>
+            <div class="reader-mode-copy">
+                <div class="eyebrow">Now reading</div>
+                <h1 id="readerModeTitle">A story waiting to open</h1>
+                <p class="reader-mode-byline" id="readerModeByline"></p>
+                <div class="reader-mode-rule"></div>
+                <p class="reader-mode-intro" id="readerModeIntro"></p>
+                <blockquote id="readerModeQuote">Every chapter is a small room. Take your time here.</blockquote>
+                <p id="readerModeBody">This is your focused reading space: keep the dashboard behind you, follow your
+                    progress, and return to the full chapter whenever you are ready.</p>
+                <div class="reader-mode-chapter-card">
+                    <div><span class="side-label">Your place in the story</span><strong
+                            id="readerModeChapterText">Chapter 1</strong></div>
+                    <div class="reader-mode-stepper"><button onclick="adjustReaderChapter(-1)"
+                            aria-label="Previous chapter">−</button><button onclick="adjustReaderChapter(1)"
+                            aria-label="Next chapter">+</button></div>
+                </div>
+            </div>
+        </div>
+        <footer class="reader-mode-footer">
+            <button class="sp-btn ghost" id="readerModeBookmarkBtn" onclick="readerModeBookmark()">🔖 Set as Currently
+                Reading</button>
+            <button class="sp-btn ghost" id="readerModeMarkBtn" onclick="readerModeMarkComplete()">Mark chapter as
+                read</button>
+            <button class="sp-btn primary" id="readerModeOpenBtn" onclick="readerModeOpenStory()">Open full chapter
+                →</button>
+        </footer>
+    </article>
+
+    <!-- ============ NAV ============ -->
+    <nav class="site-nav">
+        <div class="nav-brand">
+            <div class="nav-brand-mark">✦</div><span>Novels by <em>AKA</em></span>
+        </div>
+        <div class="nav-links">
+            <a class="nav-link" href="#readingHeatmap">Reading activity</a>
+        </div>
+        <div class="nav-actions">
+            <button class="search-trigger" onclick="openCmdk()" aria-label="Open search"><span>🔍</span><span
+                    class="nav-search-label">Search</span><span class="kbd"></span></button>
+            <button class="icon-btn nav-settings-btn" onclick="openSettings()" aria-label="Open settings"
+                title="Settings">⚙</button>
+        </div>
+    </nav>
+
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="hero">
+        <div class="aurora-wrap">
+            <div class="aurora-layer on" id="auroraLayer1"></div>
+            <div class="aurora-layer" id="auroraLayer2"></div>
+        </div>
+        <div class="hero-bento">
+            <div class="hero-feature" id="heroFeature">
+                <div class="hero-feature-bg"><img id="heroFeatureImg" src="" alt="" decoding="async" fetchpriority="high"></div>
+                <div class="hero-feature-content">
+                    <div id="heroFeatureText">
+                        <span class="trend-badge">🔥 Trending Now · Vol. 3</span>
+                        <h1 class="hero-feature-title">The Petal That Falls<br>With a <em>Smile</em></h1>
+                        <p class="hero-feature-desc">Life is a series of small smiles and falling petals — a gentle,
+                            aching
+                            exploration of growing up, holding on, and learning when to let go.</p>
+                        <div class="hero-meta-row">
+                            <span>⭐ 4.9 rating</span><span>👁 39.4k readers</span><span>📖 22 chapters across 3
+                                volumes</span><span style="color: var(--rose)">
+                                Completed</span>
+                        </div>
+                    </div>
+                    <div class="hero-cta-row">
+                        <button class="cta cta-primary" id="heroStartBtn">Start Reading →</button>
+                        <button class="cta cta-ghost" onclick="scrollToId('catalog')">Browse the Shelf</button>
+                    </div>
+                    <div class="hero-trend-dots" id="heroTrendDots"></div>
+                </div>
+            </div>
+            <div class="hero-side">
+                <div class="hero-card glass" id="crCard">
+                    <div class="hero-card-label"><span class="pulse-dot"></span>Continue Reading</div>
+                    <div class="streak-chip" id="readerStreakChip">🔥 0-day streak</div>
+                    <div id="crBody">
+                        <div class="cr-empty">You haven't started a story yet. Pick one from The Shelf and it'll show up
+                            here, like
+                            a bookmark that remembers you.</div>
+                    </div>
+                </div>
+                <div class="hero-card glass">
+                    <div class="hero-card-label">✦ Your Level</div>
+                    <div class="author-row">
+                        <div class="author-avatar" id="readerLevelBadge">1</div>
+                        <div>
+                            <div class="author-name" id="readerRankName">Novice Reader</div>
+                            <div class="author-level" id="readerLevelSub">Level 1</div>
+                        </div>
+                    </div>
+                    <div class="xp-bar">
+                        <div class="xp-fill" id="readerXpFill" style="width:0%"></div>
+                    </div> 
+                    <div class="xp-label" id="readerXpLabel">0 / 100 XP to Level 2</div>
+                    <div class="reader-profile-summary">
+                        <div class="reader-profile-avatar" id="readerProfileAvatar" aria-hidden="true">R</div>
+                        <div class="reader-profile-copy">
+                            <strong id="readerProfileNameDisplay">Reader</strong>
+                            <span id="readerProfileBioDisplay">Make this reading space yours.</span>
+                        </div>
+                        <button class="profile-edit-btn" type="button" onclick="openSettings('profile')">Edit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <aside class="case-closed-banner" id="caseClosedBanner" hidden aria-label="Limited-time Case File: You Vol. 1 completion celebration">
+            <div class="case-closed-mark" aria-hidden="true">🔎</div>
+            <div class="case-closed-copy"><span class="case-closed-kicker">LIMITED OCCASION <i>·</i> <span id="caseClosedRemaining">14 days left</span></span><strong>The case is closed.</strong><p><em>Case File: You</em> Vol. 1 is complete. Revisit all 15 chapters during the celebration.</p></div>
+            <button class="case-closed-action" type="button" onclick="openSpotlight(6)">Revisit the case <span aria-hidden="true">→</span></button>
+        </aside>
+    </section>
+    <!-- =========================
+     ECLIPSE EVENT
+========================= -->
+
+<div id="eclipseEvent" class="eclipse-event">
+    <div class="eclipse-backdrop"></div>
+    <div class="eclipse-moon">
+        <div class="eclipse-ring"></div>
+    </div>
+    <div class="eclipse-particles"></div>
+
+    <div class="eclipse-quote">
+        <span>Every story casts a shadow.</span>
+    </div>
+</div>
+
+    <!-- ============ STATS STRIP ============ -->
+    <section class="section">
+        <div class="wrap">
+            <div class="section-head">
+                <div>
+                    <h2 class="section-title">The Library at a <em>Glance</em></h2>
+                    <p class="section-sub">Everything AKA has written, in numbers.</p>
+                </div>
+                <span class="pill-btn" style="cursor:default">Updated Oct 2026</span>
+            </div>
+            <div class="stats-grid" id="statsGrid"></div>
+        </div>
+    </section>
+
+
+
+    <!-- ============ MOOD PICKER ============ -->
+    <section class="section" style="padding-top:0">
+        <div class="wrap">
+            <div class="section-head">
+                <div>
+                    <h2 class="section-title">Browse by <em>Mood</em></h2>
+                    <p class="section-sub">The whole page shifts to match what you're in the mood for.</p>
+                </div>
+            </div>
+            <div class="story-match glass" id="storyMatch">
+                <div class="story-match-intro"><span class="story-match-kicker"> · PERSONAL PICKER</span><h3>Find your next <em>read</em></h3><p>Tell us your mood and reading window. We’ll find a story that fits.</p></div>
+                <div class="story-match-controls">
+                    <label>Mood<select id="storyMatchMood"><option value="any">Surprise me</option><option value="romance">Heartwarming</option><option value="sad">Emotional</option><option value="mystery">Mystery &amp; suspense</option><option value="slice">Quiet &amp; cozy</option></select></label>
+                    <label>Time<select id="storyMatchTime"><option value="15">About 15 minutes</option><option value="30">About 30 minutes</option><option value="60">About an hour</option><option value="0">Any amount</option></select></label>
+                    <button type="button" class="cta cta-primary" onclick="runStoryMatch()">Find my story ✦</button>
+                </div>
+                <div class="story-match-result" id="storyMatchResult" aria-live="polite">Your pick will appear here. Reading time is estimated at about 7 minutes per chapter.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ THE SHELF ============ -->
+    <section class="section" id="catalog">
+        <div class="wrap">
+            <div class="section-head shelf-section-head">
+                <div>
+                    <span class="eyebrow">The archive</span>
+                    <h2 class="section-title">The <em>Shelf</em></h2>
+                    <p class="section-sub" id="shelfCount">18 stories, filed and ready to open.</p>
+                </div>
+                <div class="shelf-heading-actions">
+                    <span class="catalog-filter-summary" id="catalogFilterSummary">Showing everything</span>
+                    <button class="pill-btn" id="clearShelfBtn" onclick="clearShelfFilters()">Clear filters</button>
+                </div>
+            </div>
+            <div class="shelf-wrap">
+               <div id="catalogGrid" class="catalog-grid bookshelf"></div>
+                <aside class="sidebar-stack">
+                    <div class="side-card glass">
+                        <span class="side-label">Search &amp; Filter</span>
+                        <div class="shelf-search">
+                            <span class="shelf-search-icon" aria-hidden="true">🔍</span>
+                            <input id="shelfSearch" type="search" placeholder="Search titles or genres…"
+                                oninput="handleShelfSearchInput()" aria-label="Search shelf">
+                            <span class="search-shortcut"></span>
+                            <button class="search-clear" onclick="clearShelfSearch()"
+                                aria-label="Clear search">✕</button>
+                        </div>
+                        <div class="search-result-info" id="searchResultInfo">Search titles, genres, and stories</div>
+                        <div class="filter-section-label">Genre</div>
+                        <div class="filter-pills" id="genrePills">
+                            <button class="pill-btn active" data-genre="all">All</button>
+                            <button class="pill-btn" data-genre="romance">Romance</button>
+                            <button class="pill-btn" data-genre="drama">Drama</button>
+                            <button class="pill-btn" data-genre="slice">Slice</button>
+                            <button class="pill-btn" data-genre="sad">Sad</button>
+                            <button class="pill-btn" data-genre="mystery">Mystery</button>
+                            <button class="pill-btn" data-genre="action">Action</button>
+                        </div>
+                        <div class="filter-section-label filter-section-label-status">Status</div>
+                        <div class="filter-pills" id="statusPills">
+                            <button class="pill-btn active" data-status="all" aria-pressed="true">All status</button>
+                            <button class="pill-btn" data-status="ongoing" aria-pressed="false">Ongoing</button>
+                            <button class="pill-btn" data-status="completed" aria-pressed="false">Completed</button>
+                            <button class="pill-btn" data-status="unread" aria-pressed="false">Unread</button>
+                        </div>
+                    </div>
+                    <div class="side-card glass">
+                        <span class="side-label">Reading Challenges</span>
+                        <div id="challengesList"></div>
+                    </div>
+                    <div class="side-card glass">
+                        <span class="side-label">Your Reading Journey</span>
+                        <div class="sb-title" style="font-family:var(--font-display);font-style:italic;font-size:15px"
+                            id="journeyRank">Novice Reader</div>
+                        <div class="cr-sub" id="journeyStats">0 badges earned</div>
+                        <button class="pill-btn" style="margin-top:10px" onclick="scrollToId('achievements')">View all
+                            achievements
+                            ↓</button>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ PERSONAL SHELF ============ -->
+    <section class="section personal-shelf-section" id="reader-shelf">
+        <div class="wrap">
+            <div class="section-head">
+                <div>
+                    <span class="eyebrow">Your reader layer</span>
+                    <h2 class="section-title">Your <em>Shelf</em></h2>
+                    <p class="section-sub">A quick home for what you are reading, loving, and ready to finish next.</p>
+                </div>
+                <button class="pill-btn" onclick="scrollToId('achievements')">View milestones ↓</button>
+            </div>
+            <div class="personal-shelf-grid">
+                <article class="glass personal-shelf-card personal-current-card" id="personalCurrentCard"></article>
+                <article class="glass personal-shelf-card" id="personalFavoritesCard"></article>
+                <article class="glass personal-shelf-card" id="personalFinishedCard"></article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ READER ACHIEVEMENTS ============ -->
+    <section class="section" id="achievements">
+        <div class="wrap">
+            <div class="section-head">
+                <div>
+                    <h2 class="section-title">Reader <em>Achievements</em></h2>
+                    <p class="section-sub">Badges you earn by reading and exploring the shelf — track your own journey.
+                    </p>
+                </div>
+                <button class="pill-btn achievements-toggle" id="achievementsToggle" type="button"
+                    onclick="toggleAchievements()" aria-expanded="true" aria-controls="achievementGrid">
+                    Minimize achievements <span aria-hidden="true">⌃</span>
+                </button>
+            </div>
+            <div class="milestone-grid" id="achievementGrid"></div>
+        </div>
+    </section>
+
+    <!-- ============ LEADERBOARD ============ -->
+    <section class="section" id="leaderboard">
+        <div class="wrap">
+            <div class="section-head">
+                <div>
+                    <h2 class="section-title">The <em>Leaderboard</em></h2>
+                    <p class="section-sub">How the shelf ranks up, by the numbers.</p>
+                </div>
+            </div>
+            <div class="glass" style="padding:var(--sp-5)">
+                <div class="filter-pills" id="lbTabs" style="margin-bottom:var(--sp-3)">
+                    <button class="pill-btn active" data-lb="views">Most Viewed</button>
+                    <button class="pill-btn" data-lb="rating">Highest Rated</button>
+                    <button class="pill-btn" data-lb="chapters">Longest Series</button>
+                    <button class="pill-btn" data-lb="newest">Newest</button>
+                </div>
+                <div id="lbList" class="lb-list"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ HEATMAP + CALENDAR ============ -->
+    <section class="section" id="readingHeatmap">
+        <div class="wrap">
+            <div class="two-col">
+                <div class="glass" style="padding:var(--sp-5)">
+                    <div class="section-head" style="margin-bottom:var(--sp-3)">
+                        <h2 class="section-title" style="font-size:19px">Your Reading Heatmap</h2>
+                    </div>
+                    <div class="hm-streak-note" id="heatmapStreakNote">No active streak · best 0 days</div>
+                    <div class="heatmap-grid" id="heatmapGrid"></div>
+                    <div class="hm-legend">Less <span class="hm-cell"></span><span class="hm-cell"
+                            style="background:rgba(var(--accent-rgb),.3)"></span><span class="hm-cell"
+                            style="background:rgba(var(--accent-rgb),.6)"></span><span class="hm-cell"
+                            style="background:var(--rose)"></span> More</div>
+                </div>
+                <div class="glass" style="padding:var(--sp-5)">
+                    <div class="section-head" style="margin-bottom:var(--sp-3)">
+                        <h2 class="section-title" style="font-size:19px">Release Calendar</h2>
+                    </div>
+                    <div id="calendarList"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ READING QUEUE ============ -->
+    <section class="section" id="readingQueueSection">
+        <div class="wrap">
+            <div class="section-head">
+                <div><span class="eyebrow">Keep for later</span><h2 class="section-title">Your reading <em>queue</em></h2>
+                    <p class="section-sub">Stories you’ve saved for the next quiet moment.</p></div>
+                <span class="pill-btn queue-count" id="readingQueueCount">0 saved</span>
+            </div>
+            <div class="reading-queue-grid" id="readingQueueList" aria-live="polite"></div>
+        </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <section class="section">
+        <div class="wrap">
+            <div class="glass footer-panel">
+                <div class="footer-grid">
+                    <div>
+                        <div class="nav-brand" style="margin-bottom:10px">Novels by <em>AKA</em></div>
+                        <p style="font-size:12.5px;color:var(--ink-soft);line-height:1.7;max-width:340px">Original fiction by AKA, in a calmer glass reading room. Your reading progress and queue stay saved in this browser.</p>
+                        <button class="pill-btn" style="margin-top:14px" onclick="toggleLight()">🌗 Switch appearance</button>
+                    </div>
+                    <div>
+                        <div class="footer-col-title">Explore</div>
+                        <div class="footer-links">
+                            <a href="#catalog">The Shelf</a><a href="#readingQueueSection">Reading Queue</a><a href="#achievements">Achievements</a><a
+                            href="#leaderboard">Leaderboard</a><a href="#readingHeatmap">Reading activity</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <span>Filed &amp; maintained by AKA · Version 3.8 · Oct 2026</span>
+                    <span>Please don't repost or reupload stories without permission. Sharing links is always
+                        appreciated.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Navigation Dock -->
+    <!-- ============ READING NAVIGATION RAIL ============ -->
+    <nav class="browser-dock" aria-label="Main navigation">
+
+        <div class="browser-dock-inner">
+
+            <a href="#hero" class="browser-tab" data-label="Home" aria-label="Home">
+                <span class="browser-tab-icon">⌂</span>
+                <span class="browser-tab-text">Home</span>
+            </a>
+
+            <a href="#catalog" class="browser-tab" data-label="The Shelf" aria-label="The Shelf">
+                <span class="browser-tab-icon">▤</span>
+                <span class="browser-tab-text">Shelf</span>
+            </a>
+
+            <a href="#readingQueueSection" class="browser-tab" data-label="Queue" aria-label="Reading queue">
+                <span class="browser-tab-icon">↗</span>
+                <span class="browser-tab-text">Queue</span>
+            </a>
+
+            <a href="#readingHeatmap" class="browser-tab" data-label="Activity" aria-label="Reading activity">
+                <span class="browser-tab-icon">▦</span>
+                <span class="browser-tab-text">Activity</span>
+            </a>
+
+            <button class="browser-tab browser-settings" onclick="openSettings()" aria-label="Settings"
+                data-label="Settings">
+                <span class="browser-tab-icon">⚙</span>
+                <span class="browser-tab-text">Settings</span>
+            </button>
+
+        </div>
+
+    </nav>
+    <button id="scrollBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">↑</button>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
