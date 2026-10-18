@@ -6889,3 +6889,38 @@ body.light {
     :root body * { transition: none !important; }
     :root body :is(button, .cta, .sp-btn):active { transform: none; }
 }
+
+/* Sketchmorphism reader tools: warm paper, inked double borders, and hand-drawn offsets. */
+.reader-tools-section { padding-top: 4px; }
+.reader-tools-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.reader-tool-card {
+    --sketch-ink: #594453;
+    position: relative;
+    padding: clamp(20px, 3vw, 30px);
+    color: #493747;
+    background: #fff9ee;
+    border: 2px solid var(--sketch-ink);
+    border-radius: 24px 20px 26px 18px;
+    box-shadow: 5px 6px 0 rgba(89, 68, 83, .16), inset 0 0 0 4px rgba(255,255,255,.65);
+    transform: rotate(-.35deg);
+}
+.reader-tool-card:nth-child(2) { transform: rotate(.35deg); background: #f6f1ff; }
+.reader-tool-card::after { content: ""; position: absolute; inset: 5px; border: 1px solid rgba(89,68,83,.34); border-radius: 19px 16px 21px 14px; pointer-events: none; }
+.reader-tool-kicker { color: #8a657c; font: 700 10px/1.3 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; }
+.reader-tool-title { margin: 8px 0 5px; color: #493747; font: 600 clamp(20px, 2.4vw, 27px)/1.2 var(--font-display); }
+.reader-tool-title em { color: #b74e73; }
+.reader-tool-copy { margin: 0 0 17px; color: #756575; font-size: 12px; line-height: 1.6; }
+.reading-history-list { display: grid; gap: 8px; }
+.history-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 37px; padding: 7px 10px; color: #655568; background: rgba(255,255,255,.64); border: 1px dashed rgba(118,93,115,.7); border-radius: 11px 9px 12px 10px; font-size: 11px; }
+.history-row strong { color: #493747; font: 600 11px var(--font-mono); white-space: nowrap; }
+.history-empty { padding: 14px 10px; color: #756575; border: 1px dashed rgba(118,93,115,.7); border-radius: 11px; font-size: 12px; }
+.backup-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.reader-backup-file { display: none !important; }
+.backup-note { margin: 12px 0 0; color: #756575; font-size: 10px; line-height: 1.5; }
+.sketch-btn { min-height: 42px; padding: 9px 15px; color: #493747; background: #fffdf8; border: 1.5px solid #745b70; border-radius: 14px 11px 15px 12px; box-shadow: 3px 4px 0 rgba(89,68,83,.16); font: 700 11px var(--font-body); cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
+.sketch-btn:hover:not(:disabled) { transform: translate(-1px,-1px) rotate(-.5deg); box-shadow: 4px 5px 0 rgba(89,68,83,.19); }
+.sketch-btn:active:not(:disabled) { transform: translate(2px,2px); box-shadow: 1px 2px 0 rgba(89,68,83,.16); }
+.sketch-btn-primary { color: #fff9f3; background: #b95778; border-color: #854058; }
+.sketch-btn:disabled { opacity: .55; cursor: not-allowed; }
+@media (max-width: 680px) { .reader-tools-grid { grid-template-columns: 1fr; gap: 16px; } .reader-tool-card { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .sketch-btn { transition: none; } }

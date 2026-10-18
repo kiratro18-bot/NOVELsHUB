@@ -339,6 +339,29 @@
         </div>
     </section>
 
+    <!-- ============ READER TOOLS ============ -->
+    <section class="section reader-tools-section" aria-label="Reader tools">
+        <div class="wrap reader-tools-grid">
+            <article class="reader-tool-card history-card">
+                <span class="reader-tool-kicker">Your recent pages</span>
+                <h2 class="reader-tool-title">Reading <em>history</em></h2>
+                <p class="reader-tool-copy">A quick look at the chapters you’ve logged recently.</p>
+                <div class="reading-history-list" id="readingHistoryList" aria-live="polite"></div>
+            </article>
+            <article class="reader-tool-card backup-card">
+                <span class="reader-tool-kicker">Keep your place</span>
+                <h2 class="reader-tool-title">Reader data <em>backup</em></h2>
+                <p class="reader-tool-copy">Move your progress, queue, notes, and preferences to another browser or keep a copy for safekeeping.</p>
+                <div class="backup-actions">
+                    <button type="button" class="sketch-btn sketch-btn-primary" onclick="exportReaderData()">Download backup ↓</button>
+                    <button type="button" class="sketch-btn" onclick="document.getElementById('readerBackupFile').click()">Restore backup ↑</button>
+                    <input id="readerBackupFile" class="reader-backup-file" type="file" accept="application/json,.json" onchange="importReaderData(this)">
+                </div>
+                <p class="backup-note">Backup files stay on your device. Restoring replaces this browser’s saved reader data.</p>
+            </article>
+        </div>
+    </section>
+
     <!-- ============ THE SHELF ============ -->
     <section class="section" id="catalog">
         <div class="wrap">

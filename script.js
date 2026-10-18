@@ -485,6 +485,63 @@ function renderReaderStreak() {
     }
 }
 
+/* ============================================================
+   READING HISTORY + PORTABLE LOCAL BACKUP
+   ============================================================ */
+function renderReadingHistory() {
+    var list = document.getElementById('readingHistoryList');
+    if (!list) return;
+    var dates = Object.keys(readingLog).filter(function (key) { return Number(readingLog[key]) > 0; }).sort().reverse().slice(0, 7);
+    if (!dates.length) {
+        list.innerHTML = '<div class="history-empty">Your logged reading days will appear here.</div>';
+        return;
+    }
+    list.innerHTML = dates.map(function (key) {
+        var date = new Date(key + 'T12:00:00');
+        var label = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        var count = Number(readingLog[key]) || 0;
+        return '<div class="history-row"><span>' + esc(label) + '</span><strong>' + count + ' ' + (count === 1 ? 'chapter' : 'chapters') + '</strong></div>';
+    }).join('');
+}
+function exportReaderData() {
+    var data = {};
+    APP_STORAGE_KEYS.forEach(function (key) {
+        try { var value = localStorage.getItem(key); if (value !== null) data[key] = JSON.parse(value); } catch (e) { }
+    });
+    var payload = JSON.stringify({ format: 'aka-reader-backup', version: 1, exportedAt: new Date().toISOString(), data: data }, null, 2);
+    var url = URL.createObjectURL(new Blob([payload], { type: 'application/json' }));
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = 'aka-reader-backup-' + dateKey(new Date()) + '.json';
+    document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    showToast('Reader backup downloaded ✦');
+}
+function importReaderData(input) {
+    var file = input && input.files && input.files[0];
+    if (!file) return;
+    input.value = '';
+    if (file.size > 1024 * 1024) { showToast('That backup file is too large.'); return; }
+    var reader = new FileReader();
+    reader.onload = function () {
+        var backup;
+        try { backup = JSON.parse(String(reader.result)); } catch (e) { showToast('This file is not valid JSON.'); return; }
+        if (!backup || backup.format !== 'aka-reader-backup' || backup.version !== 1 || !backup.data || typeof backup.data !== 'object' || Array.isArray(backup.data)) {
+            showToast('This is not a supported AKA reader backup.'); return;
+        }
+        var allowed = APP_STORAGE_KEYS.filter(function (key) { return Object.prototype.hasOwnProperty.call(backup.data, key); });
+        if (!allowed.length) { showToast('No recognized reader data was found in this backup.'); return; }
+        if (!window.confirm('Restore ' + allowed.length + ' saved reader data items? This replaces matching data in this browser and reloads the page.')) return;
+        try {
+            allowed.forEach(function (key) { localStorage.setItem(key, JSON.stringify(backup.data[key])); });
+        } catch (e) { showToast('Could not restore the backup. Check available browser storage.'); return; }
+        showToast('Reader data restored · Reloading…');
+        setTimeout(function () { window.location.reload(); }, 700);
+    };
+    reader.onerror = function () { showToast('Could not read that backup file.'); };
+    reader.readAsText(file);
+}
+
 function refreshReadingUI() {
     renderContinueReading();
     renderPersonalShelf();
@@ -495,6 +552,7 @@ function refreshReadingUI() {
     renderReaderAchievements();
     renderHeatmap();
     renderReaderStreak();
+    renderReadingHistory();
 }
 function updateQueueButton(order) {
     var button = document.getElementById('spQueueBtn');
@@ -1519,6 +1577,7 @@ window.addEventListener('scroll', function () {
    ============================================================ */
 window.addEventListener('load', function () {
     renderReaderProfile();
+    renderReadingHistory();
     var achievementsCollapsed = store.get('achievementsCollapsed', false);
     var achievementGrid = document.getElementById('achievementGrid');
     var achievementToggle = document.getElementById('achievementsToggle');
