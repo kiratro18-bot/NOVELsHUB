@@ -135,7 +135,7 @@ var novels = [
         blurb: "ONE SHOT.", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["hidden-gems"]
     },
     {
-        order: 16, title: "The Other Day", img: "./img/sub2/tod.jpg", link: "./tod/tod.html", genres: ["drama", "slice"], status: "ongoing", ch: 7, rating: 4.8, views: 17000, releaseOffsetDays: 0,
+        order: 16, title: "The Other Day", img: "./img/sub2/tod.jpg", link: "./tod/tod.html", genres: ["drama", "slice"], status: "ongoing", ch: 8, rating: 4.8, views: 18000, releaseOffsetDays: 0,
         blurb: "normal days?", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
     },
     {
@@ -1344,7 +1344,7 @@ function renderHeatmap() {
    CALENDAR
    ============================================================ */
 var upcomingReleases = [
-    { date: '2026-10-19', title: "The Other Day - Chapter 8" },
+    { date: '2026-10-26', title: "The Other Day - Chapter 9" },
     { date: '2026-10-20', title: 'Him and Her vol 3 - chapter 5' }, 
     { date: '2026-10-25', title: 'Petal Vol. 4 —  University → Adulthood Arc ' },
 ];
