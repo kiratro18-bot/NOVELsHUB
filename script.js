@@ -26,7 +26,7 @@ var APP_STORAGE_KEYS = [
     'privateReaderNotes', 'novelComments', 'recentSearches', 'lightMode', 'theme',
     'tiltEnabled', 'motionEnabled', 'readerFontScale', 'readerAchUnlocks',
     'goldenPetalCaught', 'nightOwlRead', 'oneDayRead', 'searchedOnce', 'sharedOnce',
-    'themeChanged', 'lastCommentAt', 'readerLevel', 'achievementsCollapsed', 'readerProfile'
+    'themeChanged', 'lastCommentAt', 'readerLevel', 'achievementsCollapsed', 'readerProfile', 'releaseReminders'
 ];
 function confirmClearLocalData() {
     var ok = window.confirm('This permanently erases reading progress, bookmarks, your reading queue, private notes, achievements, and saved preferences in this browser. This can\'t be undone. Continue?');
@@ -127,7 +127,7 @@ var novels = [
         blurb: "If time was a currency, how much would you pay for a single hour of the past?", grad: "135deg,#3a2a2a,#5a3a30", collections: ["hidden-gems", "completed"]
     },
     {
-        order: 14, title: "Him and Her vol.3", img: "./img/sub2/hahv3.jpg", link: "./hah/hahv3.html", genres: ["romance", "drama", "slice", "sad"], status: "ongoing", ch: 5, rating: 4.3, views: 14000, releaseOffsetDays: 46, updatedDaysAgo: 0.08,
+        order: 14, title: "Him and Her vol.3", img: "./img/sub2/hahv3.jpg", link: "./hah/hahv3.html", genres: ["romance", "drama", "slice", "sad"], status: "ongoing", ch: 5.5, rating: 4.3, views: 14000, releaseOffsetDays: 46, updatedDaysAgo: 0.08,
         blurb: "Continuing the journey of Him and Her into a new chapter of their lives.", grad: "135deg,#4a2a3a,#6a3a4e", collections: ["newest"]
     },
     {
@@ -147,7 +147,7 @@ var novels = [
         blurb: "Sora and Ren story!", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
     },
     {
-        order: 19, title: "The Petal That Falls With A Smile vol 4", img: "./img/sub2/tpv4.jpg", link: "#catalog", genres: ["drama", "slice of life"], status: "upcoming", ch: 0, rating: null, views: null, releaseOffsetDays: 0,
+        order: 19, title: "The Petal That Falls With A Smile vol 4", img: "./img/sub2/tpv4.jpg", link: "./tptfwas/tptfwasv4.html", genres: ["drama", "slice"], status: "upcoming", ch: 0, rating: null, views: null, releaseOffsetDays: 0,
         blurb: "Volume 4 — University → Adulthood Arc", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["upcoming"]
     }
 ];
@@ -1107,7 +1107,8 @@ function computeReaderStats() {
         themed: store.get('themeChanged', false) ? 1 : 0,
         shared: store.get('sharedOnce', false) ? 1 : 0,
         longForm: longFormCompleted(),
-        eclipseWitness: store.get('readerAchUnlocks', {}).eclipseWitness ? 1 : 0
+        eclipseWitness: store.get('readerAchUnlocks', {}).eclipseWitness ? 1 : 0,
+        releaseReminders: reminderAchievementCount()
     };
 }
 /* One-time flags for achievements tied to trying a feature, not just reading.
@@ -1149,6 +1150,16 @@ var readerAchievementDefs = [
     rarity: 'legendary',
     metric: function (s) { return s.days; },
     target: 30
+},
+{
+    icon: '⏰', title: 'Release Guardian',
+    hint: 'Save reminders for 3 upcoming releases',
+    rarity: 'legendary', unlockKey: 'releaseGuardian',
+    metric: function () {
+        var unlocks = store.get('readerAchUnlocks', {});
+        return unlocks.releaseGuardian ? 3 : reminderAchievementCount();
+    },
+    target: 3
 }
 ];
 readerAchievementDefs.push(
@@ -1345,10 +1356,31 @@ function renderHeatmap() {
    ============================================================ */
 var upcomingReleases = [
     { date: '2026-10-26', title: "The Other Day - Chapter 9" },
-    { date: '2026-10-20', title: 'Him and Her vol 3 - chapter 5' }, 
+    { date: '2026-10-23', title: 'Him and Her vol 3 - chapter 6' }, 
     { date: '2026-10-25', title: 'Petal Vol. 4 —  University → Adulthood Arc ' },
 ];
 var calSorted = [];
+var releaseReminders = store.get('releaseReminders', []);
+if (!Array.isArray(releaseReminders)) releaseReminders = [];
+releaseReminders = releaseReminders.filter(function (item) { return item && typeof item === 'object' && typeof item.key === 'string' && typeof item.date === 'string'; });
+
+function reminderKey(r) { return r.date + '|' + r.title; }
+function reminderAchievementCount() {
+    var saved = store.get('releaseReminders', []);
+    if (!Array.isArray(saved)) return 0;
+    return saved.filter(function (r) { return r && r.key && upcomingReleases.some(function (release) { return reminderKey(release) === r.key; }); }).length;
+}
+function localCalendarDate(date) {
+    return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+}
+function notifyDueReleaseReminders() {
+    var today = localCalendarDate(new Date());
+    var due = releaseReminders.filter(function (r) { return r && !r.notified && r.date <= today; });
+    if (!due.length) return;
+    due.forEach(function (r) { r.notified = true; });
+    store.set('releaseReminders', releaseReminders);
+    showToast(due.length === 1 ? 'Release reminder: ' + due[0].title : due.length + ' saved releases are due today ✦');
+}
 
 function daysUntil(dateStr) {
     var target = new Date(dateStr + 'T00:00:00');
@@ -1360,11 +1392,24 @@ function daysUntil(dateStr) {
 function calRemind(idx) {
     var r = calSorted[idx];
     if (!r) return;
-    showToast('Reminder noted for "' + r.title + '" ✦');
+    var key = reminderKey(r);
+    var existing = releaseReminders.findIndex(function (item) { return item.key === key; });
+    if (existing > -1) {
+        releaseReminders.splice(existing, 1);
+        showToast('Release reminder removed.');
+    } else {
+        releaseReminders.push({ key: key, title: r.title, date: r.date, notified: false });
+        showToast('Saved a reminder for ' + r.title + ' ✦');
+    }
+    store.set('releaseReminders', releaseReminders);
+    renderCalendar();
+    renderReaderAchievements();
+    renderProgressJourney();
 }
 
 function renderCalendar() {
     var list = document.getElementById('calendarList');
+    notifyDueReleaseReminders();
 
     calSorted = upcomingReleases
         .map(function (r) { return { title: r.title, date: r.date, daysOut: daysUntil(r.date) }; })
@@ -1381,7 +1426,7 @@ function renderCalendar() {
         var countLabel = r.daysOut === 0 ? 'today' : r.daysOut === 1 ? 'tomorrow' : 'in ' + r.daysOut + ' days';
         return '<div class="cal-item"><div class="cal-date-block"><div class="cal-day">' + d.getDate() + '</div><div class="cal-mon">' + d.toLocaleDateString('en-US', { month: 'short' }) + '</div></div>' +
             '<div class="cal-info"><div class="cal-title">' + esc(r.title) + '</div><div class="cal-count">' + countLabel + '</div></div>' +
-            '<button class="pill-btn" onclick="calRemind(' + idx + ')">Remind me</button></div>';
+            '<button class="pill-btn' + (releaseReminders.some(function (item) { return item.key === reminderKey(r); }) ? ' active' : '') + '" aria-pressed="' + releaseReminders.some(function (item) { return item.key === reminderKey(r); }) + '" onclick="calRemind(' + idx + ')">' + (releaseReminders.some(function (item) { return item.key === reminderKey(r); }) ? 'Reminder saved ✓' : 'Remind me') + '</button></div>';
     }).join('');
 }
 
@@ -1608,6 +1653,8 @@ window.addEventListener('load', function () {
     renderCalendar();
 
     document.addEventListener('visibilitychange', startHeroRotate);
+    document.addEventListener('visibilitychange', notifyDueReleaseReminders);
+    window.setInterval(notifyDueReleaseReminders, 60000);
 });
 /* ============================================================
    NAVIGATION DOCK

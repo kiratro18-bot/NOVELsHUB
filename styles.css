@@ -6924,3 +6924,4 @@ body.light {
 .sketch-btn:disabled { opacity: .55; cursor: not-allowed; }
 @media (max-width: 680px) { .reader-tools-grid { grid-template-columns: 1fr; gap: 16px; } .reader-tool-card { transform: none; } }
 @media (prefers-reduced-motion: reduce) { .sketch-btn { transition: none; } }
+.calendar-reminder-note { margin: -4px 0 12px; color: var(--muted); font-size: 10px; line-height: 1.5; }

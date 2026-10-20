@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Petal That Falls With A Smile — Vol. 4 · Final Volume</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg1:#150d2b;--bg2:#3b1a45;--bg3:#7a2f55;--ink:#f7e8f0;--muted:#c3a0b6;--petal:#f4a7c3;--card:rgba(255,255,255,.05);--line:rgba(244,167,195,.2);--glow:rgba(244,167,195,.25)}
+body.dawn{--bg1:#fff1f5;--bg2:#fde2ec;--bg3:#f8c9da;--ink:#3a1c2c;--muted:#8a5e74;--petal:#c97fa0;--card:rgba(255,255,255,.7);--line:rgba(201,127,160,.3);--glow:rgba(201,127,160,.25)}
+html{scroll-behavior:smooth}
+body{font-family:Inter,sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;background:linear-gradient(180deg,var(--bg1),var(--bg2) 55%,var(--bg3)) fixed;transition:color .3s}
+#petals{position:fixed;inset:0;pointer-events:none;z-index:0}
+.top{position:fixed;top:16px;left:16px;right:16px;display:flex;justify-content:space-between;z-index:50;pointer-events:none}
+.top>*{pointer-events:auto}
+.pill-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:40px;padding:0 16px;border-radius:20px;border:1px solid var(--line);background:var(--card);backdrop-filter:blur(12px);color:var(--ink);font:500 12px Inter,sans-serif;text-decoration:none;cursor:pointer;transition:.25s}
+.pill-btn:hover{border-color:var(--petal);transform:translateY(-1px)}
+#themeBtn{width:40px;padding:0;font-size:16px;border-radius:50%}
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 24px 60px;overflow:hidden}
+.moon{position:absolute;top:12%;left:9%;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 38% 35%,#fff7fb,#f7d9e6 55%,#e9b9cf);box-shadow:0 0 80px 24px var(--glow);opacity:.9}
+body.dawn .moon{opacity:.45}
+.branch{position:absolute;top:0;right:0;width:min(64vw,400px);opacity:.9;pointer-events:none}
+.branch path{stroke:var(--ink);opacity:.55}
+.fall{animation:fallOne 9s ease-in infinite;transform-origin:center}
+@keyframes fallOne{0%{transform:translate(0,0) rotate(0);opacity:0}8%{opacity:1}100%{transform:translate(-60px,420px) rotate(260deg);opacity:0}}
+.badge{display:inline-flex;gap:8px;align-items:center;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--petal);border:1px solid var(--line);background:var(--card);backdrop-filter:blur(10px);padding:6px 18px;border-radius:30px;margin-bottom:30px}
+.vol{font:400 clamp(13px,3vw,16px) "Playfair Display",serif;letter-spacing:8px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+h1{font:700 clamp(38px,8vw,76px)/1.05 "Playfair Display",serif;letter-spacing:-1px;margin-bottom:12px}
+h1 em{color:var(--petal);font-weight:400}
+.sub{font:italic clamp(18px,4vw,26px) "Playfair Display",serif;color:var(--muted);margin-bottom:26px}
+.tags{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:46px}
+.tag{font-size:11px;font-weight:500;padding:5px 14px;border-radius:20px;border:1px solid var(--line);color:var(--petal);background:var(--card)}
+.cue{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);animation:bob 2s infinite}
+@keyframes bob{50%{transform:translateY(6px)}}
+.chapters{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:40px 24px 60px}
+.head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:30px}
+.head h2{font:700 28px "Playfair Display",serif}
+.head span{font-size:12px;letter-spacing:1px;color:var(--muted)}
+.timeline{position:relative;padding-left:44px}
+.timeline::before{content:"";position:absolute;left:14px;top:8px;bottom:8px;width:1px;background:linear-gradient(180deg,var(--petal),transparent)}
+.tl-item{position:relative;display:flex;align-items:center;gap:20px;padding:22px 26px;margin-bottom:16px;border-radius:20px;border:1px solid var(--line);background:var(--card);backdrop-filter:blur(10px);color:inherit;text-decoration:none;opacity:0;transform:translateY(16px);transition:opacity .6s,transform .6s,box-shadow .25s,border-color .25s}
+.tl-item.in{opacity:1;transform:none}
+.tl-item::before{content:"";position:absolute;left:-37px;top:30px;width:14px;height:14px;border-radius:150% 0 150% 0;transform:rotate(45deg);background:var(--petal);box-shadow:0 0 12px var(--glow)}
+.tl-item.locked{opacity:.5}.tl-item.locked.in{opacity:.5}
+.tl-item.locked::before{background:transparent;border:1.5px solid var(--petal);box-shadow:none}
+.tl-item.available:hover{transform:translateX(6px);border-color:var(--petal);box-shadow:0 8px 32px var(--glow)}
+.tl-num{font:700 30px "Playfair Display",serif;min-width:50px;color:var(--line)}
+.tl-item.available:hover .tl-num{color:var(--petal)}
+.tl-body{flex:1}
+.tl-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.tl-title{font:italic 700 20px/1.3 "Playfair Display",serif}
+.tl-arrow{font-size:22px;color:var(--petal);opacity:0;transition:.25s}
+.tl-item:hover .tl-arrow{opacity:1}
+.prev{display:flex;justify-content:space-between;align-items:center;gap:20px;margin:30px auto 0;padding:22px 26px;border-radius:18px;border:1px solid var(--line);background:var(--card);color:inherit;text-decoration:none;transition:.25s}
+.prev:hover{border-color:var(--petal);box-shadow:0 4px 20px var(--glow)}
+.prev small{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.prev b{font:italic 700 17px "Playfair Display",serif}
+#scrollBtn{position:fixed;bottom:26px;right:22px;width:44px;height:44px;border:none;border-radius:50%;background:var(--petal);color:#2a1a22;font-size:16px;cursor:pointer;z-index:50;display:none;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+#scrollBtn.on{display:flex}
+@media(max-width:480px){.moon{width:80px;height:80px}.tl-item{padding:18px;gap:14px}.tl-num{font-size:24px;min-width:38px}.tl-title{font-size:17px}.prev{flex-direction:column;align-items:flex-start}}
+@media(prefers-reduced-motion:reduce){.fall,.cue{animation:none}.tl-item{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<canvas id="petals"></canvas>
+
+<div class="top">
+  <a href="../../index.html" class="pill-btn">← Back to Home</a>
+  <button id="themeBtn" class="pill-btn" onclick="toggleTheme()" aria-label="Switch dusk / dawn">☀️</button>
+</div>
+
+<section class="hero">
+  <div class="moon"></div>
+  <svg class="branch" viewBox="0 0 300 260" fill="none" aria-hidden="true">
+    <path d="M300 14C255 34 205 40 160 92S75 152 22 150" stroke-width="3" stroke-linecap="round"/>
+    <path d="M205 44C196 76 176 96 150 108M120 118C108 150 84 166 60 170M246 28C240 54 222 72 204 82" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="150" cy="108" r="6" fill="#f4a7c3"/><circle cx="60" cy="170" r="5" fill="#e8b4c8"/><circle cx="204" cy="82" r="5.5" fill="#f9c7d9"/>
+    <circle cx="22" cy="150" r="5" fill="#f4a7c3"/><circle cx="256" cy="26" r="4.5" fill="#e8b4c8"/>
+    <ellipse class="fall" cx="120" cy="118" rx="7" ry="4" fill="#f9c7d9"/>
+  </svg>
+  <div class="badge"><span>🌸</span> Final Volume</div>
+  <p class="vol">Volume IV - University → Adulthood Arc </p>
+  <h1>The Petal<br/>That Falls<br/><em>With A Smile</em></h1>
+  <p class="sub">— The Final Season —</p>
+  <div class="tags"><span class="tag">Romance</span><span class="tag">Drama</span><span class="tag">Slice of Life</span></div>
+  <p class="cue">↓ Chapters Below</p>
+</section>
+
+<section class="chapters">
+  <div class="head"><h2>Chapters</h2><span>Vol. 4 · Final Volume</span></div>
+  <div class="timeline" id="timeline"></div>
+  <a class="prev" href="tptfwasv3.html">
+    <div><small>Previous volume</small><b>Volume III — University Arc</b></div>
+    <span style="font-size:22px;color:var(--petal)">←</span>
+  </a>
+</section>
+
+<button id="scrollBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// Add chapters here. available:true makes the card a link; false shows it locked.
+var CHAPTERS=[
+  {num:1,title:"Coming soon",file:"#",available:false},
+];
+var tl=document.getElementById("timeline");
+tl.innerHTML=CHAPTERS.map(function(c){
+  var n=String(c.num).padStart(2,"0");
+  var inner='<span class="tl-num">'+n+'</span><div class="tl-body"><p class="tl-label">Chapter '+c.num+'</p><p class="tl-title">'+c.title+'</p></div>'+(c.available?'<span class="tl-arrow">→</span>':'<span>🔒</span>');
+  return c.available?'<a class="tl-item available" href="'+c.file+'">'+inner+'</a>':'<div class="tl-item locked">'+inner+'</div>';
+}).join("");
+if("IntersectionObserver" in window){
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.15});
+  document.querySelectorAll(".tl-item").forEach(function(el){io.observe(el)});
+}else document.querySelectorAll(".tl-item").forEach(function(el){el.classList.add("in")});
+
+var btn=document.getElementById("themeBtn");
+function setTheme(dark){document.body.classList.toggle("dawn",!dark);btn.textContent=dark?"☀️":"🌙"}
+function toggleTheme(){var dark=document.body.classList.contains("dawn");setTheme(dark);try{localStorage.setItem("darkMode",dark?"on":"off")}catch(e){}}
+var startDark=true;try{startDark=localStorage.getItem("darkMode")!=="off"}catch(e){}
+setTheme(startDark);
+
+window.addEventListener("scroll",function(){document.getElementById("scrollBtn").classList.toggle("on",window.scrollY>300)},{passive:true});
+
+var cv=document.getElementById("petals"),cx=cv.getContext("2d"),ps=[],cols=["#f9c7d9","#ffd4e8","#e8b4c8","#c97fa0","#f4a7c3"];
+function rs(){cv.width=innerWidth;cv.height=innerHeight}rs();addEventListener("resize",rs);
+function mk(y){ps.push({x:Math.random()*cv.width,y:y,s:Math.random()*7+4,v:Math.random()*.7+.3,d:(Math.random()-.5)*.4,r:Math.random()*6,rv:(Math.random()-.5)*.03,c:cols[Math.floor(Math.random()*cols.length)],o:Math.random()*.35+.2,t:Math.random()*6})}
+if(!matchMedia("(prefers-reduced-motion: reduce)").matches){
+  for(var i=0;i<14;i++)mk(Math.random()*cv.height);
+  (function loop(){cx.clearRect(0,0,cv.width,cv.height);
+    ps.forEach(function(p,i){p.t+=.02;p.y+=p.v;p.x+=p.d+Math.sin(p.t)*.4;p.r+=p.rv;
+      cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.globalAlpha=p.o;cx.fillStyle=p.c;cx.beginPath();cx.ellipse(0,0,p.s,p.s*.5,0,0,Math.PI*2);cx.fill();cx.restore();
+      if(p.y>cv.height+20)ps.splice(i,1)});
+    if(Math.random()<.04)mk(-20);requestAnimationFrame(loop)})();
+}
+</script>
+</body>
+</html>
