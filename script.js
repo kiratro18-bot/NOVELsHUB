@@ -26,7 +26,7 @@ var APP_STORAGE_KEYS = [
     'privateReaderNotes', 'novelComments', 'recentSearches', 'lightMode', 'theme',
     'tiltEnabled', 'motionEnabled', 'readerFontScale', 'readerAchUnlocks',
     'goldenPetalCaught', 'nightOwlRead', 'oneDayRead', 'searchedOnce', 'sharedOnce',
-    'themeChanged', 'lastCommentAt', 'readerLevel', 'achievementsCollapsed', 'readerProfile', 'releaseReminders'
+    'themeChanged', 'lastCommentAt', 'readerLevel', 'achievementsCollapsed', 'readerProfile', 'releaseReminders', 'midnightMemoryWon', 'midnightMemoryBest'
 ];
 function confirmClearLocalData() {
     var ok = window.confirm('This permanently erases reading progress, bookmarks, your reading queue, private notes, achievements, and saved preferences in this browser. This can\'t be undone. Continue?');
@@ -270,6 +270,12 @@ function isCaseClosedOccasionActive(now) {
     var ends = new Date(2026, 9, 17, 0, 0, 0);
     return now >= starts && now < ends;
 }
+function isMidnightArchiveEventActive(now) {
+    now = now || new Date();
+    var starts = new Date(2026, 9, 21, 0, 0, 0);
+    var ends = new Date(2026, 10, 4, 0, 0, 0);
+    return now >= starts && now < ends;
+}
 function syncCaseClosedOccasion() {
     var banner = document.getElementById('caseClosedBanner');
     if (!banner) return;
@@ -294,16 +300,141 @@ function syncCaseClosedOccasion() {
 function syncVol2Announcement() {
     var banner = document.getElementById('vol2Announcement');
     if (!banner) return;
-    // The announcement runs for 25 days from Oct 17, 2026, then disappears.
+    // The Vol. 2 announcement has its own 25-day window.
     var ends = new Date(2026, 10, 11, 0, 0, 0);
     var now = new Date();
     var remaining = Math.ceil((ends.getTime() - now.getTime()) / 86400000);
     banner.hidden = remaining <= 0;
+    var section = document.getElementById('announcements');
+    if (section) section.hidden = remaining <= 0;
     if (remaining > 0) {
         var label = document.getElementById('vol2AnnouncementRemaining');
         if (label) label.textContent = remaining === 1 ? 'last day' : remaining + ' days left';
         window.setTimeout(syncVol2Announcement, Math.min(60000, ends.getTime() - now.getTime() + 100));
     }
+}
+function syncMidnightArchiveEvent() {
+    var banner = document.getElementById('midnightArchiveEvent');
+    if (!banner) return;
+    var ends = new Date(2026, 10, 4, 0, 0, 0);
+    var now = new Date();
+    var active = isMidnightArchiveEventActive(now);
+    banner.hidden = !active;
+    if (active) {
+        var remaining = Math.max(1, Math.ceil((ends.getTime() - now.getTime()) / 86400000));
+        var label = document.getElementById('midnightArchiveRemaining');
+        if (label) label.textContent = remaining === 1 ? 'last day' : remaining + ' days left';
+        var status = document.getElementById('midnightArchiveStatus');
+        if (status) {
+            var best = Number(store.get('midnightMemoryBest', 0)) || 0;
+            status.textContent = store.get('readerAchUnlocks', {}).archiveAfterDark ? 'Achievement earned ✓' : (best ? 'Best: ' + best + ' moves.' : 'Win the game to claim the badge.');
+        }
+        window.setTimeout(syncMidnightArchiveEvent, Math.min(60000, ends.getTime() - now.getTime() + 100));
+    }
+}
+
+var midnightMemorySymbols = ['🔎', '🌙', '📚', '🌧️', '🌸', '🕯️'];
+var midnightMemoryDeck = [], midnightMemoryOpen = [], midnightMemoryMatches = 0, midnightMemoryMoves = 0, midnightMemoryLocked = false, midnightMemoryHideTimer = null;
+var midnightMemoryReturnFocus = null;
+function openMidnightMemory() {
+    if (!isMidnightArchiveEventActive()) { showToast('The Midnight Memory event has ended.'); return; }
+    var overlay = document.getElementById('midnightGameOverlay');
+    if (!overlay) return;
+    midnightMemoryReturnFocus = document.activeElement;
+    overlay.hidden = false;
+    requestAnimationFrame(function () { overlay.classList.add('open'); });
+    startMidnightMemory();
+    var firstCard = overlay.querySelector('.memory-card');
+    if (firstCard) firstCard.focus();
+}
+function closeMidnightMemory() {
+    var overlay = document.getElementById('midnightGameOverlay');
+    if (!overlay) return;
+    overlay.classList.remove('open');
+    window.setTimeout(function () { overlay.hidden = true; }, 180);
+    if (midnightMemoryReturnFocus && midnightMemoryReturnFocus.focus) midnightMemoryReturnFocus.focus();
+}
+function startMidnightMemory() {
+    if (!isMidnightArchiveEventActive()) return;
+    if (midnightMemoryHideTimer) clearTimeout(midnightMemoryHideTimer);
+    midnightMemoryDeck = midnightMemorySymbols.concat(midnightMemorySymbols)
+        .map(function (symbol, index) { return { symbol: symbol, key: index % midnightMemorySymbols.length, matched: false }; });
+    for (var i = midnightMemoryDeck.length - 1; i > 0; i--) {
+        var swap = Math.floor(Math.random() * (i + 1));
+        var temp = midnightMemoryDeck[i];
+        midnightMemoryDeck[i] = midnightMemoryDeck[swap];
+        midnightMemoryDeck[swap] = temp;
+    }
+    midnightMemoryOpen = [];
+    midnightMemoryMatches = 0;
+    midnightMemoryMoves = 0;
+    midnightMemoryLocked = false;
+    renderMidnightMemoryCards();
+    updateMidnightMemoryStats();
+    var status = document.getElementById('midnightGameStatus');
+    if (status) status.textContent = 'The archive is shuffled. Find the matching symbols.';
+}
+function renderMidnightMemoryCards() {
+    var grid = document.getElementById('midnightMemoryGrid');
+    if (!grid) return;
+    grid.innerHTML = midnightMemoryDeck.map(function (card, index) {
+        return '<button type="button" class="memory-card" data-card-index="' + index + '" aria-label="Card ' + (index + 1) + ', face down" onclick="flipMidnightMemoryCard(' + index + ')"><span class="memory-card-back" aria-hidden="true">✦</span><span class="memory-card-front" aria-hidden="true">' + card.symbol + '</span></button>';
+    }).join('');
+}
+function flipMidnightMemoryCard(index) {
+    if (midnightMemoryLocked || !midnightMemoryDeck[index]) return;
+    var card = midnightMemoryDeck[index];
+    var button = document.querySelector('.memory-card[data-card-index="' + index + '"]');
+    if (!button || card.matched || midnightMemoryOpen.indexOf(index) > -1) return;
+    button.classList.add('flipped');
+    button.setAttribute('aria-label', 'Card ' + (index + 1) + ': ' + card.symbol);
+    midnightMemoryOpen.push(index);
+    if (midnightMemoryOpen.length < 2) return;
+    midnightMemoryMoves++;
+    midnightMemoryLocked = true;
+    updateMidnightMemoryStats();
+    var firstIndex = midnightMemoryOpen[0], secondIndex = midnightMemoryOpen[1];
+    var first = midnightMemoryDeck[firstIndex], second = midnightMemoryDeck[secondIndex];
+    var status = document.getElementById('midnightGameStatus');
+    if (first.key === second.key) {
+        first.matched = second.matched = true;
+        [firstIndex, secondIndex].forEach(function (cardIndex) {
+            var matchedButton = document.querySelector('.memory-card[data-card-index="' + cardIndex + '"]');
+            if (matchedButton) { matchedButton.classList.add('matched'); matchedButton.disabled = true; matchedButton.setAttribute('aria-label', 'Matched pair: ' + midnightMemoryDeck[cardIndex].symbol); }
+        });
+        midnightMemoryMatches++;
+        midnightMemoryOpen = [];
+        midnightMemoryLocked = false;
+        updateMidnightMemoryStats();
+        if (midnightMemoryMatches === midnightMemorySymbols.length) {
+            var best = Number(store.get('midnightMemoryBest', 0)) || 0;
+            if (!best || midnightMemoryMoves < best) store.set('midnightMemoryBest', midnightMemoryMoves);
+            store.set('midnightMemoryWon', true);
+            if (status) status.textContent = 'All six pairs found in ' + midnightMemoryMoves + ' moves. The archive is yours!';
+            unlockMidnightArchiveAchievement();
+            syncMidnightArchiveEvent();
+        } else if (status) status.textContent = 'A match. Keep going.';
+    } else {
+        if (status) status.textContent = 'No match. Try to remember where each symbol was.';
+        midnightMemoryHideTimer = window.setTimeout(function () {
+            [firstIndex, secondIndex].forEach(function (cardIndex) {
+                var openButton = document.querySelector('.memory-card[data-card-index="' + cardIndex + '"]');
+                if (openButton) {
+                    openButton.classList.remove('flipped');
+                    openButton.setAttribute('aria-label', 'Card ' + (cardIndex + 1) + ', face down');
+                }
+            });
+            midnightMemoryOpen = [];
+            midnightMemoryLocked = false;
+            midnightMemoryHideTimer = null;
+        }, 700);
+    }
+}
+function updateMidnightMemoryStats() {
+    var moves = document.getElementById('midnightGameMoves');
+    var pairs = document.getElementById('midnightGamePairs');
+    if (moves) moves.innerHTML = 'Moves <strong>' + midnightMemoryMoves + '</strong>';
+    if (pairs) pairs.innerHTML = 'Pairs <strong>' + midnightMemoryMatches + ' / ' + midnightMemorySymbols.length + '</strong>';
 }
 
 /* ============================================================
@@ -1212,14 +1343,23 @@ readerAchievementDefs.push({
     icon: '🗃️', title: 'Case Closed',
     hint: 'Visit Case File: You Vol. 1 during the limited celebration. Once earned, it stays in your collection.',
     rarity: 'limited', unlockKey: 'caseClosed', limitedEvent: true,
+    eventActive: isCaseClosedOccasionActive,
     metric: function () { return store.get('readerAchUnlocks', {}).caseClosed ? 1 : 0; },
+    target: 1
+});
+readerAchievementDefs.push({
+    icon: '🌙', title: 'Archive After Dark',
+    hint: 'Win Midnight Memory during the limited event.',
+    rarity: 'limited', unlockKey: 'archiveAfterDark', limitedEvent: true,
+    eventActive: isMidnightArchiveEventActive,
+    metric: function () { return store.get('readerAchUnlocks', {}).archiveAfterDark ? 1 : 0; },
     target: 1
 });
 function getVisibleReaderAchievementEntries() {
     var unlocks = store.get('readerAchUnlocks', {});
     return readerAchievementDefs.map(function (achievement, index) { return { achievement: achievement, index: index }; })
         .filter(function (entry) {
-            return !entry.achievement.limitedEvent || isCaseClosedOccasionActive() || !!unlocks[entry.achievement.unlockKey];
+            return !entry.achievement.limitedEvent || (entry.achievement.eventActive && entry.achievement.eventActive()) || !!unlocks[entry.achievement.unlockKey];
         });
 }
 function unlockCaseClosedAchievement() {
@@ -1231,6 +1371,16 @@ function unlockCaseClosedAchievement() {
     renderReaderAchievements();
     renderProgressJourney();
     showToast('🏆 Limited achievement unlocked: Case Closed!');
+}
+function unlockMidnightArchiveAchievement() {
+    if (!isMidnightArchiveEventActive() || !store.get('midnightMemoryWon', false)) return;
+    var unlocks = store.get('readerAchUnlocks', {});
+    if (unlocks.archiveAfterDark) return;
+    unlocks.archiveAfterDark = new Date().toISOString();
+    store.set('readerAchUnlocks', unlocks);
+    renderReaderAchievements();
+    renderProgressJourney();
+    showToast('🏆 Limited achievement unlocked: Archive After Dark!');
 }
 function renderReaderAchievements() {
     var s = computeReaderStats();
@@ -1533,7 +1683,7 @@ function cmdkOpen(order) {
 }
 document.addEventListener('keydown', function (e) {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openCmdk(); return; }
-    if (e.key === 'Escape') { closeCmdk(); closeSettings(); closeSpotlight(); closeReaderMode(); return; }
+    if (e.key === 'Escape') { closeCmdk(); closeSettings(); closeSpotlight(); closeReaderMode(); closeMidnightMemory(); return; }
     if (document.getElementById('cmdkPanel').classList.contains('open')) {
         var rows = document.querySelectorAll('.cmdk-row');
         if (!rows.length) return;
@@ -1643,6 +1793,7 @@ window.addEventListener('load', function () {
     initTheme();
     syncCaseClosedOccasion();
     syncVol2Announcement();
+    syncMidnightArchiveEvent();
 
     paintAurora(moodColors.all);
     renderHero();
@@ -1661,9 +1812,17 @@ window.addEventListener('load', function () {
    ============================================================ */
 
 const dockItems = document.querySelectorAll(".browser-tab:not(.browser-settings)");
-dockItems.forEach(item => item.addEventListener("click", () => {
-    dockItems.forEach(i => i.classList.toggle("active", i === item));
-}));
+function setDockActive(activeItem) {
+    dockItems.forEach(function (item) {
+        var active = item === activeItem;
+        item.classList.toggle('active', active);
+        if (active) item.setAttribute('aria-current', 'location');
+        else item.removeAttribute('aria-current');
+    });
+}
+dockItems.forEach(function (item) {
+    item.addEventListener('click', function () { setDockActive(item); });
+});
 
 if ('IntersectionObserver' in window) {
     var dockSections = Array.from(dockItems).map(function (item) {
@@ -1674,7 +1833,7 @@ if ('IntersectionObserver' in window) {
             .sort(function (a, b) { return b.intersectionRatio - a.intersectionRatio; })[0];
         if (!visible) return;
         var active = dockSections.find(function (entry) { return entry.section === visible.target; });
-        if (active) dockItems.forEach(function (item) { item.classList.toggle("active", item === active.item); });
+        if (active) setDockActive(active.item);
     }, { rootMargin: "-20% 0px -55% 0px", threshold: [0, .15, .35, .6] });
     
     dockSections.forEach(function (entry) { dockObserver.observe(entry.section); });

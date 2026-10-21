@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>She Understood — The Petal That Falls With A Smile, Vol. IV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{--night:#14102a;--dusk:#2b1d44;--glow:#4a2a52;--cream:#f4e9ee;--pink:#f6c6d8;--lav:#cdbfe6;--amber:#f2b36b}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--night)}
+body{font-family:"Source Serif 4",Georgia,serif;color:var(--cream);background:linear-gradient(180deg,var(--night) 0%,var(--dusk) 55%,var(--glow) 100%) fixed;min-height:100vh;overflow-x:hidden;position:relative}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 12% 30%,rgba(242,179,107,.10) 0,transparent 22%),radial-gradient(circle at 88% 55%,rgba(246,198,216,.10) 0,transparent 24%),radial-gradient(circle at 30% 90%,rgba(143,208,238,.07) 0,transparent 26%)}
+.petal{position:fixed;top:-30px;border-radius:150% 0 150% 0;background:linear-gradient(135deg,#f6c6d8,#e3a6b4);opacity:0;pointer-events:none;animation:drift linear infinite}
+@keyframes drift{0%{transform:translate(0,0) rotate(0);opacity:0}10%{opacity:.55}100%{transform:translate(40px,112vh) rotate(420deg);opacity:0}}
+.lanterns{position:absolute;top:0;left:0;right:0;height:110px;display:flex;justify-content:space-around;padding:0 5vw;pointer-events:none}
+.lanterns::before{content:"";position:absolute;top:14px;left:0;right:0;height:1px;background:rgba(244,233,238,.25)}
+.lanterns i{position:relative;width:22px;height:30px;margin-top:20px;border-radius:40% 40% 46% 46%;background:radial-gradient(circle at 50% 40%,#ffe3b3,var(--amber) 60%,#c9743f);opacity:.22;animation:light 1.6s var(--d) forwards}
+.lanterns i:nth-child(even){margin-top:38px}
+.lanterns i::before{content:"";position:absolute;left:50%;top:-8px;width:1px;height:8px;background:rgba(244,233,238,.4)}
+@keyframes light{to{opacity:1;box-shadow:0 0 26px 9px rgba(242,179,107,.42)}}
+.page{position:relative;max-width:36rem;margin:0 auto;padding:9.5rem 1.5rem 5rem}
+.hero{text-align:center;margin-bottom:4rem}
+.kicker{font-style:italic;font-size:.95rem;color:var(--lav);margin-bottom:1rem}
+h1{font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(2.4rem,8vw,4rem);line-height:1.1;letter-spacing:.01em}
+.story p{font-size:1.1rem;line-height:1.9;margin-bottom:.85em}
+.dialogue{color:var(--pink)}
+.inner{font-style:italic;color:var(--lav)}
+.climax{text-align:center;font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(1.35rem,3.6vw,1.8rem)!important;line-height:1.5!important;color:#f4a9c4;margin:1.8em auto 1.6em!important;text-shadow:0 0 22px rgba(244,169,196,.35)}
+.climax::before{content:"";display:block;width:14px;height:14px;margin:0 auto .8em;background:linear-gradient(135deg,#f6c6d8,#e3a6b4);border-radius:50% 0 50% 50%;transform:rotate(-45deg)}
+.pov{--c:#f4a9c4;display:flex;align-items:center;gap:.8rem;margin:3.4rem 0 1.4rem}
+.pov:first-child{margin-top:0}
+.pov.sora{--c:#f4a9c4}.pov.ren{--c:#8fd0ee}.pov.haruki{--c:var(--amber)}.pov.narr{--c:var(--lav)}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 14px 3px var(--c)}
+.pov-name{font-family:"Shippori Mincho",serif;font-weight:700;font-size:1.1rem;color:var(--c)}
+.pov::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--c),transparent);opacity:.55}
+.story p.stanza{text-align:center;font-style:italic;color:var(--lav);margin-bottom:.6em}
+.story p.fin{text-align:center;font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(2rem,6vw,2.8rem);line-height:1.2;color:var(--cream);margin:1.2em 0 0;text-shadow:0 0 28px rgba(242,179,107,.45)}
+footer{text-align:center;margin-top:4.5rem;padding-top:2rem;border-top:1px solid rgba(244,233,238,.15);font-family:"Shippori Mincho",serif;font-size:.95rem;letter-spacing:.08em;color:var(--lav)}
+footer::before{content:"";display:block;width:8px;height:8px;margin:0 auto 1rem;background:var(--amber);border-radius:2px;transform:rotate(45deg)}
+@media(max-width:480px){.page{padding:8rem 1.25rem 4rem}.lanterns i{width:18px;height:25px}.story p{font-size:1.04rem}}
+@media(prefers-reduced-motion:reduce){.petal{display:none}.lanterns i{animation:none;opacity:1;box-shadow:0 0 22px 7px rgba(242,179,107,.4)}}
+</style>
+</head>
+<body>
+<div class="lanterns" aria-hidden="true"><i style="--d:0.30s"></i><i style="--d:0.58s"></i><i style="--d:0.86s"></i><i style="--d:1.14s"></i><i style="--d:1.42s"></i><i style="--d:1.70s"></i><i style="--d:1.98s"></i></div>
+
+<div class="page">
+  <header class="hero">
+    <p class="kicker">The Petal That Falls With A Smile — Volume IV</p>
+    <h1>She Understood</h1>
+  </header>
+
+  <main class="story">
+    <div class="pov sora"><span class="dot"></span><span class="pov-name">POV: Sora</span></div>
+    <p>Ren and I sat together, eating quietly.</p>
+    <p>The festival noise surrounded us — laughter, music, footsteps — but none of it reached me.</p>
+    <p>That’s when I saw them.</p>
+    <p>Haruki.</p>
+    <p>Noa.</p>
+    <p>Walking together through the crowd.</p>
+    <p>Just the two of them.</p>
+    <p class="inner">…A date?</p>
+    <p>The thought slipped in before I could stop it.</p>
+    <p>Something inside me cracked.</p>
+    <p>Not loudly.</p>
+    <p>Not all at once.</p>
+    <p>Just enough to hurt.</p>
+    <p class="inner">Was that love? I wondered.</p>
+    <p class="inner">Or was it just the weight of something I never chose properly?</p>
+    <p>Haruki had said he moved on.</p>
+    <p>And now I could see it.</p>
+    <p>He really had.</p>
+    <p class="inner">Then why did it still hurt me?</p>
+    <p>I looked at Noa — the way she stayed close to him, the way she smiled.</p>
+    <p class="inner">She loves him.</p>
+    <p>And I knew something else too.</p>
+    <p class="inner">I hurt him first.</p>
+    <p class="inner">I ran.</p>
+    <p class="inner">I stayed silent.</p>
+    <p class="inner">I chose fear.</p>
+    <p class="inner">This… this was the consequence.</p>
+    <p class="climax">For the first time, I understood what it meant to be on the other side of regret.</p>
+    <p class="inner">“I have to move on,” I whispered to myself.</p>
+    <p>Not because I wanted to.</p>
+    <p>Because I had to.</p>
+    <div class="pov ren"><span class="dot"></span><span class="pov-name">POV: Ren</span></div>
+    <p>She went quiet.</p>
+    <p class="dialogue">“Sora… Sora?”</p>
+    <p>She blinked and looked at me. “Oh. Yeah?”</p>
+    <p>“Let’s go try that game over there,” I said, pointing.</p>
+    <p>“Yeah,” she nodded. “Let’s go.”</p>
+    <p>She stood up, smiling softly.</p>
+    <p>But I could tell — her mind was still somewhere else.</p>
+    <p class="inner">I think I’m falling for her again, I thought.</p>
+    <p>Slowly. Carefully.</p>
+    <p>But the fear followed right after.</p>
+    <p class="inner">Does she feel the same… or am I just convenient right now?</p>
+    <div class="pov haruki"><span class="dot"></span><span class="pov-name">POV: Haruki</span></div>
+    <p>We walked side by side.</p>
+    <p>The lights reflected in Noa’s eyes.</p>
+    <p>She looked… beautiful.</p>
+    <p>And it startled me.</p>
+    <p class="inner">Why am I noticing this now?</p>
+    <p class="inner">I’ve always known this… haven’t I?</p>
+    <p>The thought slipped out before I could stop it.</p>
+    <p>“Noa,” I said, “do you have a crush on someone?”</p>
+    <p class="inner">Idiot, I scolded myself immediately.</p>
+    <p>She froze.</p>
+    <p>Then—</p>
+    <p>She blushed.</p>
+    <p class="dialogue">“Y-yes… I do.”</p>
+    <p>My heart skipped — not painfully, not sharply.</p>
+    <p>Just… honestly.</p>
+    <p>She looked nervous now, fingers tightening around her sleeve.</p>
+    <p>And for the first time, I realized something clearly:</p>
+    <p class="inner">She wasn’t waiting for my past to disappear.</p>
+    <p class="inner">She was standing here — now.</p>
+    <div class="pov narr"><span class="dot"></span><span class="pov-name">Narrator</span></div>
+    <p class="stanza">That night, under festival lights—</p>
+    <p class="stanza">One girl learned what it meant to let go.</p>
+    <p class="stanza">One boy wondered if love had been beside him all along.</p>
+    <p class="stanza">And another hoped that friendship could become something more.</p>
+    <p class="stanza">Not every understanding comes with relief.</p>
+    <p class="stanza">Some come quietly.</p>
+    <p class="fin">And stay.</p>
+  </main>
+
+  <footer>End of Chapter</footer>
+</div>
+
+<script>
+if(!matchMedia("(prefers-reduced-motion: reduce)").matches){
+  var cols=["#f6c6d8","#ffd4e8","#e8b4c8","#f4a7c3"];
+  for(var i=0;i<10;i++){
+    var p=document.createElement("span"),s=Math.random()*8+6;
+    p.className="petal";
+    p.style.cssText="width:"+s+"px;height:"+s+"px;left:"+Math.random()*100+"vw;background:"+cols[i%4]+";animation-duration:"+(Math.random()*8+12)+"s;animation-delay:"+Math.random()*10+"s";
+    document.body.appendChild(p);
+  }
+}
+</script>
+</body>
+</html>

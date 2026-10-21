@@ -87,7 +87,7 @@
                 <button class="pill-btn" id="clearDataBtn" onclick="confirmClearLocalData()">Clear local data</button>
             </section>
             <div class="sph-version">
-                Version 3.8 · Oct 2026
+                Version 3.9 · Oct 2026
             </div>
         </div>
     </aside>
@@ -203,6 +203,7 @@
             <div class="nav-brand-mark">✦</div><span>Novels by <em>AKA</em></span>
         </div>
         <div class="nav-links">
+            <a class="nav-link" href="#announcements">Announcements</a>
             <a class="nav-link" href="#readingHeatmap">Reading activity</a>
         </div>
         <div class="nav-actions">
@@ -281,10 +282,24 @@
             <div class="case-closed-copy"><span class="case-closed-kicker">LIMITED OCCASION <i>·</i> <span id="caseClosedRemaining">14 days left</span></span><strong>The case is closed.</strong><p><em>Case File: You</em> Vol. 1 is complete. Revisit all 15 chapters during the celebration.</p></div>
             <button class="case-closed-action" type="button" onclick="openSpotlight(6)">Revisit the case <span aria-hidden="true">→</span></button>
         </aside>
-        <aside class="case-closed-banner vol2-announcement" id="vol2Announcement" hidden aria-label="Case File: You Volume 2 announcement">
-            <div class="case-closed-mark" aria-hidden="true">📣</div>
-            <div class="case-closed-copy"><span class="case-closed-kicker">ANNOUNCEMENT <i>·</i> <span id="vol2AnnouncementRemaining">25 days left</span></span><strong><em>Case File: You</em> Vol. 2 is confirmed.</strong><p>It will air in <em>Summer 2027</em>. This announcement will be shown for a limited time.</p></div>
+        <aside class="case-closed-banner midnight-event" id="midnightArchiveEvent" hidden aria-label="Limited-time Midnight Archive reading event">
+            <div class="case-closed-mark" aria-hidden="true">🌙</div>
+            <div class="case-closed-copy"><span class="case-closed-kicker">LIMITED EVENT <i>·</i> <span id="midnightArchiveRemaining">14 days left</span></span><strong>Midnight Memory is open.</strong><p>Match all six pairs in the Midnight Archive memory game to earn the limited <em>Archive After Dark</em> achievement. <span class="event-progress" id="midnightArchiveStatus">Win the game to claim the badge.</span></p></div>
+            <button class="case-closed-action" type="button" onclick="openMidnightMemory()">Play Midnight Memory <span aria-hidden="true">→</span></button>
         </aside>
+    </section>
+    <section class="section announcements-section" id="announcements" hidden>
+        <div class="wrap">
+            <div class="section-head">
+                <div><span class="eyebrow">From the author</span><h2 class="section-title">Announcements</h2><p class="section-sub">News and updates from AKA.</p></div>
+            </div>
+            <div class="announcements-list">
+                <aside class="case-closed-banner vol2-announcement" id="vol2Announcement" hidden aria-label="Case File: You Volume 2 announcement">
+                    <div class="case-closed-mark" aria-hidden="true">📣</div>
+                    <div class="case-closed-copy"><span class="case-closed-kicker">ANNOUNCEMENT <i>·</i> <span id="vol2AnnouncementRemaining">25 days left</span></span><strong><em>Case File: You</em> Vol. 2 is confirmed.</strong><p>It will air in <em>Summer 2027</em>. This announcement will be shown for a limited time.</p></div>
+                </aside>
+            </div>
+        </div>
     </section>
     <!-- =========================
      ECLIPSE EVENT
@@ -300,6 +315,20 @@
     <div class="eclipse-quote">
         <span>Every story casts a shadow.</span>
     </div>
+</div>
+
+<div class="midnight-game-overlay" id="midnightGameOverlay" hidden onclick="if(event.target===this)closeMidnightMemory()">
+    <section class="midnight-game-panel" role="dialog" aria-modal="true" aria-labelledby="midnightGameTitle">
+        <header class="midnight-game-header">
+            <div><span class="case-closed-kicker">LIMITED EVENT · MEMORY GAME</span><h2 id="midnightGameTitle">Midnight Memory</h2></div>
+            <button class="midnight-game-close" type="button" aria-label="Close game" onclick="closeMidnightMemory()">×</button>
+        </header>
+        <p class="midnight-game-intro">Turn over two cards at a time. Find all six matching pairs to unlock <em>Archive After Dark</em>.</p>
+        <div class="midnight-game-stats"><span id="midnightGameMoves">Moves <strong>0</strong></span><span id="midnightGamePairs">Pairs <strong>0 / 6</strong></span></div>
+        <div class="midnight-memory-grid" id="midnightMemoryGrid" role="group" aria-label="Memory cards"></div>
+        <p class="midnight-game-status" id="midnightGameStatus" aria-live="polite">The archive is shuffled. Find the matching symbols.</p>
+        <button class="midnight-game-restart" type="button" onclick="startMidnightMemory()">Shuffle and restart</button>
+    </section>
 </div>
 
     <!-- ============ STATS STRIP ============ -->
@@ -535,53 +564,44 @@
                     <div>
                         <div class="footer-col-title">Explore</div>
                         <div class="footer-links">
-                            <a href="#catalog">The Shelf</a><a href="#readingQueueSection">Reading Queue</a><a href="#achievements">Achievements</a><a
+                            <a href="#catalog">The Shelf</a><a href="#announcements">Announcements</a><a href="#readingQueueSection">Reading Queue</a><a href="#achievements">Achievements</a><a
                             href="#leaderboard">Leaderboard</a><a href="#readingHeatmap">Reading activity</a>
                         </div>
                     </div>
                 </div>
                 <div class="footer-bottom">
-                    <span>Filed &amp; maintained by AKA · Version 3.8 · Oct 2026</span>
+                    <span>Filed &amp; maintained by AKA · Version 3.9 · Oct 2026</span>
                     <span>Please don't repost or reupload stories without permission. Sharing links is always
                         appreciated.</span>
                 </div>
             </div>
         </div>
     </section>
-    <!-- Navigation Dock -->
-    <!-- ============ READING NAVIGATION RAIL ============ -->
+    <!-- Floating primary navigation -->
     <nav class="browser-dock" aria-label="Main navigation">
-
         <div class="browser-dock-inner">
-
-            <a href="#hero" class="browser-tab" data-label="Home" aria-label="Home">
-                <span class="browser-tab-icon">⌂</span>
-                <span class="browser-tab-text">Home</span>
+            <span class="dock-brand-mark" aria-hidden="true">✦</span>
+            <span class="dock-divider" aria-hidden="true"></span>
+            <a href="#hero" class="browser-tab active" data-label="Home" aria-label="Home" aria-current="location">
+                <span class="browser-tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></span><span class="browser-tab-text">Home</span>
             </a>
-
+            <a href="#announcements" class="browser-tab" data-label="Announcements" aria-label="Announcements">
+                <span class="browser-tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11v2a2 2 0 0 0 2 2h2l7 4V5l-7 4H6a2 2 0 0 0-2 2zM15 9.5a4 4 0 0 1 0 5M8 15l1.5 5H6l-1.5-5"/><path d="M19 8a6 6 0 0 1 0 8"/></svg></span><span class="browser-tab-text">News</span>
+            </a>
             <a href="#catalog" class="browser-tab" data-label="The Shelf" aria-label="The Shelf">
-                <span class="browser-tab-icon">▤</span>
-                <span class="browser-tab-text">Shelf</span>
+                <span class="browser-tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5zM4 6h13M8 8.5h8M8 12h8M8 15.5h6"/></svg></span><span class="browser-tab-text">Shelf</span>
             </a>
-
             <a href="#readingQueueSection" class="browser-tab" data-label="Queue" aria-label="Reading queue">
-                <span class="browser-tab-icon">↗</span>
-                <span class="browser-tab-text">Queue</span>
+                <span class="browser-tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 6h14M5 12h14M5 18h8"/><path d="m17 16 2 2 3-4"/></svg></span><span class="browser-tab-text">Queue</span>
             </a>
-
             <a href="#readingHeatmap" class="browser-tab" data-label="Activity" aria-label="Reading activity">
-                <span class="browser-tab-icon">▦</span>
-                <span class="browser-tab-text">Activity</span>
+                <span class="browser-tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></span><span class="browser-tab-text">Activity</span>
             </a>
-
-            <button class="browser-tab browser-settings" onclick="openSettings()" aria-label="Settings"
-                data-label="Settings">
-                <span class="browser-tab-icon">⚙</span>
-                <span class="browser-tab-text">Settings</span>
+            <span class="dock-divider dock-divider-settings" aria-hidden="true"></span>
+            <button type="button" class="browser-tab browser-settings" onclick="openSettings()" aria-label="Settings" data-label="Settings">
+                <span class="browser-tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.5.9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.5-.9l-1.7.7-1.4-2.4 1.4-1.1a7 7 0 0 1 0-1.8l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.5-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.5.9l1.7-.7 1.4 2.4-1.4 1.1a7 7 0 0 1 0 1.7Z" transform="translate(-1 -1) scale(1.08)"/></svg></span><span class="browser-tab-text">Settings</span>
             </button>
-
         </div>
-
     </nav>
     <button id="scrollBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">↑</button>
 
