@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fireworks — The Petal That Falls With A Smile, Vol. IV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#f2c46b;--blue:#6fb5ff;--red:#ff7d8f;--white:#ffffff;--text:#e8ecfa;--soft:#b9c3ea}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#060919}
+body{font-family:"Source Serif 4",Georgia,serif;color:var(--text);min-height:100vh;overflow-x:hidden;background:linear-gradient(180deg,#060919 0%,#0e1530 60%,#1a1f45 100%) fixed}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.9;transition:opacity 3s;background:radial-gradient(1px 1px at 12% 14%,#fff,transparent),radial-gradient(1px 1px at 28% 32%,#cfd8ff,transparent),radial-gradient(1.5px 1.5px at 47% 9%,#fff,transparent),radial-gradient(1px 1px at 63% 26%,#cfd8ff,transparent),radial-gradient(1px 1px at 78% 12%,#fff,transparent),radial-gradient(1.5px 1.5px at 91% 30%,#cfd8ff,transparent),radial-gradient(1px 1px at 8% 48%,#fff,transparent),radial-gradient(1px 1px at 88% 52%,#fff,transparent)}
+body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:35vh;pointer-events:none;background:radial-gradient(ellipse at 50% 110%,rgba(242,196,107,.2),transparent 65%);transition:opacity 3s}
+body.quiet::before{opacity:.35}body.quiet::after{opacity:.3}
+#sky{position:fixed;inset:0;pointer-events:none;z-index:0}
+.page{position:relative;z-index:1;max-width:36rem;margin:0 auto;padding:6.5rem 1.5rem 5rem}
+.hero{text-align:center;margin-bottom:4rem}
+.kicker{font-style:italic;font-size:.95rem;color:var(--soft);margin-bottom:1rem}
+h1{font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(2.6rem,9vw,4.5rem);line-height:1.1;color:#fff;text-shadow:0 0 36px rgba(242,196,107,.35)}
+.sec{--c:var(--gold)}
+.sec.noa{--c:var(--gold)}.sec.ren{--c:var(--blue)}.sec.sora{--c:var(--red)}.sec.narr{--c:#cbd3f0}
+.pov{display:flex;align-items:center;gap:.8rem;margin:3.6rem 0 1.4rem}
+.sec:first-of-type .pov{margin-top:0}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 14px 3px var(--c)}
+.pov-name{font-family:"Shippori Mincho",serif;font-weight:700;font-size:1.1rem;color:var(--c)}
+.pov::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--c),transparent);opacity:.55}
+.sec p{font-size:1.1rem;line-height:1.9;margin-bottom:.85em}
+.sec p.dialogue{color:var(--c)}
+.sec p.inner{font-style:italic;color:var(--soft)}
+.sec p.climax{text-align:center;font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(1.35rem,3.6vw,1.8rem);line-height:1.5;color:var(--c);margin:1.8em 0 1.2em;text-shadow:0 0 24px var(--c)}
+.sec p.climax::before{content:"✦";display:block;font-size:1rem;margin-bottom:.5em;opacity:.9}
+.sec p.boom{text-align:center;font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(2.4rem,8vw,3.6rem);line-height:1.1;color:var(--gold);margin:.8em 0;text-shadow:0 0 34px rgba(242,196,107,.65)}
+.sec p.flash{text-align:center;font-family:"Shippori Mincho",serif;font-weight:700;font-size:1.5rem;letter-spacing:.3em;margin:.5em 0}
+.flash.red{color:var(--red);text-shadow:0 0 20px var(--red)}.flash.white{color:#fff;text-shadow:0 0 20px #fff}.flash.gold{color:var(--gold);text-shadow:0 0 20px var(--gold)}
+.sec p.silence{text-align:center;font-style:italic;font-size:1.3rem;letter-spacing:.25em;color:#8f9ac4;margin:3em 0}
+.sec p.stanza{text-align:center;font-style:italic;color:#cbd3f0;margin-bottom:.6em}
+.sec p.fade1{opacity:.7}.sec p.fade2{opacity:.55;letter-spacing:.2em}
+footer{text-align:center;margin-top:4.5rem;padding-top:2rem;border-top:1px solid rgba(232,236,250,.14);font-family:"Shippori Mincho",serif;font-size:.95rem;letter-spacing:.08em;color:var(--soft)}
+footer::before{content:"";display:block;width:8px;height:8px;margin:0 auto 1rem;background:var(--gold);border-radius:2px;transform:rotate(45deg)}
+@media(max-width:480px){.page{padding:5.5rem 1.25rem 4rem}.sec p{font-size:1.04rem}}
+@media(prefers-reduced-motion:reduce){#sky{display:none}}
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+<div class="page">
+  <header class="hero">
+    <p class="kicker">The Petal That Falls With A Smile — Volume IV</p>
+    <h1>Fireworks</h1>
+  </header>
+  <main class="story">
+    <section class="sec noa">
+    <div class="pov"><span class="dot"></span><span class="pov-name">POV: Noa</span></div>
+    <p>The fireworks were about to start.</p>
+    <p>I could feel it — that strange quiet that comes right before the sky explodes with light.</p>
+    <p>Then—</p>
+    <p class="boom" data-b="gold,blue,gold">Boom.</p>
+    <p>The first firework bloomed open, painting the night in gold and blue.</p>
+    <p class="inner">So beautiful.</p>
+    <p>Haruki and I sat close, surrounded by people, yet it felt like just the two of us. Everyone was looking up. No one was looking at me.</p>
+    <p>This was my chance.</p>
+    <p>My heart was loud.</p>
+    <p class="inner">Say it. Just say it.</p>
+    <p class="dialogue">“I– I…”</p>
+    <p>The words caught in my throat.</p>
+    <p class="inner">What if he rejects me?</p>
+    <p class="inner">What if he starts avoiding me?</p>
+    <p class="inner">What if… he still loves Sora?</p>
+    <p>So many what ifs crushed the courage I had been collecting all day.</p>
+    <p>The fireworks kept going.</p>
+    <p class="flash red" data-b="red">Red.</p>
+    <p class="flash white" data-b="white">White.</p>
+    <p class="flash gold" data-b="gold">Gold.</p>
+    <p>Each one felt like time slipping away.</p>
+    <p>And then—</p>
+    <p class="silence" data-b="silence">Silence.</p>
+    <p>The show ended.</p>
+    <p>I hadn’t said anything.</p>
+    <p>I smiled anyway.</p>
+    <p>Because that’s what I always do.</p>
+    <p>“Hey,” Haruki said, turning to me. “You said something during the fireworks.”?</p>
+    <p>“Oh—” I laughed softly. “It was nothing.”</p>
+    <p class="inner">A lie.</p>
+    <p>The truth was simple and heavy:</p>
+    <p class="climax">I was scared.</p>
+    </section>
+    <section class="sec ren">
+    <div class="pov"><span class="dot"></span><span class="pov-name">POV: Ren</span></div>
+    <p>“So,” I said, trying to sound normal, “the fireworks were beautiful, right?”</p>
+    <p>Sora nodded. “Yeah… they were cool.”</p>
+    <p>But she wasn’t really there.</p>
+    <p>“Let’s grab some snacks,” I suggested. “The stalls are still open.”</p>
+    <p>She hesitated.</p>
+    <p class="dialogue">“No, Ren. I think I’ll head home.”</p>
+    <p>I frowned. “You okay?”</p>
+    <p>“Yeah,” she replied quickly. “Just a headache.”</p>
+    <p>She smiled — that polite smile people use when they don’t want questions.</p>
+    <p>“Alright,” I said. “Take care.”</p>
+    <p>As she walked away, something in my chest tightened.</p>
+    <p class="climax">She’s moving… but not toward me.</p>
+    </section>
+    <section class="sec sora">
+    <div class="pov"><span class="dot"></span><span class="pov-name">POV: Sora</span></div>
+    <p>Ren cares about me.</p>
+    <p>I know that.</p>
+    <p>He shows it in small ways — waiting, asking, noticing when I go quiet.</p>
+    <p>And yet—</p>
+    <p class="inner">Why does my heart feel so messy?</p>
+    <p>I told myself I moved on from Haruki.</p>
+    <p>I told myself I had no right to feel anything after running away like I did.</p>
+    <p class="inner">So why did seeing him tonight still hurt?</p>
+    <p>And worse…</p>
+    <p class="inner">Why am I starting to fall for Ren again?</p>
+    <p>After everything I did.</p>
+    <p>After all the confusion I caused.</p>
+    <p class="inner">This isn’t fair, I thought.</p>
+    <p>Not to him.</p>
+    <p>Not to anyone.</p>
+    <p>I walked faster, the festival lights fading behind me.</p>
+    <p class="inner">Maybe moving on isn’t about choosing someone new.</p>
+    <p class="climax">Maybe it’s about finally facing what you broke.</p>
+    </section>
+    <section class="sec narr">
+    <div class="pov"><span class="dot"></span><span class="pov-name">Narrator</span></div>
+    <p class="stanza">That night, fireworks lit the sky—</p>
+    <p class="stanza">But not every feeling reached the surface.</p>
+    <p class="stanza">One girl swallowed her confession.</p>
+    <p class="stanza">One boy sensed distance he couldn’t name.</p>
+    <p class="stanza">And one girl realized that moving on doesn’t erase guilt.</p>
+    <p class="stanza">Some chances don’t disappear loudly.</p>
+    <p class="stanza fade1">They fade.</p>
+    <p class="stanza fade2">Quietly.</p>
+    </section>
+  </main>
+  <footer>End of Chapter</footer>
+</div>
+<script>
+(function(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  var cv=document.getElementById("sky"),cx=cv.getContext("2d"),W,H,parts=[],rockets=[],running=false,quiet=false;
+  var COL={gold:"#f2c46b",blue:"#6fb5ff",red:"#ff6b7d",white:"#ffffff"};
+  function size(){W=cv.width=innerWidth;H=cv.height=innerHeight}size();addEventListener("resize",size);
+  function spot(){var n=W<800,x=n?W*(.15+Math.random()*.7):W*(Math.random()<.5?.06+Math.random()*.2:.74+Math.random()*.2);return{x:x,y:H*(n?.12+Math.random()*.25:.15+Math.random()*.3)}}
+  function launch(c){if(quiet)return;var s=spot();rockets.push({x:s.x,y:H,ty:s.y,c:COL[c]});go()}
+  function burst(x,y,c){for(var i=0;i<64;i++){var a=Math.PI*2*i/64+Math.random()*.1,sp=1.5+Math.random()*3.2;parts.push({x:x,y:y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,l:1,d:.011+Math.random()*.008,c:c})}}
+  function go(){if(!running){running=true;requestAnimationFrame(tick)}}
+  function tick(){
+    cx.clearRect(0,0,W,H);cx.globalCompositeOperation="lighter";cx.lineWidth=2;
+    var k=W<800?.55:.9,i;
+    for(i=rockets.length-1;i>=0;i--){var r=rockets[i];r.y-=(H-r.ty)/38;cx.globalAlpha=.8*k;cx.strokeStyle=r.c;cx.beginPath();cx.moveTo(r.x,r.y+14);cx.lineTo(r.x,r.y);cx.stroke();if(r.y<=r.ty){burst(r.x,r.ty,r.c);rockets.splice(i,1)}}
+    for(i=parts.length-1;i>=0;i--){var p=parts[i];p.vx*=.985;p.vy=p.vy*.985+.035;p.x+=p.vx;p.y+=p.vy;p.l-=p.d;
+      if(p.l<=0){parts.splice(i,1);continue}
+      cx.globalAlpha=p.l*k;cx.strokeStyle=p.c;cx.beginPath();cx.moveTo(p.x-p.vx*2,p.y-p.vy*2);cx.lineTo(p.x,p.y);cx.stroke()}
+    if(rockets.length||parts.length)requestAnimationFrame(tick);else{running=false;cx.clearRect(0,0,W,H)}
+  }
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(!e.isIntersecting)return;io.unobserve(e.target);
+    var b=e.target.dataset.b;
+    if(b==="silence"){quiet=true;document.body.classList.add("quiet");return}
+    b.split(",").forEach(function(c,i){setTimeout(function(){launch(c)},i*320)});
+  })},{threshold:.9,rootMargin:"0px 0px -15% 0px"});
+  document.querySelectorAll("[data-b]").forEach(function(el){io.observe(el)});
+  setTimeout(function(){launch("gold")},700);
+})();
+</script>
+</body>
+</html>

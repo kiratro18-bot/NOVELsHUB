@@ -23,7 +23,7 @@ var store = {
    below) — nothing here is ever transmitted anywhere. */
 var APP_STORAGE_KEYS = [
     'readProgress', 'bookmarks', 'currentlyReading', 'readingLog', 'readingQueue', 'claimedChallenges',
-    'privateReaderNotes', 'novelComments', 'recentSearches', 'lightMode', 'theme',
+    'privateReaderNotes', 'novelComments', 'recentSearches', 'lightMode', 'theme', 'morphismStyle',
     'tiltEnabled', 'motionEnabled', 'readerFontScale', 'readerAchUnlocks',
     'goldenPetalCaught', 'nightOwlRead', 'oneDayRead', 'searchedOnce', 'sharedOnce',
     'themeChanged', 'lastCommentAt', 'readerLevel', 'achievementsCollapsed', 'readerProfile', 'releaseReminders', 'midnightMemoryWon', 'midnightMemoryBest'
@@ -127,7 +127,7 @@ var novels = [
         blurb: "If time was a currency, how much would you pay for a single hour of the past?", grad: "135deg,#3a2a2a,#5a3a30", collections: ["hidden-gems", "completed"]
     },
     {
-        order: 14, title: "Him and Her vol.3", img: "./img/sub2/hahv3.jpg", link: "./hah/hahv3.html", genres: ["romance", "drama", "slice", "sad"], status: "ongoing", ch: 5.5, rating: 4.3, views: 14000, releaseOffsetDays: 46, updatedDaysAgo: 0.08,
+        order: 14, title: "Him and Her vol.3", img: "./img/sub2/hahv3.jpg", link: "./hah/hahv3.html", genres: ["romance", "drama", "slice", "sad"], status: "ongoing", ch: 6.5, rating: 4.6, views: 17000, releaseOffsetDays: 46, updatedDaysAgo: 0.08,
         blurb: "Continuing the journey of Him and Her into a new chapter of their lives.", grad: "135deg,#4a2a3a,#6a3a4e", collections: ["newest"]
     },
     {
@@ -150,6 +150,17 @@ var novels = [
         order: 19, title: "The Petal That Falls With A Smile vol 4", img: "./img/sub2/tpv4.jpg", link: "./tptfwas/tptfwasv4.html", genres: ["drama", "slice"], status: "upcoming", ch: 0, rating: null, views: null, releaseOffsetDays: 0,
         blurb: "Volume 4 — University → Adulthood Arc", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["upcoming"]
     }
+];
+var storyWorlds = [
+    { title: 'Him and Her', type: 'Three-volume series', note: 'Follow the relationship from the original story through Volumes 2 and 3.', order: [5, 10, 14] },
+    { title: 'The Petal That Falls With a Smile', type: 'Prequel + four volumes', note: 'Begin with the Sora and Ren prequel, then continue through Volumes 1–4.', order: [18, 3, 8, 11, 19] },
+    { title: 'The Rain Pact', type: 'Main story + companion', note: 'Read The Rain Pact first, then visit The Other Side of Rain for its companion journey.', order: [1, 7] }
+];
+var storySamples = [
+    { id: 'rain', label: 'The Rain Pact', mood: 'Romance · Chapter One', title: 'Drizzle and Blue Umbrellas', excerpt: 'The first time Aoi met him, she didn’t even know his name. It was raining—of course it was. The kind of drizzle that crept in slowly, catching everyone off guard.', link: './rp/rpc1.html' },
+    { id: 'him-her', label: 'Him and Her', mood: 'Romance · Chapter One', title: 'Her', excerpt: 'I am Kazuki. An average high schooler. Second year. I have always been… nobody. Not because people ignore me. Because I prefer it that way.', link: './hah/hah1.html' },
+    { id: 'case-file', label: 'Case File: You', mood: 'Mystery · Chapter One', title: 'The Detective', excerpt: 'What a drag… The thought slipped through Sato Aizawa’s mind as he stood at the crime scene, hands in his coat pockets, eyes scanning the lifeless body before him.', link: './cfy/cfy1.html' },
+    { id: 'petal', label: 'The Petal That Falls With a Smile', mood: 'Drama · Chapter One', title: 'Sakura in November', excerpt: 'The sakura tree wasn’t supposed to bloom in November. It stood there anyway—bare, crooked, and stubborn. Everyone walked past it, eyes glued to their phones, heads buried in winter scarves.', link: './tptfwas/tptfwas1.html' }
 ];
 var badgeLabel = { romance: "Romance", drama: "Drama", slice: "Slice", sad: "Sad", mystery: "Mystery", action: "Action" };
 function isOneShot(n) { return n.ch === 1 && n.status === 'completed'; }
@@ -262,6 +273,23 @@ function initTheme() {
         s.setAttribute('aria-checked', String(active));
     });
     moodColors.all = themeAccents[saved];
+}
+
+var morphismStyles = ['neumorphism', 'glassmorphism', 'claymorphism'];
+function setMorphismStyle(style, announce) {
+    if (morphismStyles.indexOf(style) === -1) style = 'neumorphism';
+    if (style === 'neumorphism') document.body.removeAttribute('data-morphism');
+    else document.body.setAttribute('data-morphism', style);
+    store.set('morphismStyle', style);
+    document.querySelectorAll('.morphism-option').forEach(function (option) {
+        var active = option.dataset.morphism === style;
+        option.classList.toggle('active', active);
+        option.setAttribute('aria-pressed', String(active));
+    });
+    if (announce !== false) showToast(style.charAt(0).toUpperCase() + style.slice(1) + ' enabled ✦');
+}
+function initMorphismStyle() {
+    setMorphismStyle(store.get('morphismStyle', 'neumorphism'), false);
 }
 
 function isCaseClosedOccasionActive(now) {
@@ -634,6 +662,51 @@ function renderReadingHistory() {
         return '<div class="history-row"><span>' + esc(label) + '</span><strong>' + count + ' ' + (count === 1 ? 'chapter' : 'chapters') + '</strong></div>';
     }).join('');
 }
+function renderStoryWorlds() {
+    var grid = document.getElementById('storyWorldGrid');
+    if (!grid) return;
+    grid.innerHTML = storyWorlds.map(function (world) {
+        var entries = world.order.map(function (order) { return novels.find(function (novel) { return novel.order === order; }); }).filter(Boolean);
+        var released = entries.filter(function (novel) { return novel.ch > 0; });
+        var totalChapters = released.reduce(function (total, novel) { return total + novel.ch; }, 0);
+        var readChapters = released.reduce(function (total, novel) { return total + getRead(novel); }, 0);
+        var progress = totalChapters ? Math.round(readChapters / totalChapters * 100) : 0;
+        var next = entries.find(function (novel) { return novel.status.toLowerCase() === 'upcoming' || getRead(novel) < novel.ch; }) || entries[0];
+        var storyRows = entries.map(function (novel, step) {
+            var upcoming = novel.status.toLowerCase() === 'upcoming';
+            var read = getRead(novel);
+            var percent = novel.ch ? Math.round(read / novel.ch * 100) : 0;
+            var label = upcoming ? 'Coming soon' : (read >= novel.ch ? 'Finished' : (read ? read + ' / ' + novel.ch + ' chapters' : 'Not started'));
+            return '<button class="world-story-row" type="button" onclick="openSpotlight(' + novel.order + ')" aria-label="Open ' + esc(novel.title.trim()) + '"><span class="world-step">' + (step + 1) + '</span><span class="world-story-copy"><strong>' + esc(novel.title.trim()) + '</strong><small>' + label + '</small>' + (novel.ch ? '<span class="world-story-track"><i style="width:' + percent + '%"></i></span>' : '') + '</span><span class="world-story-arrow" aria-hidden="true">→</span></button>';
+        }).join('');
+        var nextLabel = next.status.toLowerCase() === 'upcoming' ? 'View upcoming volume' : 'Continue this story world';
+        return '<article class="story-world-card"><div class="world-card-head"><div><span class="reader-tool-kicker">' + esc(world.type) + '</span><h3>' + esc(world.title) + '</h3></div><span class="world-progress-ring" aria-label="' + progress + ' percent complete">' + progress + '%</span></div><p class="world-card-note">' + esc(world.note) + '</p><div class="world-overall-track" role="progressbar" aria-label="' + esc(world.title) + ' series progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + progress + '"><i style="width:' + progress + '%"></i></div><p class="world-progress-label">' + readChapters + ' of ' + totalChapters + ' released chapters logged</p><div class="world-story-list">' + storyRows + '</div><button class="sketch-btn sketch-btn-primary world-next-button" type="button" onclick="openSpotlight(' + next.order + ')">' + nextLabel + ' →</button></article>';
+    }).join('');
+}
+function selectStorySample(id) {
+    var sample = storySamples.find(function (entry) { return entry.id === id; }) || storySamples[0];
+    document.querySelectorAll('.sampler-choice').forEach(function (button) {
+        var active = button.dataset.sample === sample.id;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', String(active));
+    });
+    document.getElementById('samplerGenre').textContent = sample.mood;
+    document.getElementById('samplerStoryTitle').textContent = sample.label;
+    document.getElementById('samplerChapterTitle').textContent = sample.title;
+    document.getElementById('samplerExcerpt').textContent = '“' + sample.excerpt + '”';
+    var link = document.getElementById('samplerOpenLink');
+    link.href = sample.link;
+    link.setAttribute('aria-label', 'Read chapter one of ' + sample.label);
+}
+function renderStorySampler() {
+    var choices = document.getElementById('samplerChoices');
+    if (!choices) return;
+    choices.innerHTML = storySamples.map(function (sample, index) {
+        return '<button class="sampler-choice' + (index === 0 ? ' active' : '') + '" type="button" data-sample="' + esc(sample.id) + '" aria-pressed="' + (index === 0 ? 'true' : 'false') + '" onclick="selectStorySample(\'' + esc(sample.id) + '\')"><span>' + esc(sample.label) + '</span><small>' + esc(sample.mood.split(' · ')[0]) + '</small></button>';
+    }).join('');
+    selectStorySample(storySamples[0].id);
+}
+
 function exportReaderData() {
     var data = {};
     APP_STORAGE_KEYS.forEach(function (key) {
@@ -684,6 +757,7 @@ function refreshReadingUI() {
     renderHeatmap();
     renderReaderStreak();
     renderReadingHistory();
+    renderStoryWorlds();
 }
 function updateQueueButton(order) {
     var button = document.getElementById('spQueueBtn');
@@ -1506,7 +1580,7 @@ function renderHeatmap() {
    ============================================================ */
 var upcomingReleases = [
     { date: '2026-10-26', title: "The Other Day - Chapter 9" },
-    { date: '2026-10-23', title: 'Him and Her vol 3 - chapter 6' }, 
+    { date: '2026-10-26', title: 'Him and Her vol 3 - chapter 7 and 8' }, 
     { date: '2026-10-25', title: 'Petal Vol. 4 —  University → Adulthood Arc ' },
 ];
 var calSorted = [];
@@ -1773,6 +1847,8 @@ window.addEventListener('scroll', function () {
 window.addEventListener('load', function () {
     renderReaderProfile();
     renderReadingHistory();
+    renderStoryWorlds();
+    renderStorySampler();
     var achievementsCollapsed = store.get('achievementsCollapsed', false);
     var achievementGrid = document.getElementById('achievementGrid');
     var achievementToggle = document.getElementById('achievementsToggle');
@@ -1791,6 +1867,7 @@ window.addEventListener('load', function () {
     document.getElementById('motionToggle').classList.toggle('on', motionEnabled);
     document.getElementById('motionToggle').setAttribute('aria-checked', String(motionEnabled));
     initTheme();
+    initMorphismStyle();
     syncCaseClosedOccasion();
     syncVol2Announcement();
     syncMidnightArchiveEvent();
