@@ -147,7 +147,7 @@ var novels = [
         blurb: "TRY IT!", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
     },
     {
-        order: 19, title: "The Petal That Falls With A Smile vol 4", img: "./img/sub2/tpv4.jpg", link: "./tptfwas/tptfwasv4.html", genres: ["drama", "slice"], status: "ongoing", ch: 2, rating: 4.5, views: 5900, releaseOffsetDays: 0,
+        order: 19, title: "The Petal That Falls With A Smile vol 4", img: "./img/sub2/tpv4.jpg", link: "./tptfwas/tptfwasv4.html", genres: ["drama", "slice"], status: "upcoming", ch: 0, rating: null, views: null, releaseOffsetDays: 0,
         blurb: "Volume 4 — University → Adulthood Arc", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
     }
 ];
