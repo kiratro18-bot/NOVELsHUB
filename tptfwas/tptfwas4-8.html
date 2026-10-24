@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lie — The Petal That Falls With A Smile, Vol. IV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{--text:#3a2530;--soft:#7d6272;--ren:#3f7fb0;--sora:#c4577f}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#fff4ea}
+body{font-family:"Source Serif 4",Georgia,serif;color:var(--text);min-height:100vh;overflow-x:hidden;background:linear-gradient(180deg,#fff4ea 0%,#fdeaf0 100%) fixed}
+.dusk{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity 3s;background:linear-gradient(180deg,#e9e2f3,#d9cfe8)}
+body.hush .dusk{opacity:1}
+.flash{position:fixed;inset:0;z-index:6;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 50%,rgba(196,87,127,.35),transparent 70%)}
+.flash.pop{animation:pop .9s ease-out}
+@keyframes pop{0%{opacity:0}15%{opacity:1}100%{opacity:0}}
+#petals{position:fixed;inset:0;z-index:1;pointer-events:none}
+.page{position:relative;z-index:2;max-width:36rem;margin:0 auto;padding:6rem 1.5rem 5rem}
+.hero{text-align:center;margin-bottom:3.4rem}
+.kicker{font-style:italic;font-size:.95rem;color:var(--soft);margin-bottom:1rem}
+h1{font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(2.8rem,10vw,4.6rem);line-height:1.1;text-shadow:3px 3px 0 rgba(196,87,127,.22)}
+.scene{text-align:center;margin:2.4em auto;padding:1.1em 0;border-top:1px solid rgba(58,37,48,.16);border-bottom:1px solid rgba(58,37,48,.16);font-family:"Shippori Mincho",serif;font-size:1rem;letter-spacing:.03em;color:var(--soft)}
+.sec{--c:var(--ren)}.sec.ren{--c:var(--ren)}.sec.sora{--c:var(--sora)}
+.pov{display:flex;align-items:center;gap:.8rem;margin:0 0 1.2rem}
+.pov .dot{width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 12px 2px var(--c)}
+.pov-name{font-family:"Shippori Mincho",serif;font-weight:700;font-size:1.1rem;color:var(--c)}
+.pov::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--c),transparent);opacity:.5}
+.sec p{font-size:1.1rem;line-height:1.85;margin-bottom:.85em}
+.sec p.inner{font-style:italic;color:var(--soft)}
+.sec p.say{margin-bottom:.5em}
+.who{font-family:"Shippori Mincho",serif;font-weight:700;margin-right:.3em}
+.who.ren{color:var(--ren)}.who.sora{color:var(--sora)}
+.sec p.aside{font-family:"Shippori Mincho",serif;font-size:.95rem;color:var(--ren);margin:1.4em 0 .3em}
+.screen{margin:1.8rem 0;padding:1.4rem 1.3rem .6rem;border-radius:10px;background:linear-gradient(180deg,#1a1024,#2a1838);box-shadow:0 18px 50px rgba(40,20,60,.35)}
+.screen::before{content:"";display:block;height:3px;margin:-1.4rem -1.3rem 1.1rem;border-radius:10px 10px 0 0;background:linear-gradient(90deg,transparent,#ffd98a,transparent)}
+.sec .screen p{color:#f3e6ef}
+.sec p.ask{text-align:center;font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(1.35rem,4vw,1.9rem);line-height:1.45;margin:2.4em 0 1.6em;color:var(--text)}
+.sec p.shout{text-align:center;margin:.8em 0 1.2em}
+.shout .who{display:block;font-size:1rem;margin-bottom:.1em}
+.shout .loud{font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(1.8rem,7vw,3rem);line-height:1.15;color:var(--sora)}
+.shout.go{animation:shake .7s ease-in-out}
+@keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-7px)}40%,60%{transform:translateX(7px)}}
+footer{text-align:center;margin-top:4.5rem;padding-top:2rem;border-top:1px solid rgba(58,37,48,.16);font-family:"Shippori Mincho",serif;font-size:.95rem;letter-spacing:.08em;color:var(--soft)}
+footer::before{content:"";display:block;width:8px;height:8px;margin:0 auto 1rem;background:#e08aa8;border-radius:2px;transform:rotate(45deg)}
+@media(max-width:480px){.page{padding:5rem 1.25rem 4rem}.sec p{font-size:1.04rem}}
+@media(prefers-reduced-motion:reduce){#petals{display:none}.shout.go{animation:none}.flash.pop{animation:none}.dusk{transition:none}}
+</style>
+</head>
+<body>
+<div class="dusk"></div><div class="flash" id="flash"></div>
+<canvas id="petals" aria-hidden="true"></canvas>
+<div class="page">
+  <header class="hero">
+    <p class="kicker">The Petal That Falls With A Smile — Volume IV</p>
+    <h1>Lie</h1>
+  </header>
+  <main class="story">
+    <div class="scene">Scene: Outside the Movie Theater</div>
+    <section class="sec ren">
+    <div class="pov"><span class="dot"></span><span class="pov-name">Ren's POV</span></div>
+    <p class="inner">I'm late!</p>
+    <p>I told her the show was in the afternoon, and I'm already five minutes late.</p>
+    <p>As Ren arrives, he sees Sora standing near the pink tree, waiting for him.</p>
+    <p class="aside ren">Ren's thoughts:</p>
+    <p class="inner">She looks so beautiful...</p>
+    <p class="say"><span class="who ren">Ren:</span> Ah, what am I saying?!</p>
+    <p>He approaches her.</p>
+    <p class="say"><span class="who ren">Ren:</span> Hel-hello, Sora.</p>
+    <p class="say"><span class="who sora">Sora:</span> Hello, Ren.</p>
+    <p class="say"><span class="who ren">Ren:</span> Shall we?</p>
+    <p class="say"><span class="who sora">Sora:</span> Yes, let's go...</p>
+    <p>Awkwardness fills the air.</p>
+    <p class="say"><span class="who sora">Sora:</span> What movie are we watching?</p>
+    <p class="say"><span class="who ren">Ren:</span> Ah, the title is The Petal That Blooms in Odd Season.</p>
+    <p class="say"><span class="who sora">Sora:</span> Oh, sounds interesting.</p>
+    <p class="say"><span class="who ren">Ren:</span> It is interesting! I watched the promo.</p>
+    <p class="say"><span class="who sora">Sora:</span> So, do you know any spoilers?</p>
+    <p class="say"><span class="who ren">Ren:</span> No!</p>
+    <p>Both of them laugh a little.</p>
+    <div class="screen">
+    <p>They reach the movie theater and watch the film.</p>
+    <p>During an emotional scene, tears well up in Sora's eyes as the boy in the movie finally confesses his feelings to the girl after all the drama.</p>
+    <p>Ren hands Sora a tissue.</p>
+    </div>
+    <p class="say"><span class="who sora">Sora:</span> Thank you...</p>
+    <div class="scene">After the Movie</div>
+    <p class="say"><span class="who sora">Sora:</span> It was beautiful. I wonder who wrote it...</p>
+    <p class="say"><span class="who ren">Ren:</span> Yeah, I know who wrote it.</p>
+    <p class="say"><span class="who sora">Sora:</span> Who?</p>
+    <p class="say"><span class="who ren">Ren:</span> An underrated writer whose pen name is AKA.</p>
+    <p class="say"><span class="who sora">Sora:</span> AKA? As in red?</p>
+    <p class="say"><span class="who ren">Ren:</span> We don't know.</p>
+    <p class="say"><span class="who sora">Sora:</span> Huh... So mysterious.</p>
+    <p class="say"><span class="who ren">Ren:</span> Yeah. Anyway, shall we go to our next spot?</p>
+    <p class="say"><span class="who sora">Sora:</span> Where?</p>
+    <p class="say"><span class="who ren">Ren:</span> A café.</p>
+    <p class="say"><span class="who sora">Sora:</span> Sure!</p>
+    <p data-b="hush">As they walk toward the café, an awkward silence settles between them again.</p>
+    <p>Then Ren finally breaks it.</p>
+    <p class="say"><span class="who ren">Ren:</span> Sora, you can ignore this question if you want...</p>
+    <p class="ask">Why did you lie to me back then?</p>
+    <p class="say shout" data-b="shout"><span class="who sora">Sora:</span> <span class="loud">BECAUSE I HAD TO!</span></p>
+    <p>She pauses.</p>
+    <p class="say"><span class="who sora">Sora:</span> Sorry...</p>
+    <p class="say"><span class="who ren">Ren:</span> I'm sorry for asking...</p>
+    <p class="say"><span class="who sora">Sora:</span> No, wait. Let me clear this up...</p>
+    <p class="say cont">I was getting transferred back then, and if I'd given you an answer, I would've hurt you...</p>
+    <p class="say cont">The thought of hurting you scares me.</p>
+    <p class="say"><span class="who ren">Ren:</span> Oh...</p>
+    </section>
+  </main>
+  <footer>End of Chapter</footer>
+</div>
+<script>
+(function(){
+  var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches,quiet=false;
+  function watch(sel,fn){var el=document.querySelector(sel);if(!el)return;if(!("IntersectionObserver" in window)){fn(el);return}var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){fn(el);io.disconnect()}})},{threshold:.9,rootMargin:"0px 0px -15% 0px"});io.observe(el)}
+  watch("[data-b=hush]",function(){quiet=true;document.body.classList.add("hush")});
+  watch("[data-b=shout]",function(el){if(reduce)return;el.classList.add("go");document.getElementById("flash").classList.add("pop")});
+  if(reduce)return;
+  var cv=document.getElementById("petals"),cx=cv.getContext("2d"),W,H,ps=[],C=["#ffb7c5","#f4a7c3","#f9c9d8","#e8b4d8"];
+  function size(){W=cv.width=innerWidth;H=cv.height=innerHeight}size();addEventListener("resize",size);
+  function mk(y){ps.push({x:Math.random()*W,y:y,s:Math.random()*6+5,v:Math.random()*.4+.25,d:(Math.random()-.5)*.25,r:Math.random()*6,rv:(Math.random()-.5)*.015,t:Math.random()*6,c:C[Math.floor(Math.random()*C.length)],o:Math.random()*.25+.25})}
+  for(var i=0;i<12;i++)mk(Math.random()*H);
+  (function loop(){cx.clearRect(0,0,W,H);
+    for(var i=ps.length-1;i>=0;i--){var p=ps[i];p.t+=.012;p.y+=p.v;p.x+=p.d+Math.sin(p.t)*.35;p.r+=p.rv;
+      cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.globalAlpha=p.o;cx.fillStyle=p.c;cx.beginPath();cx.ellipse(0,0,p.s,p.s*.52,0,0,Math.PI*2);cx.fill();cx.restore();
+      if(p.y>H+20)ps.splice(i,1)}
+    if(!quiet&&Math.random()<.02)mk(-20);requestAnimationFrame(loop)})();
+})();
+</script>
+</body>
+</html>

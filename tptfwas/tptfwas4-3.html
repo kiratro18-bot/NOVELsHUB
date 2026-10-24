@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Date — The Petal That Falls With A Smile, Vol. IV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{--peach:#f7b7a3;--amber:#f2c46b;--cream:#f6ebe3;--soft:#cdb9ad}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#150f14}
+body{font-family:"Source Serif 4",Georgia,serif;color:var(--cream);min-height:100vh;overflow-x:hidden;background:linear-gradient(180deg,#150f14 0%,#241820 55%,#3a2428 100%) fixed}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 38% at 50% 0%,rgba(242,196,107,.2),transparent 70%),radial-gradient(ellipse 50% 30% at 50% 108%,rgba(247,183,163,.16),transparent 70%)}
+.walk{position:fixed;top:0;bottom:0;left:max(10px,calc(50% - 20.6rem));width:2px;pointer-events:none;z-index:2;--p:0}
+.walk::before{content:"";position:absolute;left:0;top:10%;bottom:10%;width:1px;background:linear-gradient(180deg,transparent,rgba(246,235,227,.28) 15%,rgba(246,235,227,.28) 85%,transparent)}
+.dt{position:absolute;left:0;width:9px;height:9px;margin-left:-4px;border-radius:50%;top:calc(10% + var(--p) * 80%);background:currentColor;box-shadow:0 0 10px 2px currentColor;transition:transform 1.6s ease}
+.dt.n{color:var(--peach);transform:translate(0,-34px)}.dt.h{color:var(--amber)}
+body.together .dt.n{transform:translate(-7px,0)}body.together .dt.h{transform:translate(7px,0)}
+.page{position:relative;z-index:1;max-width:36rem;margin:0 auto;padding:6.5rem 1.5rem 5rem}
+.hero{text-align:center;margin-bottom:4rem}
+.kicker{font-style:italic;font-size:.95rem;color:var(--soft);margin-bottom:1rem}
+h1{font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(2.6rem,9vw,4.4rem);line-height:1.1;text-shadow:0 0 34px rgba(242,196,107,.35)}
+.sec{--c:var(--peach)}.sec.noa{--c:var(--peach)}.sec.haruki{--c:var(--amber)}.sec.narr{--c:var(--cream)}
+.pov{display:flex;align-items:center;gap:.8rem;margin:3.6rem 0 1.4rem}
+.sec:first-of-type .pov{margin-top:0}
+.pov .dot{width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 14px 3px var(--c)}
+.pov-name{font-family:"Shippori Mincho",serif;font-weight:700;font-size:1.1rem;color:var(--c)}
+.pov::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--c),transparent);opacity:.5}
+.sec p{font-size:1.1rem;line-height:1.9;margin-bottom:.85em}
+.sec p.inner{font-style:italic;color:var(--soft)}
+.sec p.climax{text-align:center;font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(1.35rem,3.6vw,1.8rem);line-height:1.5;color:var(--c);margin:1.8em 0 1.4em;text-shadow:0 0 24px var(--c)}
+.sec p.msg{display:table;font-size:1rem;line-height:1.6;color:var(--cream);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:16px 16px 16px 4px;padding:.3em 1em;margin:.35em 0}
+.sec p:not(.msg)+p.msg{margin-top:1.1em}.sec p.msg+p:not(.msg){margin-top:1.1em}
+.sec p.side{text-align:center;font-family:"Shippori Mincho",serif;font-weight:700;letter-spacing:.2em;color:var(--peach);margin:1.2em 0 0}
+.sec p.stanza{text-align:center;font-style:italic;color:#e8d9cf;margin-bottom:.6em}
+.sec p.fin{text-align:center;font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(2rem,6vw,2.8rem);line-height:1.2;margin:1.2em 0 0;text-shadow:0 0 28px rgba(242,196,107,.5)}
+footer{text-align:center;margin-top:4.5rem;padding-top:2rem;border-top:1px solid rgba(246,235,227,.14);font-family:"Shippori Mincho",serif;font-size:.95rem;letter-spacing:.08em;color:var(--soft)}
+footer::before{content:"";display:block;width:8px;height:8px;margin:0 auto 1rem;background:var(--amber);border-radius:2px;transform:rotate(45deg)}
+@media(max-width:480px){.page{padding:5.5rem 1.4rem 4rem}.sec p{font-size:1.04rem}.walk{left:8px}}
+@media(prefers-reduced-motion:reduce){.dt{transition:none}}
+</style>
+</head>
+<body>
+<div class="walk" id="walk" aria-hidden="true"><i class="dt n"></i><i class="dt h"></i></div>
+<div class="page">
+  <header class="hero">
+    <p class="kicker">The Petal That Falls With A Smile — Volume III</p>
+    <h1>A Date</h1>
+  </header>
+  <main class="story">
+    <section class="sec noa">
+    <div class="pov"><span class="dot"></span><span class="pov-name">POV: Noa</span></div>
+    <p>The festival was over.</p>
+    <p>The noise, the lights, the crowd — all gone.</p>
+    <p>Our class was supposed to celebrate together after everything, but one by one the messages came in.</p>
+    <p class="msg">Can’t make it.</p>
+    <p class="msg">Too tired.</p>
+    <p class="msg">Something came up.</p>
+    <p>And just like that… the party was cancelled.</p>
+    <p>Haruki and I were the first to arrive.</p>
+    <p>And the last.</p>
+    <p>For a moment, we just stood there, awkwardly.</p>
+    <p>“So…” I said, trying to sound casual. “What do we do now?”</p>
+    <p class="inner">My cheeks felt warm. I hated how obvious I was.</p>
+    <p>Haruki looked at his phone, then at me, and smiled — not forced, not confused.</p>
+    <p>Calm.</p>
+    <p>Happy.</p>
+    <p>“I don’t know,” he said. “But let’s still celebrate.”</p>
+    <p>I blinked. “Celebrate… us?”</p>
+    <p>“Well,” he shrugged lightly, “we survived the festival, didn’t we?”</p>
+    <p>I laughed. “I guess we did.”</p>
+    <p>“What do you feel like eating?” he asked.</p>
+    <p>That simple question made my heart jump.</p>
+    <p class="inner">Not what should we eat.</p>
+    <p class="inner">Not do you want to go home.</p>
+    <p class="climax">What I wanted.</p>
+    <p>“Anything is fine,” I said quickly. “I mean— maybe something warm?”</p>
+    <p>“Alright,” he nodded. “Then let’s do that.”</p>
+    <p>And just like that, we started walking.</p>
+    <p class="side" data-b="together">Side by side.</p>
+    </section>
+    <section class="sec haruki">
+    <div class="pov"><span class="dot"></span><span class="pov-name">POV: Haruki</span></div>
+    <p class="inner">Wow.</p>
+    <p class="inner">I didn’t expect this.</p>
+    <p>Alone with Noa… and it didn’t feel awkward.</p>
+    <p>No pressure.</p>
+    <p>No past chasing me.</p>
+    <p>No confusion.</p>
+    <p>Just quiet comfort.</p>
+    <p>Somewhere between walking and talking, it hit me.</p>
+    <p class="inner">I’m… developing feelings for her.</p>
+    <p>Not because she was always there.</p>
+    <p>Not because she waited.</p>
+    <p>But because right now — in this moment — I wanted to be here.</p>
+    <p>With her.</p>
+    <p>The realization surprised me.</p>
+    <p class="inner">Love wasn’t loud.</p>
+    <p class="inner">It didn’t crash into me.</p>
+    <p class="climax">It arrived gently.</p>
+    <p>I stopped walking.</p>
+    <p>“Noa,” I said.</p>
+    <p>She turned to me immediately. “Y-yes?”</p>
+    <p>My heart was racing now.</p>
+    <p>“This,” I said, gesturing around us, “this feels like a date.”</p>
+    <p>Her eyes widened.</p>
+    <p>Her face turned red.</p>
+    <p>Honestly?</p>
+    <p>Mine too.</p>
+    <p>“A-a date?” she repeated softly.</p>
+    <p>“Yeah,” I said, letting out a small breath. “If you’re okay with that.”</p>
+    <p>For a second, she didn’t answer.</p>
+    <p>Then she smiled — not shy, not scared.</p>
+    <p>Just happy.</p>
+    <p>“I am,” she said. “I really am.”</p>
+    <p>“Then,” I smiled back, “let’s order something.”</p>
+    <p>She nodded quickly. “Y-yeah.”</p>
+    <p>And for the first time in a long while, I felt like I wasn’t looking backward anymore.</p>
+    </section>
+    <section class="sec narr">
+    <div class="pov"><span class="dot"></span><span class="pov-name">Narrator</span></div>
+    <p class="stanza">Some love stories begin with fireworks.</p>
+    <p class="stanza">Others begin after they end.</p>
+    <p class="stanza">No crowds.</p>
+    <p class="stanza">No confessions shouted into the night.</p>
+    <p class="stanza">Just two people choosing to stay.</p>
+    <p class="fin">Together.</p>
+    </section>
+  </main>
+  <footer>End of Chapter</footer>
+</div>
+<script>
+(function(){
+  var walk=document.getElementById("walk"),tick=false;
+  function upd(){tick=false;var m=document.documentElement.scrollHeight-innerHeight;walk.style.setProperty("--p",m>0?Math.min(1,Math.max(0,scrollY/m)):0)}
+  addEventListener("scroll",function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});
+  addEventListener("resize",upd);upd();
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){document.body.classList.add("together");io.disconnect()}})},{threshold:.9,rootMargin:"0px 0px -15% 0px"});
+    document.querySelectorAll("[data-b=together]").forEach(function(el){io.observe(el)});
+  }else document.body.classList.add("together");
+})();
+</script>
+</body>
+</html>

@@ -73,7 +73,7 @@
                 </div>
                 <div class="morphism-setting">
                     <span class="sph-row-label">Surface style</span>
-                    <span class="sph-help">Choose how cards and panels are shaped.</span>
+                    <span class="sph-help">Choose how cards and panels are shaped. [ This won't work Currently due to a ongoing event. ]</span>
                     <div class="morphism-options" role="group" aria-label="Surface style">
                         <button class="morphism-option" type="button" data-morphism="neumorphism" aria-pressed="true" onclick="setMorphismStyle('neumorphism')">
                             <span class="morphism-preview morphism-preview-neu" aria-hidden="true"></span>
@@ -218,7 +218,7 @@
     <!-- ============ NAV ============ -->
     <nav class="site-nav">
         <div class="nav-brand">
-            <div class="nav-brand-mark">✦</div><span>Novels by <em>AKA</em></span>
+            <div class="nav-brand-mark" aria-hidden="true">✿</div><span>Novels by <em>AKA</em></span>
         </div>
         <div class="nav-links">
             <a class="nav-link" href="#story-worlds">Story worlds</a>
@@ -314,6 +314,11 @@
                 <div><span class="eyebrow">From the author</span><h2 class="section-title">Announcements</h2><p class="section-sub">News and updates from AKA.</p></div>
             </div>
             <div class="announcements-list">
+                <aside class="case-closed-banner vol2-announcement" id="petalVol4Announcement" aria-label="The Petal That Falls With a Smile Volume 4 announcement">
+                    <div class="case-closed-mark" aria-hidden="true">🌸</div>
+                    <div class="case-closed-copy"><span class="case-closed-kicker">ANNOUNCEMENT</span><strong><em>The Petal That Falls With a Smile</em> Vol. 4 is airing now.</strong><p>Follow the latest volume as it unfolds.</p></div>
+                    <a class="case-closed-action" href="./tptfwas/tptfwasv4.html">Read Vol. 4 <span aria-hidden="true">→</span></a>
+                </aside>
                 <aside class="case-closed-banner vol2-announcement" id="vol2Announcement" hidden aria-label="Case File: You Volume 2 announcement">
                     <div class="case-closed-mark" aria-hidden="true">📣</div>
                     <div class="case-closed-copy"><span class="case-closed-kicker">ANNOUNCEMENT <i>·</i> <span id="vol2AnnouncementRemaining">25 days left</span></span><strong><em>Case File: You</em> Vol. 2 is confirmed.</strong><p>It will air in <em>Summer 2027</em>. This announcement will be shown for a limited time.</p></div>
@@ -384,6 +389,13 @@
                     <button type="button" class="cta cta-primary" onclick="runStoryMatch()">Find my story ✦</button>
                 </div>
                 <div class="story-match-result" id="storyMatchResult" aria-live="polite">Your pick will appear here. Reading time is estimated at about 7 minutes per chapter.</div>
+                <div class="for-you-beta" aria-labelledby="forYouTitle">
+                    <div class="for-you-heading">
+                        <div><span class="story-match-kicker">✦ YOUR PERSONALIZED SHELF</span><h4 id="forYouTitle">For you <span class="beta-tag">BETA</span></h4><p>Three picks shaped by your reading progress, favorites, and queue. Your data stays in this browser.</p></div>
+                        <button class="pill-btn" type="button" onclick="renderForYouPicks()">Refresh picks ↻</button>
+                    </div>
+                    <div class="for-you-grid" id="forYouGrid" aria-live="polite"></div>
+                </div>
             </div>
         </div>
     </section>
@@ -393,8 +405,9 @@
         <div class="wrap">
             <div class="section-head">
                 <div><span class="eyebrow">A taste of the story</span><h2 class="section-title" id="storySamplerTitle">Sample the <em>opening</em></h2><p class="section-sub">Switch between real opening excerpts, then head straight into chapter one.</p></div>
+                <button class="pill-btn section-content-toggle" id="storySamplerToggle" type="button" onclick="toggleSectionContent('storySamplerContent', 'storySamplerToggle', 'storySamplerCollapsed', 'story sampler')" aria-expanded="true" aria-controls="storySamplerContent">Minimize story sampler <span aria-hidden="true">⌃</span></button>
             </div>
-            <div class="story-sampler-card">
+            <div class="story-sampler-card" id="storySamplerContent">
                 <div class="sampler-choices" id="samplerChoices" role="group" aria-label="Choose an opening scene"></div>
                 <article class="sampler-reading" aria-live="polite" aria-atomic="true">
                     <span class="sampler-kicker" id="samplerGenre"></span>
@@ -435,6 +448,7 @@
         <div class="wrap">
             <div class="section-head">
                 <div><span class="eyebrow">Connected stories</span><h2 class="section-title" id="storyWorldsTitle">Story <em>worlds</em></h2><p class="section-sub">Follow each series in order, find companion stories, and keep track across volumes.</p></div>
+                <button class="pill-btn section-content-toggle" id="storyWorldsToggle" type="button" onclick="toggleSectionContent('storyWorldGrid', 'storyWorldsToggle', 'storyWorldsCollapsed', 'connected stories')" aria-expanded="true" aria-controls="storyWorldGrid">Minimize connected stories <span aria-hidden="true">⌃</span></button>
             </div>
             <div class="story-world-grid" id="storyWorldGrid"></div>
         </div>
@@ -549,8 +563,9 @@
                     <h2 class="section-title">The <em>Leaderboard</em></h2>
                     <p class="section-sub">How the shelf ranks up, by the numbers.</p>
                 </div>
+                <button class="pill-btn section-content-toggle" id="leaderboardToggle" type="button" onclick="toggleSectionContent('leaderboardContent', 'leaderboardToggle', 'leaderboardCollapsed', 'leaderboard')" aria-expanded="true" aria-controls="leaderboardContent">Minimize leaderboard <span aria-hidden="true">⌃</span></button>
             </div>
-            <div class="glass" style="padding:var(--sp-5)">
+            <div class="glass" id="leaderboardContent" style="padding:var(--sp-5)">
                 <div class="filter-pills" id="lbTabs" style="margin-bottom:var(--sp-3)">
                     <button class="pill-btn active" data-lb="views">Most Viewed</button>
                     <button class="pill-btn" data-lb="rating">Highest Rated</button>

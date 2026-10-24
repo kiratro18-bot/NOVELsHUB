@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Tree — The Petal That Falls With A Smile, Vol. IV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{--text:#3a2230;--soft:#8a5e74;--br:#6b4a4a;--bl:#f6bdd0;--rule:rgba(58,34,48,.18);font-family:"Source Serif 4",Georgia,serif;color:var(--text);min-height:100vh;overflow-x:hidden;background:#fff6f8}
+body.theme-night{--text:#e6e9fa;--soft:#aab4e0;--br:#2a3156;--bl:#9fb0ee;--rule:rgba(230,233,250,.16)}
+body.theme-dawn{--text:#3a2230;--soft:#85586e;--br:#7a5656;--bl:#f9c9c0;--rule:rgba(58,34,48,.18)}
+.sky{position:fixed;inset:0;z-index:0;opacity:0;transition:opacity 1.4s;pointer-events:none}
+.sky.day{background:linear-gradient(180deg,#fff6f8,#fde4ec)}
+.sky.night{background:radial-gradient(1px 1px at 15% 20%,#fff,transparent),radial-gradient(1.5px 1.5px at 40% 12%,#cfd8ff,transparent),radial-gradient(1px 1px at 68% 24%,#fff,transparent),radial-gradient(1px 1px at 86% 10%,#cfd8ff,transparent),linear-gradient(180deg,#090c26,#1b1f4a 70%,#2b2a5c)}
+.sky.dawn{background:linear-gradient(180deg,#fdd9cf,#fff0ea 55%,#fde8f0)}
+body.theme-day .sky.day,body.theme-night .sky.night,body.theme-dawn .sky.dawn{opacity:1}
+.moon{position:fixed;top:7%;left:7%;width:64px;height:64px;border-radius:50%;z-index:0;pointer-events:none;background:radial-gradient(circle at 38% 35%,#fffdf5,#e8ecff 60%,#c9d3ff);box-shadow:0 0 60px 16px rgba(190,205,255,.35);opacity:0;transition:opacity 1.4s}
+body.theme-night .moon{opacity:.9}
+.tree{position:fixed;right:-8%;bottom:-3%;width:min(78vw,460px);z-index:0;pointer-events:none;opacity:.9}
+.tree path{fill:none;stroke:var(--br);stroke-linecap:round;transition:stroke 1.2s}
+.tree circle{fill:var(--bl);opacity:.8;transition:fill 1.2s}
+body.theme-night .tree circle{opacity:.55}
+#petals{position:fixed;inset:0;z-index:1;pointer-events:none}
+.page{position:relative;z-index:2;max-width:36rem;margin:0 auto;padding:6.5rem 1.5rem 5rem}
+.hero{text-align:center;margin-bottom:4rem}
+.kicker{font-style:italic;font-size:.95rem;color:var(--soft);margin-bottom:1rem;transition:color 1.2s}
+h1{font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(2.6rem,9vw,4.4rem);line-height:1.1;transition:color 1.2s}
+.sec{--c:#3f7fb0}.sec.ren{--c:#3f7fb0}.sec.haruki{--c:#e3a63b}.sec.narr{--c:#b2638a}
+.pov{display:flex;align-items:center;gap:.8rem;margin:3.6rem 0 1.4rem}
+.sec:first-of-type .pov{margin-top:0}
+.pov .dot{width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 12px 2px var(--c)}
+.pov-name{font-family:"Shippori Mincho",serif;font-weight:700;font-size:1.1rem;color:var(--c)}
+.pov::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--c),transparent);opacity:.55}
+.sec p{font-size:1.1rem;line-height:1.9;margin-bottom:.85em;color:var(--text);transition:color 1.2s}
+.sec p.dialogue{color:var(--c)}
+.sec p.inner{font-style:italic;color:var(--soft)}
+.sec p.aside{font-family:"Shippori Mincho",serif;font-size:.95rem;letter-spacing:.04em;color:#b2638a;margin:1.6em 0 .3em}
+.sec p.sora-t{color:#b2638a}
+.sec p.climax{text-align:center;font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(1.3rem,3.4vw,1.7rem);line-height:1.55;color:var(--c);margin:1.9em 0 1.3em}
+.sec p.climax::before{content:"";display:block;width:14px;height:14px;margin:0 auto .8em;background:linear-gradient(135deg,#f9c9d8,#e08aa8);border-radius:50% 0 50% 50%;transform:rotate(-45deg)}
+.sec p.stanza{text-align:center;font-style:italic;color:var(--soft);margin-bottom:.6em}
+.sec p.fin{text-align:center;font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(1.45rem,4.4vw,2.1rem);line-height:1.4;margin:1.2em 0 0;color:var(--text)}
+footer{margin-top:4.5rem;padding-top:2rem;border-top:1px solid var(--rule);transition:border-color 1.2s}
+footer::before{content:"";display:block;width:8px;height:8px;margin:0 auto;background:#e08aa8;border-radius:2px;transform:rotate(45deg)}
+@media(max-width:480px){.page{padding:5.5rem 1.25rem 4rem}.sec p{font-size:1.04rem}.tree{opacity:.6}}
+@media(prefers-reduced-motion:reduce){#petals{display:none}.sky,.moon,.tree path,.tree circle,.sec p,h1,.kicker{transition:none}}
+</style>
+</head>
+<body class="theme-day">
+<div class="sky day"></div><div class="sky night"></div><div class="sky dawn"></div><div class="moon"></div>
+<svg class="tree" viewBox="0 0 400 420" aria-hidden="true">
+  <path d="M330 420C326 360 312 320 296 270C284 232 262 206 226 176" stroke-width="16"/>
+  <path d="M296 270C322 238 350 220 380 150" stroke-width="9"/>
+  <path d="M262 206C240 160 196 132 150 118" stroke-width="7"/>
+  <path d="M226 176C190 170 150 190 110 176" stroke-width="5"/>
+  <circle cx="226" cy="170" r="40"/><circle cx="150" cy="116" r="34"/><circle cx="108" cy="176" r="28"/>
+  <circle cx="378" cy="148" r="34"/><circle cx="340" cy="204" r="30"/><circle cx="200" cy="128" r="30"/>
+  <circle cx="272" cy="146" r="36"/><circle cx="300" cy="96" r="26"/><circle cx="64" cy="140" r="20"/><circle cx="250" cy="228" r="22"/>
+</svg>
+<canvas id="petals" aria-hidden="true"></canvas>
+<div class="page">
+  <header class="hero">
+    <p class="kicker">The Petal That Falls With A Smile — Volume III</p>
+    <h1>The Tree</h1>
+  </header>
+  <main class="story">
+    <section class="sec ren" data-theme="day">
+    <div class="pov"><span class="dot"></span><span class="pov-name">POV: Ren</span></div>
+    <p>There she was.</p>
+    <p>Sora.</p>
+    <p>Sitting beneath the sakura tree.</p>
+    <p>It was blooming — soft pink petals drifting slowly, like the world had decided to slow down just for her. I stopped a few steps away, suddenly unsure if I should interrupt.</p>
+    <p class="inner">Calm down, Ren. Just talk.</p>
+    <p>I walked closer.</p>
+    <p class="dialogue">“Sora.”</p>
+    <p>She looked up and smiled. “Oh… hi, Ren.”</p>
+    <p>She didn’t move. Just patted the space beside her.</p>
+    <p>I sat down.</p>
+    <p>For a moment, neither of us spoke. The petals kept falling.</p>
+    <p>Then my heart did something stupid — it sped up.</p>
+    <p>“Sora,” I said quickly, before I could lose the courage, “are you free this Sunday?”</p>
+    <p>She blinked. “Sunday?”</p>
+    <p>“Y-yeah,” I scratched the back of my neck. “If you are, I mean.”</p>
+    <p>She tilted her head slightly. “Why? Do you need help with something?”</p>
+    <p>“No— I mean—” I inhaled. “There’s this movie. I thought maybe… you’d like to watch it with me.”</p>
+    <p class="inner">A movie.</p>
+    <p>I waited.</p>
+    <p>Her eyes softened.</p>
+    <p class="aside">Thoughts — Sora:</p>
+    <p class="inner sora-t">With him… a movie? I’d love that.</p>
+    <p>“Yes,” she said. “I will.”</p>
+    <p>It took me a second to process.</p>
+    <p class="dialogue">“R-really?”</p>
+    <p>She nodded. “Yeah.”</p>
+    <p>I tried to stay calm, but inside—</p>
+    <p class="inner">I said it. I actually said it.</p>
+    <p>“Then,” I smiled, “it’s a date.”</p>
+    <p>She didn’t deny it.</p>
+    <p class="climax">The petals kept falling.</p>
+    </section>
+    <section class="sec haruki" data-theme="night">
+    <div class="pov"><span class="dot"></span><span class="pov-name">POV: Haruki</span></div>
+    <p>Night.</p>
+    <p>My room was quiet.</p>
+    <p>Too quiet.</p>
+    <p>I lay on my bed, staring at the ceiling, replaying the last few days over and over.</p>
+    <p>Noa’s smile.</p>
+    <p>Her laugh.</p>
+    <p>The way she walked beside me without asking for anything.</p>
+    <p>And suddenly… it was clear.</p>
+    <p>I sat up.</p>
+    <p>“So that’s it,” I muttered.</p>
+    <p>I wasn’t confused anymore.</p>
+    <p>Not about Sora.</p>
+    <p>Not about the past.</p>
+    <p>Not about myself.</p>
+    <p>“I’ll confess,” I said aloud.</p>
+    <p>Not loudly. Not dramatically.</p>
+    <p>“I’ll tell her how I feel.”</p>
+    <p>I already knew where.</p>
+    <p class="inner">Under that damn sakura tree.</p>
+    <p class="climax">The place where things once ended… would become the place where something new begins.</p>
+    <p>I looked out the window.</p>
+    <p>Spring had come again.</p>
+    <p>And this time — I wasn’t afraid of it.</p>
+    </section>
+    <section class="sec narr" data-theme="dawn">
+    <div class="pov"><span class="dot"></span><span class="pov-name">Narrator</span></div>
+    <p class="stanza">Some trees witness heartbreak.</p>
+    <p class="stanza">Some witness healing.</p>
+    <p class="stanza">And some…</p>
+    <p class="fin">Wait patiently for the right love to arrive.</p>
+    </section>
+  </main>
+  <footer></footer>
+</div>
+<script>
+(function(){
+  var secs=document.querySelectorAll(".sec");
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)document.body.className="theme-"+e.target.dataset.theme})},{rootMargin:"-50% 0px -50% 0px"});
+    secs.forEach(function(s){io.observe(s)});
+  }
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  var cv=document.getElementById("petals"),cx=cv.getContext("2d"),W,H,ps=[];
+  var PINK=["#ffb7c5","#f4a7c3","#f9c9d8","#e8b4d8"],NIGHT=["#cdd6ff","#e9d3ff","#ffd6e8"];
+  function size(){W=cv.width=innerWidth;H=cv.height=innerHeight}size();addEventListener("resize",size);
+  function mk(y){var n=document.body.classList.contains("theme-night"),c=n?NIGHT:PINK;ps.push({x:Math.random()*W,y:y,s:Math.random()*6+5,v:Math.random()*.4+.25,d:(Math.random()-.5)*.25,r:Math.random()*6,rv:(Math.random()-.5)*.015,t:Math.random()*6,c:c[Math.floor(Math.random()*c.length)],o:Math.random()*.25+.25})}
+  for(var i=0;i<12;i++)mk(Math.random()*H);
+  (function loop(){cx.clearRect(0,0,W,H);
+    for(var i=ps.length-1;i>=0;i--){var p=ps[i];p.t+=.012;p.y+=p.v;p.x+=p.d+Math.sin(p.t)*.35;p.r+=p.rv;
+      cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.globalAlpha=p.o;cx.fillStyle=p.c;cx.beginPath();cx.ellipse(0,0,p.s,p.s*.52,0,0,Math.PI*2);cx.fill();cx.restore();
+      if(p.y>H+20)ps.splice(i,1)}
+    if(Math.random()<.02)mk(-20);requestAnimationFrame(loop)})();
+})();
+</script>
+</body>
+</html>

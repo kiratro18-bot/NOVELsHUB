@@ -66,7 +66,7 @@ h1 em{color:var(--petal);font-weight:400}
 <canvas id="petals"></canvas>
 
 <div class="top">
-  <a href="../../index.html" class="pill-btn">← Back to Home</a>
+  <a href="../index.html" class="pill-btn">← Back to Home</a>
   <button id="themeBtn" class="pill-btn" onclick="toggleTheme()" aria-label="Switch dusk / dawn">☀️</button>
 </div>
 
@@ -101,8 +101,21 @@ h1 em{color:var(--petal);font-weight:400}
 <script>
 // Add chapters here. available:true makes the card a link; false shows it locked.
 var CHAPTERS=[
-  {num:1,title:"will air on 25th oct",file:"#",available:false},
-  {num:2,title:"will air on 25th oct",file:"#",available:false},
+  {num:1,title:"She Understood",file:"#",available:true},
+  {num:2,title:" Fireworks",file:"#",available:true},
+  {num:3,title:"will air on 1st nov",file:"#",available:false},
+  {num:4,title:"will air on 8th nov",file:"#",available:false},
+  {num:5,title:"will air on 15th nov",file:"#",available:false},
+  {num:6,title:"will air on 15th nov",file:"#",available:false},
+  {num:7,title:"will air on 22th nov",file:"#",available:false},
+  {num:8,title:"will air on 29th Dec",file:"#",available:false}, 
+  {num:9,title:"will air on 6th Dec",file:"#",available:false},
+  {num:10,title:"will air on 13th Dec",file:"#",available:false},
+  {num:11,title:"will air on 13th Dec",file:"#",available:false},
+
+
+
+
 ];
 var tl=document.getElementById("timeline");
 tl.innerHTML=CHAPTERS.map(function(c){

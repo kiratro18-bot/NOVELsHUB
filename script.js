@@ -144,11 +144,11 @@ var novels = [
     },
     {
         order: 18, title: "Prequel of The Petal That Falls With A Smile", img: "./img/sub2/p1.jpg", link: "./tptfwas/p.html", genres: ["drama", "sad"], status: "Completed", ch: 5, rating: 4.9, views: 16000, releaseOffsetDays: 0,
-        blurb: "Sora and Ren story!", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
+        blurb: "TRY IT!", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
     },
     {
-        order: 19, title: "The Petal That Falls With A Smile vol 4", img: "./img/sub2/tpv4.jpg", link: "./tptfwas/tptfwasv4.html", genres: ["drama", "slice"], status: "upcoming", ch: 0, rating: null, views: null, releaseOffsetDays: 0,
-        blurb: "Volume 4 — University → Adulthood Arc", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["upcoming"]
+        order: 19, title: "The Petal That Falls With A Smile vol 4", img: "./img/sub2/tpv4.jpg", link: "./tptfwas/tptfwasv4.html", genres: ["drama", "slice"], status: "ongoing", ch: 2, rating: 4.5, views: 5900, releaseOffsetDays: 0,
+        blurb: "Volume 4 — University → Adulthood Arc", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
     }
 ];
 var storyWorlds = [
@@ -334,7 +334,7 @@ function syncVol2Announcement() {
     var remaining = Math.ceil((ends.getTime() - now.getTime()) / 86400000);
     banner.hidden = remaining <= 0;
     var section = document.getElementById('announcements');
-    if (section) section.hidden = remaining <= 0;
+    if (section) section.hidden = remaining <= 0 && !document.getElementById('petalVol4Announcement');
     if (remaining > 0) {
         var label = document.getElementById('vol2AnnouncementRemaining');
         if (label) label.textContent = remaining === 1 ? 'last day' : remaining + ' days left';
@@ -537,11 +537,16 @@ var heroFeaturedIndex = 0;
 var heroRotateTimer = null;
 
 function renderHero() {
-    heroFeaturedList = novels
+    var eligible = novels
         .filter(function (n) { return n.status !== 'upcoming' && n.ch > 0; })
         .slice()
-        .sort(function (a, b) { return b.views - a.views; })
-        .slice(0, 3);
+        .sort(function (a, b) { return (Number(b.views) || 0) - (Number(a.views) || 0); });
+    var petalFeatured = eligible.filter(function (n) {
+        return n.order === 11 || n.order === 19;
+    }).sort(function (a, b) { return a.order === 11 ? -1 : 1; });
+    heroFeaturedList = petalFeatured.concat(eligible.filter(function (n) {
+        return petalFeatured.every(function (petal) { return petal.order !== n.order; });
+    }).slice(0, Math.max(0, 3 - petalFeatured.length))).slice(0, 3);
     if (!heroFeaturedList.length) return;
 
     heroFeaturedIndex = 0;
@@ -758,6 +763,7 @@ function refreshReadingUI() {
     renderReaderStreak();
     renderReadingHistory();
     renderStoryWorlds();
+    renderForYouPicks();
 }
 function updateQueueButton(order) {
     var button = document.getElementById('spQueueBtn');
@@ -781,6 +787,7 @@ function toggleReadingQueue(order) {
     store.set('readingQueue', readingQueue);
     updateQueueButton(novel.order);
     renderReadingQueue();
+    renderForYouPicks();
 }
 function renderReadingQueue() {
     var list = document.getElementById('readingQueueList');
@@ -934,6 +941,43 @@ function runStoryMatch() {
     result.innerHTML = '<div class="story-match-cover" style="background:linear-gradient(' + n.grad + ')"><img src="' + esc(n.img) + '" alt="" onerror="imgFail(this)"></div>' +
         '<div class="story-match-copy"><span class="story-match-fit">' + fitLabel + ' · about ' + pick.minutes + ' min</span><strong>' + esc(n.title) + '</strong><span>' + esc(n.blurb) + '</span></div>' +
         '<button class="pill-btn" type="button" onclick="openSpotlight(' + n.order + ')">View story →</button>';
+}
+
+/* ============================================================
+   FOR YOU — PRIVATE, EXPLAINABLE BETA RECOMMENDATIONS
+   ============================================================ */
+function renderForYouPicks() {
+    var grid = document.getElementById('forYouGrid');
+    if (!grid) return;
+    var affinity = {};
+    novels.forEach(function (n) {
+        var read = getRead(n);
+        var weight = Math.min(read, 8) + (bookmarks[n.order] ? 3 : 0) + (currentlyReadingOrder === n.order ? 2 : 0);
+        if (!weight) return;
+        n.genres.forEach(function (genre) { affinity[genre] = (affinity[genre] || 0) + weight; });
+    });
+    var hasHistory = Object.keys(affinity).length > 0;
+    var scored = novels.filter(function (n) {
+        return n.status.toLowerCase() !== 'upcoming' && n.ch > 0 && getRead(n) < n.ch;
+    }).map(function (n) {
+        var read = getRead(n);
+        var genreScore = n.genres.reduce(function (sum, genre) { return sum + (affinity[genre] || 0); }, 0);
+        var queued = !!readingQueue[n.order];
+        var isCurrent = currentlyReadingOrder === n.order;
+        var score = (hasHistory ? genreScore : (Number(n.rating) || 0)) + (queued ? 4 : 0) + (isCurrent ? 5 : 0) + (read ? 2 : 0);
+        var reason = isCurrent ? 'Pick up where you left off' : queued ? 'Already waiting in your queue' : read ? 'Continue a story you started' : hasHistory && genreScore ? 'Matches genres you read and save' : 'A reader favorite to get you started';
+        return { novel: n, score: score, reason: reason };
+    }).sort(function (a, b) { return b.score - a.score || a.novel.order - b.novel.order; }).slice(0, 3);
+    if (!scored.length) {
+        grid.innerHTML = '<p class="for-you-empty">You have finished every available story. New releases will show up here when they arrive.</p>';
+        return;
+    }
+    grid.innerHTML = scored.map(function (pick, index) {
+        var n = pick.novel;
+        var read = getRead(n);
+        var progress = n.ch ? Math.round(read / n.ch * 100) : 0;
+        return '<article class="for-you-card"><span class="for-you-rank">0' + (index + 1) + '</span><div class="for-you-cover" style="background:linear-gradient(' + esc(n.grad) + ')"><img src="' + esc(n.img) + '" alt="" loading="lazy" onerror="imgFail(this)"></div><div class="for-you-copy"><span class="for-you-reason">' + esc(pick.reason) + '</span><strong>' + esc(n.title.trim()) + '</strong><span class="for-you-meta">' + (read ? read + ' of ' + n.ch + ' chapters · ' + progress + '% complete' : esc(n.genres.join(' · '))) + '</span><button class="pill-btn" type="button" onclick="openSpotlight(' + n.order + ')">' + (read ? 'Continue reading' : 'Explore story') + ' →</button></div></article>';
+    }).join('');
 }
 
 /* ============================================================
@@ -1499,6 +1543,27 @@ function toggleAchievements() {
         : 'Minimize achievements <span aria-hidden="true">⌃</span>';
     store.set('achievementsCollapsed', collapsed);
 }
+function toggleSectionContent(contentId, buttonId, storageKey, label) {
+    var content = document.getElementById(contentId);
+    var button = document.getElementById(buttonId);
+    if (!content || !button) return;
+    var collapsed = !content.hidden;
+    content.hidden = collapsed;
+    button.setAttribute('aria-expanded', String(!collapsed));
+    button.innerHTML = (collapsed ? 'Show ' : 'Minimize ') + label +
+        ' <span aria-hidden="true">' + (collapsed ? '⌄' : '⌃') + '</span>';
+    store.set(storageKey, collapsed);
+}
+function restoreSectionContent(contentId, buttonId, storageKey, label) {
+    var content = document.getElementById(contentId);
+    var button = document.getElementById(buttonId);
+    if (!content || !button) return;
+    var collapsed = store.get(storageKey, false);
+    content.hidden = collapsed;
+    button.setAttribute('aria-expanded', String(!collapsed));
+    button.innerHTML = (collapsed ? 'Show ' : 'Minimize ') + label +
+        ' <span aria-hidden="true">' + (collapsed ? '⌄' : '⌃') + '</span>';
+}
 function shareReaderAch(idx) {
     var a = readerAchievementDefs[idx];
     if (!a) return;
@@ -1581,7 +1646,7 @@ function renderHeatmap() {
 var upcomingReleases = [
     { date: '2026-10-26', title: "The Other Day - Chapter 9" },
     { date: '2026-10-26', title: 'Him and Her vol 3 - chapter 7 and 8' }, 
-    { date: '2026-10-25', title: 'Petal Vol. 4 —  University → Adulthood Arc ' },
+    { date: '2026-11-01', title: 'Petal Vol. 4 — chpater 3 ' },
 ];
 var calSorted = [];
 var releaseReminders = store.get('releaseReminders', []);
@@ -1849,6 +1914,10 @@ window.addEventListener('load', function () {
     renderReadingHistory();
     renderStoryWorlds();
     renderStorySampler();
+    renderForYouPicks();
+    restoreSectionContent('storySamplerContent', 'storySamplerToggle', 'storySamplerCollapsed', 'story sampler');
+    restoreSectionContent('storyWorldGrid', 'storyWorldsToggle', 'storyWorldsCollapsed', 'connected stories');
+    restoreSectionContent('leaderboardContent', 'leaderboardToggle', 'leaderboardCollapsed', 'leaderboard');
     var achievementsCollapsed = store.get('achievementsCollapsed', false);
     var achievementGrid = document.getElementById('achievementGrid');
     var achievementToggle = document.getElementById('achievementsToggle');
@@ -1859,7 +1928,7 @@ window.addEventListener('load', function () {
             ? 'Show achievements <span aria-hidden="true">⌄</span>'
             : 'Minimize achievements <span aria-hidden="true">⌃</span>';
     }
-    var defaultLightMode = document.body.classList.contains('editorial') ? 'on' : 'off';
+    var defaultLightMode = 'on';
     var wantLight = store.get('lightMode', defaultLightMode) === 'on';
     document.body.classList.toggle('light', wantLight);
     var t = document.getElementById('lightToggle');

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Last Year — The Petal That Falls With A Smile, Vol. IV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{--text:#2b2433;--soft:#6f6680;--haruki:#c27d1f;--sora:#c4577f;--ren:#3f7fb0;--nao:#2f8f78}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#eef6fb}
+body{font-family:"Source Serif 4",Georgia,serif;color:var(--text);min-height:100vh;overflow-x:hidden;background:linear-gradient(180deg,#eef6fb 0%,#fbf1f6 60%,#fff3f6 100%) fixed;position:relative}
+.branch{position:absolute;top:0;right:0;width:min(60vw,380px);opacity:.8;pointer-events:none;z-index:0}
+#petals{position:fixed;inset:0;z-index:1;pointer-events:none}
+.page{position:relative;z-index:2;max-width:36rem;margin:0 auto;padding:7rem 1.5rem 7rem}
+.hero{text-align:center;margin-bottom:3.6rem}
+.kicker{font-style:italic;font-size:.95rem;color:var(--soft);margin-bottom:1rem}
+h1{font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(2.5rem,8.5vw,4.2rem);line-height:1.1;margin-bottom:1.6rem}
+.epigraph{font-style:italic;font-size:1.2rem;line-height:1.7;color:var(--soft);max-width:28rem;margin:0 auto}
+.sec{--c:var(--haruki)}.sec.haruki{--c:var(--haruki)}.sec.sora{--c:var(--sora)}
+.pov{display:flex;align-items:center;gap:.8rem;margin:3.4rem 0 1.4rem}
+.sec:first-of-type .pov{margin-top:0}
+.pov .dot{width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 12px 2px var(--c)}
+.pov-name{font-family:"Shippori Mincho",serif;font-weight:700;font-size:1.1rem;color:var(--c)}
+.pov::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--c),transparent);opacity:.5}
+.sec p{font-size:1.1rem;line-height:1.85;margin-bottom:.85em}
+.sec p.inner{font-style:italic;color:var(--soft)}
+.sec p.say{margin-bottom:.5em}
+.sec p.say.cont{margin-top:-.2em}
+.who{font-family:"Shippori Mincho",serif;font-weight:700;margin-right:.3em}
+.who.haruki,.nm.haruki{color:var(--haruki)}.who.sora,.nm.sora{color:var(--sora)}.who.ren,.nm.ren{color:var(--ren)}.who.nao,.nm.nao{color:var(--nao)}
+.nm{font-weight:600}
+.sec p.aside{font-family:"Shippori Mincho",serif;font-size:.95rem;margin:1.5em 0 .3em}
+.aside.haruki{color:var(--haruki)}.aside.sora{color:var(--sora)}
+.sec p.beat{margin:1.4em 0}
+.dock{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:flex;align-items:center;padding:9px 15px;border-radius:22px;background:rgba(255,255,255,.72);backdrop-filter:blur(8px);border:1px solid rgba(43,36,51,.1);z-index:5;pointer-events:none}
+.dk{width:12px;height:12px;border-radius:50%;margin:0 5px;background:var(--k);box-shadow:0 0 8px 1px var(--k);transition:width .9s,margin .9s,opacity .9s,transform .9s}
+.dk.haruki{--k:var(--haruki)}.dk.sora{--k:var(--sora)}.dk.nao{--k:var(--nao)}.dk.ren{--k:var(--ren)}
+.dk.nao,.dk.ren{width:0;margin:0;opacity:0;transform:translateY(14px) scale(.5)}
+body.arrived .dk.nao,body.arrived .dk.ren{width:12px;margin:0 5px;opacity:1;transform:none}
+footer{text-align:center;margin-top:4.5rem;padding-top:2rem;border-top:1px solid rgba(43,36,51,.14);font-family:"Shippori Mincho",serif;font-size:.95rem;letter-spacing:.08em;color:var(--soft)}
+footer::before{content:"";display:block;width:8px;height:8px;margin:0 auto 1rem;background:#e08aa8;border-radius:2px;transform:rotate(45deg)}
+@media(max-width:480px){.page{padding:6rem 1.25rem 6rem}.sec p{font-size:1.04rem}}
+@media(prefers-reduced-motion:reduce){#petals{display:none}.dk{transition:none}}
+</style>
+</head>
+<body>
+<svg class="branch" viewBox="0 0 300 260" fill="none" aria-hidden="true">
+  <path d="M300 14C255 34 205 40 160 92S75 152 22 150" stroke="#7a5656" stroke-width="3" stroke-linecap="round"/>
+  <path d="M205 44C196 76 176 96 150 108M120 118C108 150 84 166 60 170M246 28C240 54 222 72 204 82" stroke="#7a5656" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="150" cy="108" r="7" fill="#f4a7c3"/><circle cx="60" cy="170" r="6" fill="#f9c9d8"/><circle cx="204" cy="82" r="6.5" fill="#f9c9d8"/>
+  <circle cx="22" cy="150" r="6" fill="#f4a7c3"/><circle cx="256" cy="26" r="5.5" fill="#f9c9d8"/><circle cx="120" cy="118" r="5" fill="#f4a7c3"/>
+  <ellipse cx="232" cy="52" rx="9" ry="4.5" fill="#8fc79a" transform="rotate(-30 232 52)"/><ellipse cx="170" cy="86" rx="9" ry="4.5" fill="#8fc79a" transform="rotate(25 170 86)"/><ellipse cx="88" cy="146" rx="8" ry="4" fill="#8fc79a" transform="rotate(-20 88 146)"/>
+</svg>
+<canvas id="petals" aria-hidden="true"></canvas>
+<div class="dock" aria-hidden="true"><i class="dk haruki"></i><i class="dk sora"></i><i class="dk nao"></i><i class="dk ren"></i></div>
+<div class="page">
+  <header class="hero">
+    <p class="kicker">The Petal That Falls With A Smile — Volume IV </p>
+    <h1>Our Last Year</h1>
+    <p class="epigraph">It's spring again, but I think this is going to be my last memorable spring.</p>
+  </header>
+  <main class="story">
+    <section class="sec haruki">
+    <div class="pov"><span class="dot"></span><span class="pov-name">Haruki's POV</span></div>
+    <p>I promised myself that I would confess to her soon.</p>
+    <p>But time passed so quickly, and now we're in the final year of our university life.</p>
+    <p class="inner">What a hell of a ride it was...</p>
+    <p>Our group of four! Or should I say, the unexpected four of us?</p>
+    <p>Me, <span class="nm nao">Nao</span>, <span class="nm sora">Sora</span>, and <span class="nm ren">Ren</span>.</p>
+    <p>Lol.</p>
+    <p class="inner">I think this sakura tree has seen more than anyone else.</p>
+    <p class="inner">And who's sitting there now?</p>
+    </section>
+    <section class="sec sora">
+    <div class="pov"><span class="dot"></span><span class="pov-name">Sora's POV</span></div>
+    <p>This sakura tree is beautiful. Sitting here is so quiet and peaceful.</p>
+    <p class="inner">But who's staring at me?</p>
+    <p>The boy approaches the tree.</p>
+    <p class="say"><span class="who sora">Sora:</span> Oh, it's you, Haruki.</p>
+    <p class="say"><span class="who haruki">Haruki:</span> Y-yeah, it's me...</p>
+    <p class="aside haruki">Haruki's thoughts:</p>
+    <p class="inner">The awkwardness is still there...</p>
+    <p class="aside sora">Sora's thoughts:</p>
+    <p class="inner">What should I say to keep the conversation going?</p>
+    <p class="say"><span class="who haruki">Haruki:</span> About high school—</p>
+    <p class="say"><span class="who sora">Sora:</span> What about it?</p>
+    <p class="say"><span class="who haruki">Haruki:</span> That time when I confessed to you...</p>
+    <p class="say"><span class="who sora">Sora:</span> Oh, yeah. I didn't give you a proper answer, did I?</p>
+    <p class="say"><span class="who haruki">Haruki:</span> Yeah, but there's no need for it anymore...</p>
+    <p class="say"><span class="who sora">Sora:</span> Oh... So, have you hated me all this time?</p>
+    <p class="say"><span class="who haruki">Haruki:</span> Hated you? For a while, back in high school, maybe. But not anymore... I don't hate you.</p>
+    <p class="say cont">I want to ask you something. Can I?</p>
+    <p class="say"><span class="who sora">Sora:</span> Sure...</p>
+    <p class="say"><span class="who haruki">Haruki:</span> Ren is the boy you pushed away back then, right?</p>
+    <p>Sora looks shocked.</p>
+    <p class="say"><span class="who sora">Sora:</span> How do you know?</p>
+    <p class="say"><span class="who haruki">Haruki:</span> No one told me, Sora. I figured it out myself...</p>
+    <p class="say"><span class="who sora">Sora:</span> Oh, yeah...</p>
+    <p>She pauses for a moment before speaking again.</p>
+    <p class="say"><span class="who sora">Sora:</span> Haruki, you're in love with Nao, aren't you?</p>
+    <p class="say"><span class="who haruki">Haruki:</span> What?</p>
+    <p class="say"><span class="who sora">Sora:</span> Don't try to hide it. You're easy to read...</p>
+    <p class="say cont">So, when are you going to confess to her?</p>
+    <p class="say cont">She's waiting...</p>
+    <p class="say"><span class="who haruki">Haruki:</span> She's waiting?! What does that mean...?</p>
+    <p class="beat" data-b="arrive">Suddenly, Ren and Nao arrive.</p>
+    <p class="say"><span class="who nao">Nao:</span> Haruki! Sora! What are you two doing here?</p>
+    <p class="say cont">We're going to be late for the lecture!</p>
+    <p class="say"><span class="who ren">Ren:</span> Yeah, let's go, guys.</p>
+    <p class="say"><span class="who haruki">Haruki:</span> Y-yeah, yeah...</p>
+    <p>Sora leans closer and whispers into Haruki's ear.</p>
+    <p class="say"><span class="who sora">Sora:</span> From now on, no hard feelings. We're friends, aren't we?</p>
+    <p class="say"><span class="who haruki">Haruki:</span> Sure...</p>
+    </section>
+  </main>
+  <footer>End of Chapter </footer>
+</div>
+<script>
+(function(){
+  var t=document.querySelector("[data-b=arrive]");
+  if("IntersectionObserver" in window&&t){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){document.body.classList.add("arrived");io.disconnect()}})},{threshold:.9,rootMargin:"0px 0px -15% 0px"});
+    io.observe(t);
+  }else document.body.classList.add("arrived");
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  var cv=document.getElementById("petals"),cx=cv.getContext("2d"),W,H,ps=[],C=["#ffb7c5","#f4a7c3","#f9c9d8","#e8b4d8"];
+  function size(){W=cv.width=innerWidth;H=cv.height=innerHeight}size();addEventListener("resize",size);
+  function mk(y){ps.push({x:Math.random()*W,y:y,s:Math.random()*6+5,v:Math.random()*.4+.25,d:(Math.random()-.5)*.25,r:Math.random()*6,rv:(Math.random()-.5)*.015,t:Math.random()*6,c:C[Math.floor(Math.random()*C.length)],o:Math.random()*.25+.25})}
+  for(var i=0;i<12;i++)mk(Math.random()*H);
+  (function loop(){cx.clearRect(0,0,W,H);
+    for(var i=ps.length-1;i>=0;i--){var p=ps[i];p.t+=.012;p.y+=p.v;p.x+=p.d+Math.sin(p.t)*.35;p.r+=p.rv;
+      cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.globalAlpha=p.o;cx.fillStyle=p.c;cx.beginPath();cx.ellipse(0,0,p.s,p.s*.52,0,0,Math.PI*2);cx.fill();cx.restore();
+      if(p.y>H+20)ps.splice(i,1)}
+    if(Math.random()<.02)mk(-20);requestAnimationFrame(loop)})();
+})();
+</script>
+</body>
+</html>

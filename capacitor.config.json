@@ -1,0 +1,9 @@
+{
+  "appId": "com.aka.novelsbyaka",
+  "appName": "Novels by AKA",
+  "webDir": "www",
+  "backgroundColor": "#252a38",
+  "android": {
+    "allowMixedContent": false
+  }
+}
