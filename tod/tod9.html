@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 9 — The Girl in the Photograph</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&family=Space+Grotesk:wght@500;700&family=Caveat:wght@600;700&family=Space+Mono:wght@400;700&display=swap');
+
+        :root {
+            --paper: #EDEAE0;
+            --paper-2: #E1DECE;
+            --ink: #232A38;
+            --ink-soft: #59617a;
+            --rule: rgba(35, 42, 56, 0.075);
+            --margin: #c1442e;
+            --margin-soft: rgba(193, 68, 46, 0.38);
+            --entry-paper: #f4ecd2;
+            --entry-ink: #8a2d1f;
+            --highlight: #e7d089;
+            --tape: rgba(255, 255, 255, 0.6);
+
+            --font-body: 'Literata', serif;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-hand: 'Caveat', cursive;
+            --font-mono: 'Space Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--paper);
+            background-image: repeating-linear-gradient(var(--paper) 0px, var(--paper) 40px, var(--rule) 41px);
+            color: var(--ink);
+            font-family: var(--font-body);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .sheet {
+            position: relative;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 8vh 40px 14vh 100px;
+        }
+
+        .sheet::before {
+            content: "";
+            position: absolute;
+            left: 58px;
+            top: 0;
+            bottom: 0;
+            width: 1.5px;
+            background: var(--margin-soft);
+        }
+
+        .holes {
+            position: absolute;
+            left: 22px;
+            top: 70px;
+            bottom: 70px;
+            width: 16px;
+            background-repeat: repeat-y;
+            background-size: 16px 92px;
+            background-image:
+                radial-gradient(circle at 8px 7px, rgba(35, 42, 56, 0.14) 6px, transparent 6.6px),
+                radial-gradient(circle at 8px 9px, rgba(255, 255, 255, 0.55) 5.5px, transparent 6px);
+        }
+
+        header.cover {
+            margin-bottom: 7vh;
+        }
+
+        .stamp {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--margin);
+            border: 1.5px solid var(--margin);
+            border-radius: 2px;
+            padding: 4px 11px;
+            transform: rotate(-3deg);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: clamp(2rem, 6vw, 3.1rem);
+            line-height: 1.08;
+            color: var(--ink);
+            margin: 0 0 14px;
+        }
+
+        .sub {
+            font-family: var(--font-hand);
+            font-weight: 600;
+            font-size: 1.35rem;
+            color: var(--ink-soft);
+            margin: 0;
+        }
+
+        .story p {
+            font-size: clamp(1.02rem, 1.1vw + 0.7rem, 1.14rem);
+            line-height: 1.85;
+            color: var(--ink);
+            margin: 0 0 0.85em;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .story p.visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        .story p.speech {
+            position: relative;
+            padding-left: 1.3em;
+            color: #1b2130;
+        }
+
+        .story p.speech::before {
+            content: "\201C";
+            position: absolute;
+            left: 0;
+            top: -0.12em;
+            font-family: var(--font-display);
+            font-size: 1.35em;
+            color: var(--margin-soft);
+        }
+
+        .entry-page {
+            position: relative;
+            background: var(--entry-paper);
+            color: var(--entry-ink);
+            width: min(88%, 380px);
+            margin: 2.4em auto;
+            padding: 28px 26px 40px;
+            opacity: 0;
+            transform: rotate(0deg) scale(0.96);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+            box-shadow: 0 12px 22px rgba(35, 20, 10, 0.2), 0 2px 5px rgba(35, 20, 10, 0.14);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 91%, 96% 95%, 92% 90%, 88% 96%, 84% 91%, 80% 97%, 76% 91%, 72% 96%, 68% 90%, 64% 97%, 60% 91%, 56% 96%, 52% 90%, 48% 97%, 44% 91%, 40% 96%, 36% 90%, 32% 97%, 28% 91%, 24% 96%, 20% 90%, 16% 97%, 12% 91%, 8% 96%, 4% 90%, 0% 96%);
+        }
+
+        .entry-page.visible {
+            opacity: 1;
+            transform: rotate(-1.6deg) scale(1);
+        }
+
+        .entry-page .tape {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            width: 78px;
+            height: 24px;
+            background: var(--tape);
+            transform: translateX(-50%) rotate(-3deg);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+        }
+
+        .entry-text {
+            font-family: var(--font-hand);
+            font-weight: 700;
+            font-size: 1.65rem;
+            line-height: 1.3;
+            margin: 0;
+        }
+
+        .hl {
+            background-image: linear-gradient(100deg, var(--highlight) 0%, var(--highlight) 100%);
+            background-repeat: no-repeat;
+            background-size: 0% 55%;
+            background-position: 0 68%;
+            transition: background-size 0.9s ease 0.2s;
+            padding: 0 0.04em;
+        }
+
+        .entry-page.visible .hl {
+            background-size: 100% 55%;
+        }
+
+        .record-line {
+            margin: 0.5em 0 0.5em 0.1em;
+        }
+
+        .record-mark {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            letter-spacing: 0.02em;
+            color: var(--ink);
+            background: rgba(35, 42, 56, 0.06);
+            border: 1px solid rgba(35, 42, 56, 0.22);
+            border-radius: 2px;
+            padding: 3px 10px;
+        }
+
+        .faint-note {
+            font-family: var(--font-hand);
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: rgba(138, 45, 31, 0.5);
+            padding-left: 2em;
+            letter-spacing: 0.01em;
+        }
+
+        .faint-note.gone {
+            color: rgba(89, 97, 122, 0.45);
+            text-decoration: line-through;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 8vh;
+            font-family: var(--font-hand);
+            font-size: 1.2rem;
+            color: var(--ink-soft);
+        }
+
+        @media (max-width:560px) {
+            .sheet {
+                padding: 6vh 24px 12vh 46px;
+            }
+
+            .sheet::before {
+                left: 26px;
+            }
+
+            .holes {
+                display: none;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .story p,
+            .entry-page {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+            }
+
+            .hl {
+                background-size: 100% 55% !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sheet">
+        <div class="holes" aria-hidden="true"></div>
+
+        <header class="cover">
+            <span class="stamp">Ch. 09</span>
+            <h1>The Girl in the Photograph</h1>
+            <p class="sub">she has been waiting for you to remember.</p>
+        </header>
+
+        <main class="story">
+
+            <p>I didn't tell Mom about the key.</p>
+            <p>I didn't tell her about the messages either.</p>
+            <p>Mostly because I didn't know how.</p>
+            <p class="speech">"Hey, Mom. Remember that mysterious notebook you said ruined Dad's life? Someone just texted me about a girl I apparently forgot."</p>
+            <p>Yeah.</p>
+            <p>That conversation would go well.</p>
+            <p>So I put the key in my pocket and went upstairs.</p>
+            <p>I barely slept.</p>
+            <p>Again.</p>
+            <p>At some point, I started wondering if this was just what being a teenager was supposed to be like.</p>
+            <p>Homework.</p>
+            <p>Exams.</p>
+            <p>Bad sleep.</p>
+            <p>Mysterious notebooks connected to your missing father.</p>
+            <p>Maybe I was doing school wrong.</p>
+            <p>Monday morning came too quickly.</p>
+            <p>Kenta noticed immediately.</p>
+            <p class="speech">"You look dead."</p>
+            <p class="speech">"I'm fine."</p>
+            <p class="speech">"You say that like you're trying to convince me."</p>
+            <p class="speech">"I'm just tired."</p>
+            <p class="speech">"Again?"</p>
+            <p class="speech">"Yeah."</p>
+            <p>He looked at me for a few seconds.</p>
+            <p>Then he pushed a carton of milk across my desk.</p>
+            <p class="speech">"Drink."</p>
+            <p>I looked at it.</p>
+            <p class="speech">"What is this?"</p>
+            <p class="speech">"Milk."</p>
+            <p class="speech">"I know what milk is."</p>
+            <p class="speech">"Then why did you ask?"</p>
+            <p>I opened it.</p>
+            <p class="speech">"Thanks."</p>
+            <p>He shrugged.</p>
+            <p class="speech">"Don't die before the math test."</p>
+            <p class="speech">"That's touching."</p>
+            <p class="speech">"I need someone to copy homework from."</p>
+            <p class="speech">"There it is."</p>
+            <p>He smiled.</p>
+            <p>For a moment, things felt normal.</p>
+            <p>I almost wished they would stay that way.</p>
+            <p>Then Haru walked in.</p>
+            <p>He looked at me.</p>
+            <p>Then at my pocket.</p>
+            <p>I don't know how he knew.</p>
+            <p>But he did.</p>
+            <p class="speech">"Did you find something?"</p>
+            <p>I froze.</p>
+            <p class="speech">"What?"</p>
+            <p class="speech">"The key."</p>
+            <p>Kenta looked between us.</p>
+            <p class="speech">"What key?"</p>
+            <p class="speech">"Nothing," I said.</p>
+            <p>Haru kept looking at me.</p>
+            <p class="speech">"You shouldn't have it."</p>
+            <p>I lowered my voice.</p>
+            <p class="speech">"Where did you see it?"</p>
+            <p class="speech">"I didn't."</p>
+            <p class="speech">"Then how do you know?"</p>
+            <p>He didn't answer.</p>
+            <p>Kenta frowned.</p>
+            <p class="speech">"Okay, what the hell are you two talking about?"</p>
+            <p class="speech">"Nothing," Haru said.</p>
+            <p>I looked at him.</p>
+            <p class="speech">"You really like that word."</p>
+            <p>He gave me a tired smile.</p>
+            <p class="speech">"Yeah."</p>
+            <p>Then he sat down.</p>
+            <p>I waited until Kenta was distracted before taking the key out.</p>
+            <p>I placed it on my desk.</p>
+            <p>Haru stared at it.</p>
+            <p class="speech">"Where did you get that?"</p>
+            <p class="speech">"At home."</p>
+            <p class="speech">"From your father?"</p>
+            <p>I nodded.</p>
+            <p>Haru's expression changed.</p>
+            <p class="speech">"Then you need to put it back."</p>
+            <p class="speech">"No."</p>
+            <p class="speech">"Aki."</p>
+            <p class="speech">"I want answers."</p>
+            <p class="speech">"So do I."</p>
+            <p class="speech">"Then help me."</p>
+            <p>He looked away.</p>
+            <p class="speech">"I can't."</p>
+            <p class="speech">"Why?"</p>
+            <p class="speech">"Because I don't remember enough."</p>
+            <p>I wanted to argue.</p>
+            <p>Instead, I asked,</p>
+            <p class="speech">"Do you remember the girl?"</p>
+            <p>His head turned.</p>
+            <p class="speech">"What girl?"</p>
+            <p class="speech">"The one in the photograph."</p>
+            <p>He went completely still.</p>
+            <p class="speech">"You saw her?"</p>
+            <p class="speech">"Yes."</p>
+            <p class="speech">"Where?"</p>
+            <p class="speech">"At school."</p>
+            <p>He looked toward the classroom door.</p>
+            <p class="speech">"Who was she?"</p>
+            <p class="speech">"I don't know."</p>
+            <p class="speech">"Did she talk to you?"</p>
+            <p class="speech">"No."</p>
+            <p class="speech">"Then how do you know her?"</p>
+            <p class="speech">"I don't."</p>
+            <p>He stared at me.</p>
+            <p class="speech">"You're lying."</p>
+            <p class="speech">"I saw her in the photograph."</p>
+            <p class="speech">"No."</p>
+            <p>His voice was quiet.</p>
+            <p class="speech">"You remember her."</p>
+            <p>I didn't answer.</p>
+            <p>He leaned closer.</p>
+            <p class="speech">"What did she say?"</p>
+            <p>I hesitated.</p>
+            <p class="speech">"She told me not to forget her."</p>
+            <p>Haru looked down.</p>
+            <p>Then he laughed.</p>
+            <p>A short, nervous laugh.</p>
+            <p class="speech">"Of course."</p>
+            <p class="speech">"What?"</p>
+            <p class="speech">"Nothing."</p>
+            <p>I almost grabbed his shoulder.</p>
+            <p class="speech">"Stop saying that."</p>
+            <p>He looked at me.</p>
+            <p class="speech">"Her name was Yui."</p>
+            <p>The name felt familiar.</p>
+            <p>Not enough to remember.</p>
+            <p>Just enough to bother me.</p>
+            <p class="speech">"Yui what?"</p>
+            <p class="speech">"I don't know."</p>
+            <p class="speech">"You're kidding."</p>
+            <p class="speech">"I'm not."</p>
+            <p>He rubbed his eyes.</p>
+            <p class="speech">"Yui was there that day."</p>
+            <p class="speech">"April 17?"</p>
+            <p class="speech">"Yeah."</p>
+            <p class="speech">"What happened to her?"</p>
+            <p class="speech">"I don't know."</p>
+            <p class="speech">"Did she disappear too?"</p>
+            <p class="speech">"No."</p>
+            <p class="speech">"Then where is she?"</p>
+            <p>Haru looked at me.</p>
+            <p class="speech">"That's the problem."</p>
+            <p>Before I could ask what he meant, the bell rang.</p>
+            <p>Our teacher entered.</p>
+            <p>Haru turned around.</p>
+            <p>The conversation was over.</p>
+            <p>For the rest of the morning, I couldn't concentrate.</p>
+            <p>Yui.</p>
+            <p>The name kept circling around in my head.</p>
+            <p>I wrote it in the corner of my notebook.</p>
+            <p class="record-line"><span class="record-mark">Yui.</span></p>
+            <p>Then, without thinking, I wrote another word beneath it.</p>
+            <p class="record-line"><span class="record-mark">Rain.</span></p>
+            <p>I stopped.</p>
+            <p>Why had I written that?</p>
+            <p>I crossed it out.</p>
+            <p>During lunch, I went to the library.</p>
+            <p>I searched the school records again.</p>
+            <p>This time I searched for Yui.</p>
+            <p>There were several.</p>
+            <p class="record-line"><span class="record-mark">Yui Tanaka.</span></p>
+            <p class="record-line"><span class="record-mark">Yui Mori.</span></p>
+            <p class="record-line"><span class="record-mark">Yui Nakamura.</span></p>
+            <p>None of them looked familiar.</p>
+            <p>I kept searching.</p>
+            <p>Then I found a name.</p>
+            <p class="record-line"><span class="record-mark">Kurosawa Yui.</span></p>
+            <p class="record-line"><span class="record-mark">Class 3-B.</span></p>
+            <p>Last year.</p>
+            <p class="record-line"><span class="record-mark">Status: Transferred.</span></p>
+            <p>I stared at the screen.</p>
+            <p>Transferred.</p>
+            <p>Again.</p>
+            <p>I checked the date.</p>
+            <p class="record-line"><span class="record-mark">April 18.</span></p>
+            <p>The day after April 17.</p>
+            <p>I leaned back.</p>
+            <p class="speech">"Seriously?"</p>
+            <p>A voice behind me said,</p>
+            <p class="speech">"Looking for me?"</p>
+            <p>I turned.</p>
+            <p>Nobody was there.</p>
+            <p>My heart jumped.</p>
+            <p>Then I realized it had come from the computer beside me.</p>
+            <p>Kenta was sitting there.</p>
+            <p class="speech">"You scared me."</p>
+            <p class="speech">"Sorry."</p>
+            <p class="speech">"What are you doing here?"</p>
+            <p class="speech">"Same thing as you."</p>
+            <p class="speech">"I'm not doing anything."</p>
+            <p>He pointed at the screen.</p>
+            <p class="speech">"You're literally searching names."</p>
+            <p>I closed the page.</p>
+            <p class="speech">"I was curious."</p>
+            <p class="speech">"About?"</p>
+            <p class="speech">"Yui."</p>
+            <p>His expression changed.</p>
+            <p class="speech">"Oh."</p>
+            <p class="speech">"You know her?"</p>
+            <p class="speech">"Not really."</p>
+            <p class="speech">"But you remember her?"</p>
+            <p>He stared at the desk.</p>
+            <p class="speech">"I remember a girl."</p>
+            <p class="speech">"Was she in our class?"</p>
+            <p class="speech">"I think so."</p>
+            <p class="speech">"What do you remember?"</p>
+            <p>He took a breath.</p>
+            <p class="speech">"She used to sit near the window."</p>
+            <p>My stomach tightened.</p>
+            <p class="speech">"Anything else?"</p>
+            <p class="speech">"She was always drawing."</p>
+            <p class="speech">"Drawing what?"</p>
+            <p class="speech">"People."</p>
+            <p class="speech">"People?"</p>
+            <p class="speech">"Mostly."</p>
+            <p>He looked at me.</p>
+            <p class="speech">"She drew you a lot."</p>
+            <p>I didn't know what to say.</p>
+            <p class="speech">"Me?"</p>
+            <p class="speech">"Yeah."</p>
+            <p class="speech">"Why?"</p>
+            <p class="speech">"I don't know."</p>
+            <p>He shrugged.</p>
+            <p class="speech">"Maybe she liked drawing your stupid face."</p>
+            <p>I laughed.</p>
+            <p class="speech">"That's possible."</p>
+            <p>He smiled.</p>
+            <p>Then his smile disappeared.</p>
+            <p class="speech">"There was one thing."</p>
+            <p class="speech">"What?"</p>
+            <p class="speech">"She never drew your eyes."</p>
+            <p>I frowned.</p>
+            <p class="speech">"What does that mean?"</p>
+            <p class="speech">"I don't know."</p>
+            <p>He stood up.</p>
+            <p class="speech">"I've got to go."</p>
+            <p class="speech">"Wait."</p>
+            <p>He stopped.</p>
+            <p class="speech">"Why did she transfer?"</p>
+            <p class="speech">"I don't know."</p>
+            <p class="speech">"Everyone keeps transferring."</p>
+            <p class="speech">"Yeah."</p>
+            <p class="speech">"That's weird."</p>
+            <p>He nodded.</p>
+            <p class="speech">"Very."</p>
+            <p>He walked away.</p>
+            <p>I looked at the computer again.</p>
+            <p class="record-line"><span class="record-mark">Kurosawa Yui.</span></p>
+            <p class="record-line"><span class="record-mark">Transferred April 18.</span></p>
+            <p>I wrote the name down.</p>
+            <p>Then I remembered the key.</p>
+            <p>I took it out.</p>
+            <p>There was a tiny number engraved near the top.</p>
+            <p class="record-line"><span class="record-mark">17.</span></p>
+            <p>I looked around the library.</p>
+            <p>Then I understood.</p>
+            <p>Room 17?</p>
+            <p>Locker 17?</p>
+            <p>Something else?</p>
+            <p>I checked the old school map.</p>
+            <p>There were storage lockers in the basement.</p>
+            <p>Locker numbers.</p>
+            <p>17 was one of them.</p>
+            <p>I went downstairs.</p>
+            <p>The basement smelled like dust and old paper.</p>
+            <p>Most of the lockers were unused.</p>
+            <p>I found number 17.</p>
+            <p>The key fit.</p>
+            <p>I turned it.</p>
+            <p>Click.</p>
+            <p>The door opened.</p>
+            <p>Inside was a cardboard box.</p>
+            <p>Nothing else.</p>
+            <p>I pulled it out.</p>
+            <p>There was a name written on the top.</p>
+            <p class="record-line"><span class="record-mark">Kurosawa Yui.</span></p>
+            <p>I sat down on the floor.</p>
+            <p>My hands were shaking slightly.</p>
+            <p>Inside the box were drawings.</p>
+            <p>Dozens of them.</p>
+            <p>Most were ordinary.</p>
+            <p>Students.</p>
+            <p>Teachers.</p>
+            <p>The school courtyard.</p>
+            <p>The cafeteria.</p>
+            <p>But there was one drawing on top.</p>
+            <p>Me.</p>
+            <p>I recognized the uniform.</p>
+            <p>The classroom.</p>
+            <p>The window.</p>
+            <p>It had been drawn from behind.</p>
+            <p>I was sitting at the desk.</p>
+            <p>Next to me was another student.</p>
+            <p>His face was completely blacked out.</p>
+            <p>Under the drawing, Yui had written:</p>
+            <div class="entry-page">
+                <span class="tape"></span>
+                <p class="entry-text"><span class="hl">He hasn't noticed yet.</span></p>
+            </div>
+            <p>I turned it over.</p>
+            <p>There was another drawing.</p>
+            <p>This time, Yui had drawn herself.</p>
+            <p>She was standing beside me.</p>
+            <p>Behind us was the classroom.</p>
+            <p>And behind her—</p>
+            <p>someone else.</p>
+            <p>A tall figure.</p>
+            <p>Their face was crossed out.</p>
+            <p>I looked at the date.</p>
+            <p class="record-line"><span class="record-mark">April 16.</span></p>
+            <p>One day before everything happened.</p>
+            <p>I pulled out the next drawing.</p>
+            <p class="record-line"><span class="record-mark">April 17.</span></p>
+            <p>The classroom was empty.</p>
+            <p>Except for me.</p>
+            <p>And the notebook.</p>
+            <p>I stared at it.</p>
+            <p>Then I noticed something written at the bottom.</p>
+            <p>Not in Yui's handwriting.</p>
+            <p>It was mine.</p>
+            <div class="entry-page">
+                <span class="tape"></span>
+                <p class="entry-text"><span class="hl">I told her I wouldn't forget.</span></p>
+            </div>
+            <p>I dropped the paper.</p>
+            <p>For several seconds, I just sat there.</p>
+            <p>I couldn't breathe properly.</p>
+            <p>I knew that sentence.</p>
+            <p>I had heard myself say it.</p>
+            <p>Not recently.</p>
+            <p>A long time ago.</p>
+            <p>I picked up the drawing again.</p>
+            <p>There was one final note written behind it.</p>
+            <div class="entry-page">
+                <span class="tape"></span>
+                <p class="entry-text"><span class="hl">If Aki finds this, tell him the truth.</span></p>
+            </div>
+            <p>Then, underneath:</p>
+            <div class="entry-page">
+                <span class="tape"></span>
+                <p class="entry-text"><span class="hl">Yui didn't transfer.</span></p>
+            </div>
+            <p>I looked at the empty box.</p>
+            <p>There was one last envelope.</p>
+            <p>I opened it.</p>
+            <p>Inside was a photograph.</p>
+            <p>Not from April 17.</p>
+            <p>Not from last year.</p>
+            <p>It had been taken recently.</p>
+            <p>Very recently.</p>
+            <p>The picture showed the school gate.</p>
+            <p>And standing outside it was a girl.</p>
+            <p>I knew her immediately.</p>
+            <p>Yui.</p>
+            <p>Under the photograph was an address.</p>
+            <p>And one sentence.</p>
+            <div class="entry-page">
+                <span class="tape"></span>
+                <p class="entry-text"><span class="hl">She has been waiting for you to remember.</span></p>
+            </div>
+
+        </main>
+
+        <footer>— end of chapter nine —</footer>
+    </div>
+
+    <script>
+        (function () {
+            var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var targets = document.querySelectorAll('.story p, .entry-page');
+
+            if (reduceMotion || !('IntersectionObserver' in window)) {
+                targets.forEach(function (el) { el.classList.add('visible'); });
+                return;
+            }
+
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        io.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
+
+            targets.forEach(function (el) { io.observe(el); });
+        })();
+    </script>
+
+</body>
+
+</html>

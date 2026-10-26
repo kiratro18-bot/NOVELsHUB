@@ -127,7 +127,7 @@ var novels = [
         blurb: "If time was a currency, how much would you pay for a single hour of the past?", grad: "135deg,#3a2a2a,#5a3a30", collections: ["hidden-gems", "completed"]
     },
     {
-        order: 14, title: "Him and Her vol.3", img: "./img/sub2/hahv3.jpg", link: "./hah/hahv3.html", genres: ["romance", "drama", "slice", "sad"], status: "ongoing", ch: 6.5, rating: 4.6, views: 17000, releaseOffsetDays: 46, updatedDaysAgo: 0.08,
+        order: 14, title: "Him and Her vol.3", img: "./img/sub2/hahv3.jpg", link: "./hah/hahv3.html", genres: ["romance", "drama", "slice", "sad"], status: "completed", ch: 9, rating: 4.8, views: 21000, releaseOffsetDays: 46, updatedDaysAgo: 0.08,
         blurb: "Continuing the journey of Him and Her into a new chapter of their lives.", grad: "135deg,#4a2a3a,#6a3a4e", collections: ["newest"]
     },
     {
@@ -135,7 +135,7 @@ var novels = [
         blurb: "ONE SHOT.", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["hidden-gems"]
     },
     {
-        order: 16, title: "The Other Day", img: "./img/sub2/tod.jpg", link: "./tod/tod.html", genres: ["drama", "slice"], status: "ongoing", ch: 8, rating: 4.8, views: 18000, releaseOffsetDays: 0,
+        order: 16, title: "The Other Day", img: "./img/sub2/tod.jpg", link: "./tod/tod.html", genres: ["drama", "slice"], status: "ongoing", ch: 9, rating: 4.7, views: 20000, releaseOffsetDays: 0,
         blurb: "normal days?", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
     },
     {
@@ -149,7 +149,11 @@ var novels = [
     {
         order: 19, title: "The Petal That Falls With A Smile vol 4", img: "./img/sub2/tpv4.jpg", link: "./tptfwas/tptfwasv4.html", genres: ["drama", "slice"], status: "ongoing", ch: 2, rating: 4.6, views: 6000, releaseOffsetDays: 0,
         blurb: "Volume 4 — University → Adulthood Arc", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
-    }
+    },
+    {
+        order: 20, title: "Dead Air", img: "./img/sub2/DA.jpg", link: "#", genres: ["drama", "mystery"], status: "upcoming", ch: 0, rating: null, views: null, releaseOffsetDays: 0,
+        blurb: "Psychological Thriller · Murder Mystery · One-Shot", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
+    },
 ];
 var storyWorlds = [
     { title: 'Him and Her', type: 'Three-volume series', note: 'Follow the relationship from the original story through Volumes 2 and 3.', order: [5, 10, 14] },
@@ -1254,8 +1258,8 @@ function renderChallenges() {
     var challenges = [
         { id: 'weekly', title: 'Turn 15 Pages', sub: 'Read 15 chapters this week', target: 15, cur: Math.min(weekCh, 15), xp: 150 },
         { id: 'weekly',  title: 'turn 35 pages',  sub: 'Read 35 chapters this week',target:35,cur:Math.min(weekCh,35), xp:700},
-        { id: 'monthly', title: 'Finish 2 Full Story', sub: 'Complete two novel', target: 2, cur: Math.min(monthDone, 2), xp: 400 },
-        { id: 'monthly', title: 'Finish 4 ONESHOT', sub: 'Complete four oneshot novel', target: 4, cur: Math.min(monthDone, 4), xp: 600},                                                                                                                 
+        { id: 'monthly', title: 'Finish two Full Story', sub: 'Complete two novel', target: 2, cur: Math.min(monthDone, 2), xp: 400 },
+        { id: 'monthly', title: 'Finish four ONESHOT', sub: 'Complete four oneshot novel', target: 4, cur: Math.min(monthDone, 4), xp: 600},                                                                                                                 
         { id: 'variety', title: 'Genre Explorer', sub: 'Read from 3 different genres', target: 3, cur: Math.min(genresTouched(), 3), xp: 200 },
     ];
     document.getElementById('challengesList').innerHTML = challenges.map(function (c) {
@@ -1371,12 +1375,10 @@ function markFlag(key) {
 var readerAchievementDefs = [
     { icon: '📖', title: 'First Stamp', hint: 'Read your first chapter', rarity: 'common', metric: function (s) { return s.read; }, target: 1 },
     { icon: '🔖', title: 'Bookmarked', hint: 'Set a novel as Currently Reading', rarity: 'common', metric: function (s) { return s.bookmarked; }, target: 1 },
-    { icon: '🌈', title: 'Shelf Hopper', hint: 'Read from 3 different genres', rarity: 'common', metric: function (s) { return s.genres; }, target: 3 },
     { icon: '🧭', title: 'Genre Compass', hint: 'Read from 4 different genres', rarity: 'rare', metric: function (s) { return s.genres; }, target: 4 },
     { icon: '🏆', title: 'Full Return', hint: 'Finish a novel start to finish', rarity: 'rare', metric: function (s) { return s.completed; }, target: 1 },
     { icon: '⚡', title: 'Marathoner', hint: 'Read 10+ chapters in a single week', rarity: 'common', metric: function (s) { return s.week; }, target: 10 },
     { icon: '🌅', title: 'Weekend Reader', hint: 'Read on a Saturday or Sunday', rarity: 'rare', metric: function (s) { return s.weekend; }, target: 1 },
-    { icon: '📝', title: 'Margin Writer', hint: 'Save a private reader note', rarity: 'rare', metric: function (s) { return s.notes; }, target: 1 },
     { icon: '🎬', title: 'One-Shot Wonder', hint: 'Complete all ' + oneShotTotal + ' one-shots on the Shelf', rarity: 'rare', metric: function (s) { return s.oneShots; }, target: oneShotTotal },
     { icon: '📚', title: 'Chapter Collector', hint: 'Read 25 chapters total', rarity: 'rare', metric: function (s) { return s.read; }, target: 25 },
     { icon: '🔥', title: 'Bookworm', hint: 'Read 45+ chapters total', rarity: 'epic', metric: function (s) { return s.read; }, target: 45 },
@@ -1384,22 +1386,6 @@ var readerAchievementDefs = [
     { icon: '🧡', title: 'Story Curator', hint: 'Favorite 3 stories', rarity: 'common', metric: function (s) { return s.favorites; }, target: 3 },
     { icon: '🗂️', title: 'Archive Diver', hint: 'Finish 3 stories start to finish', rarity: 'epic', metric: function (s) { return s.completed; }, target: 3 },
     { icon: '👑', title: 'Genre Omnivore', hint: 'Read from all 6 genres', rarity: 'legendary', metric: function (s) { return s.genres; }, target: 6 },
-    { 
-    icon: '💖',
-    title: 'Heart Collector',
-    hint: 'Favorite 10 stories',
-    rarity: 'epic',
-    metric: function (s) { return s.favorites; },
-    target: 10
-},
-{
-    icon: '📆',
-    title: 'Daily Devotion',
-    hint: 'Read on 30 different days',
-    rarity: 'legendary',
-    metric: function (s) { return s.days; },
-    target: 30
-},
 {
     icon: '⏰', title: 'Release Guardian',
     hint: 'Save reminders for 3 upcoming releases',
@@ -1413,7 +1399,6 @@ var readerAchievementDefs = [
 ];
 readerAchievementDefs.push(
     { icon: '🔍', title: 'Master Searcher', hint: 'Use search to find a story', rarity: 'common', metric: function (s) { return s.searched; }, target: 1 },
-    { icon: '🎨', title: 'Own Your Look', hint: 'Switch to a different color theme', rarity: 'common', metric: function (s) { return s.themed; }, target: 1 },
     { icon: '↗️', title: 'Storyteller', hint: 'Share a story with someone', rarity: 'rare', metric: function (s) { return s.shared; }, target: 1 },
     { icon: '🌌', title: 'Night Owl', hint: 'Read a chapter between 11pm and 5am', rarity: 'rare', metric: function (s) { return s.nightOwl; }, target: 1 },
     { icon: '🚀', title: 'On a Roll', hint: 'Reach a 3-day reading streak', rarity: 'rare', metric: function (s) { return s.bestStreak; }, target: 3 },
@@ -1517,14 +1502,16 @@ function renderReaderAchievements() {
         var unlocked = cur >= a.target;
         if (unlocked && !readerAchUnlocks[unlockKey]) { readerAchUnlocks[unlockKey] = new Date().toISOString(); store.set('readerAchUnlocks', readerAchUnlocks); newlyUnlocked.push(a.title); }
         var dateLabel = unlocked && readerAchUnlocks[unlockKey] ? new Date(readerAchUnlocks[unlockKey]).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null;
-        return '<div class="glass milestone-tile' + (unlocked ? ' unlocked' : '') + '">' +
-            '<div class="m-icon-row"><div class="m-icon">' + a.icon + '</div><span class="rarity-tag rarity-' + a.rarity + '">' + a.rarity + '</span></div>' +
+        var tierClass = getAchievementTierClass(a.rarity);
+        return '<div class="glass milestone-tile' + (unlocked ? ' unlocked ' + tierClass : '') + '">' +
+            '<div class="m-icon-row"><div class="m-icon">' + a.icon + '</div><span class="rarity-tag rarity-' + String(a.rarity).toLowerCase().replace(/[^a-z0-9]+/g, '-') + ' ' + tierClass + '">' + a.rarity + '</span></div>' +
             '<div class="m-title">' + a.title + '</div><div class="m-hint">' + a.hint + '</div>' +
             '<div class="m-progress-row"><span>' + (unlocked ? 'Complete' : pct + '%') + '</span><span>' + fmtNum(Math.min(cur, a.target)) + ' / ' + fmtNum(a.target) + '</span></div>' +
             '<div class="m-bar"><div class="m-fill" style="width:' + pct + '%"></div></div>' +
             '<div class="m-footer">' + (unlocked ? '<span class="m-date">Unlocked ' + dateLabel + '</span>' : '<span class="m-date" style="color:var(--muted)">Locked</span>') +
             '<button class="m-share" onclick="shareReaderAch(' + idx + ')" aria-label="Share achievement">↗</button></div></div>';
     }).join('');
+    renderReaderProfileAchievements();
     if (newlyUnlocked.length === 1) {
         showToast('🏆 Achievement unlocked: ' + newlyUnlocked[0] + '!');
     } else if (newlyUnlocked.length > 1) {
@@ -1644,9 +1631,9 @@ function renderHeatmap() {
    CALENDAR
    ============================================================ */
 var upcomingReleases = [
-    { date: '2026-10-26', title: "The Other Day - Chapter 9" },
-    { date: '2026-10-26', title: 'Him and Her vol 3 - chapter 7 and 8' }, 
+    { date: '2026-11-02', title: "The Other Day - Chapter 10" },
     { date: '2026-11-01', title: 'Petal Vol. 4 — chpater 3 ' },
+    { date: '2026-10-28', title: "Dead Air - ONE SHOT" }
 ];
 var calSorted = [];
 var releaseReminders = store.get('releaseReminders', []);
@@ -1861,6 +1848,43 @@ function renderReaderProfile() {
     if (avatar) avatar.textContent = initials;
     if (nameInput) nameInput.value = name;
     if (bioInput) bioInput.value = bio;
+    renderReaderProfileAchievements();
+}
+function getAchievementTierClass(rarity) {
+    var normalized = String(rarity || '').toLowerCase();
+    if (normalized.indexOf('immortal') !== -1) return 'achievement-tier-immortal';
+    if (normalized.indexOf('mythic') !== -1 && normalized.indexOf('honor') !== -1) return 'achievement-tier-honor';
+    if (normalized.indexOf('mythic') !== -1) return 'achievement-tier-mythic';
+    return '';
+}
+function renderReaderProfileAchievements() {
+    var list = document.getElementById('readerProfileAchievementList');
+    var count = document.getElementById('readerProfileAchievementCount');
+    if (!list || !count || typeof readerAchievementDefs === 'undefined') return;
+    var stats = computeReaderStats();
+    var earned = getVisibleReaderAchievementEntries().filter(function (entry) {
+        return entry.achievement.metric(stats) >= entry.achievement.target;
+    });
+    count.textContent = String(earned.length);
+    if (!earned.length) {
+        list.innerHTML = '<span class="reader-profile-achievements-empty">Your earned badges will appear here.</span>';
+        return;
+    }
+    var unlocks = store.get('readerAchUnlocks', {});
+    earned.sort(function (a, b) {
+        var aKey = a.achievement.unlockKey || a.index;
+        var bKey = b.achievement.unlockKey || b.index;
+        return (Date.parse(unlocks[bKey]) || 0) - (Date.parse(unlocks[aKey]) || 0);
+    });
+    var visibleEarned = earned.slice(0, 4);
+    list.innerHTML = visibleEarned.map(function (entry) {
+        var achievement = entry.achievement;
+        var tierClass = getAchievementTierClass(achievement.rarity);
+        var title = esc(achievement.title);
+        return '<span class="reader-profile-achievement ' + tierClass + '" title="' + title + ' · ' + esc(achievement.rarity) + '" aria-label="' + title + ', ' + esc(achievement.rarity) + '"><span aria-hidden="true">' + achievement.icon + '</span><span>' + title + '</span></span>';
+    }).join('') + (earned.length > visibleEarned.length
+        ? '<button type="button" class="reader-profile-achievement-more" onclick="scrollToId(\'achievements\')">+' + (earned.length - visibleEarned.length) + ' more</button>'
+        : '');
 }
 function saveReaderProfile() {
     var nameInput = document.getElementById('readerProfileNameInput');

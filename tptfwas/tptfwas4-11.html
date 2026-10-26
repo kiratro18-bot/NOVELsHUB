@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wedding — The Petal That Falls With A Smile, Vol. IV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+body{--text:#3a2c30;--soft:#7d6a72;--gold:#b8860b;--rule:rgba(58,44,48,.16)}
+body.night{--text:#e6e9fa;--soft:#aab4e0;--gold:#e9c46a;--rule:rgba(230,233,250,.18)}
+:root{--haruki:#c27d1f;--nao:#2f8f78;--ren:#3f7fb0;--sora:#c4577f;--grey:#7d6a72}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#fffaf0}
+body{font-family:"Source Serif 4",Georgia,serif;color:var(--text);min-height:100vh;overflow-x:hidden;transition:color 1.4s}
+.sky{position:fixed;inset:0;z-index:0;pointer-events:none;transition:opacity 1.6s}
+.sky.day{background:linear-gradient(180deg,#fffaf0,#fdeff3);opacity:1}
+.sky.night{background:radial-gradient(ellipse 70% 40% at 50% 100%,rgba(233,196,106,.2),transparent 70%),linear-gradient(180deg,#0e1230,#1d2350);opacity:0}
+body.night .sky.night{opacity:1}body.night .sky.day{opacity:0}
+#petals{position:fixed;inset:0;z-index:1;pointer-events:none}
+.page{position:relative;z-index:2;max-width:36rem;margin:0 auto;padding:6rem 1.5rem 6rem}
+.hero{text-align:center;margin-bottom:3.4rem}
+.kicker{font-style:italic;font-size:.95rem;color:var(--soft);margin-bottom:1rem}
+h1{font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(2.8rem,10vw,4.8rem);line-height:1.1;text-shadow:0 0 30px rgba(233,196,106,.45)}
+.card{text-align:center;margin:2.6em auto 1.6em;padding:1.1em 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:"Shippori Mincho",serif;font-size:1rem;letter-spacing:.03em;color:var(--soft)}
+.card.gold{color:var(--gold);border-color:rgba(184,134,11,.4)}
+.sec p{font-size:1.1rem;line-height:1.85;margin-bottom:.85em}
+.sec p.dir{font-style:italic;color:var(--soft)}
+.sec p.dir.note{font-size:.95rem;opacity:.85}
+.sec p.say{margin-bottom:.5em}
+.who{font-family:"Shippori Mincho",serif;font-weight:700;margin-right:.3em}
+.who.haruki{color:var(--haruki)}.who.nao{color:var(--nao)}.who.ren{color:var(--ren)}.who.sora{color:var(--sora)}.who.officiant{color:var(--grey)}
+.aisle{position:relative;text-align:center;margin:1.6rem -.5rem;padding:1.4rem 1.2rem;background:linear-gradient(90deg,transparent,rgba(255,255,255,.75) 14%,rgba(255,255,255,.75) 86%,transparent)}
+.aisle::before,.aisle::after{content:"";position:absolute;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,rgba(184,134,11,.45),transparent)}
+.aisle::before{left:14%}.aisle::after{right:14%}
+.speech{margin:1.2rem 0 1.4rem;padding:.9rem 1.2rem;border-left:3px solid var(--haruki);background:rgba(255,255,255,.55);border-radius:0 8px 8px 0}
+.speech p{font-style:italic;margin-bottom:.5em!important}
+.pov{display:flex;align-items:center;gap:.8rem;margin:3.6rem 0 1.4rem}
+.pov .dot{width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px 2px var(--gold)}
+.pov-name{font-family:"Shippori Mincho",serif;font-weight:700;font-size:1.1rem;color:var(--gold)}
+.pov::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent);opacity:.5}
+.sec p.stanza{text-align:center;font-style:italic;color:var(--soft);margin-bottom:.6em}
+.sec p.fin{text-align:center;font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(1.3rem,3.8vw,1.8rem);line-height:1.45;color:var(--text);margin:1.2em 0;text-shadow:0 0 24px rgba(233,196,106,.45)}
+h2.epi{text-align:center;font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(2.2rem,7vw,3.2rem);margin:5rem 0 .3rem;color:var(--gold)}
+.epi-sub{text-align:center;font-style:italic;color:var(--soft);margin-bottom:1rem!important}
+.thanks{text-align:center;margin-top:5rem;padding-top:3rem;border-top:1px solid var(--rule)}
+.thanks h2{font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(1.8rem,6vw,2.6rem);margin-bottom:1.2rem}
+.thanks h3{font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(1.05rem,3.6vw,1.4rem);letter-spacing:.18em;line-height:1.7;color:var(--gold);margin-bottom:1.4rem;text-shadow:0 0 22px rgba(233,196,106,.4)}
+.sec .thanks p.tag{font-style:italic;color:var(--soft);margin-bottom:.4em}
+.announce{margin:3rem auto 0;max-width:24rem;padding:1.6rem 1.2rem;border:1px solid rgba(233,196,106,.55);border-radius:14px;background:rgba(233,196,106,.07)}
+.sec .announce p{margin-bottom:.5em}
+.ann-label{font-family:"Shippori Mincho",serif;font-size:.95rem;letter-spacing:.06em;color:var(--soft)}
+.ann-title{font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(1.4rem,5vw,1.9rem)!important;line-height:1.3;color:var(--gold);text-shadow:0 0 22px rgba(233,196,106,.5)}
+.ann-sub{font-style:italic;color:var(--text)}
+@media(max-width:480px){.page{padding:5rem 1.25rem 5rem}.sec p{font-size:1.04rem}.aisle{margin:1.4rem -.9rem}}
+@media(prefers-reduced-motion:reduce){#petals{display:none}.sky,body{transition:none}}
+</style>
+</head>
+<body>
+<div class="sky day"></div><div class="sky night"></div>
+<canvas id="petals" aria-hidden="true"></canvas>
+<div class="page">
+  <header class="hero">
+    <p class="kicker">The Petal That Falls With A Smile — Volume IV </p>
+    <h1>Wedding</h1>
+  </header>
+  <main class="story">
+    <section class="sec" data-t="day">
+    <div class="card">Scene: The Groom's Room</div>
+    <p class="dir">Haruki is getting ready for his wedding when Ren walks in.</p>
+    <p class="say"><span class="who ren">Ren:</span> Haruki! Haruki! You're getting married too soon, brooo! You're leaving me all alone in this generation!</p>
+    <p class="dir note">Note: They're bros now.</p>
+    <p class="say"><span class="who haruki">Haruki:</span> Yeah. I made my decision when I asked her out.</p>
+    <p class="say"><span class="who ren">Ren:</span> Damn! Being the single guy is tough...</p>
+    <p class="say"><span class="who haruki">Haruki:</span> What about you?</p>
+    <p class="say"><span class="who ren">Ren:</span> Me? I'll get married soon, too!</p>
+    <p class="dir">A bell rings.</p>
+    <p class="say"><span class="who ren">Ren:</span> Let's go. The time has come...</p>
+    <div class="card">Scene: The Bride's Room</div>
+    <p class="say"><span class="who sora">Sora:</span> All set, Nao! My girl, you look so beautiful in that wedding dress! I should marry you instead!</p>
+    <p class="say"><span class="who nao">Nao:</span> Hehe. I'm nervous and happy about this day...</p>
+    <p class="say"><span class="who sora">Sora:</span> I know you are, and...</p>
+    <p class="dir">A bell rings.</p>
+    <p class="say"><span class="who sora">Sora:</span> And... Oh! Let's go, shall we?</p>
+    <p class="say"><span class="who nao">Nao:</span> Yes...</p>
+    <div class="card">Scene: The Wedding Hall</div>
+    <div class="aisle">
+    <p class="dir">The groom stands at the podium, waiting for his bride to arrive.</p>
+    <p class="dir">Then, the bride appears.</p>
+    <p class="dir">She walks slowly toward him, each step echoing through the hall.</p>
+    <p class="dir">Finally, she stands in front of him.</p>
+    <p class="dir">The groom gently lifts the veil covering her face.</p>
+    <p class="dir">For a moment, Haruki can only stare.</p>
+    <p class="dir">Nao looks so beautiful. There's something different about seeing her dressed as a bride, and Haruki can't help feeling shy.</p>
+    <p class="dir">The ceremony continues.</p>
+    <p class="dir">After the officiant completes the ceremony, he smiles at the newlyweds.</p>
+    <p class="say"><span class="who officiant">Officiant:</span> Now, you may kiss the bride.</p>
+    <p class="dir">Haruki leans toward Nao, and they share their first kiss as a married couple.</p>
+    <p class="dir" data-b="celebrate">And so, the wedding celebrations begin...</p>
+    </div>
+    <div class="card gold">Haruki and Nao</div>
+    <p class="say"><span class="who haruki">Haruki:</span> Thank you, Nao, for marrying me...</p>
+    <p class="say"><span class="who nao">Nao:</span> Dummy! I should be the one thanking you...</p>
+    <p class="dir">They both laugh.</p>
+    <p class="dir">Then, Haruki surprises everyone by preparing a speech.</p>
+    <p class="say"><span class="who haruki">Haruki:</span> Hello, everyone! Thank you for coming to our wedding.</p>
+    <p class="say cont">I'd like to say a few words about what I'm feeling today...</p>
+    <div class="speech">
+      <p>Nao, the day we met after exchanging letters was the day I gained all of this.</p>
+      <p>Everything I've experienced with you is something I'll cherish forever.</p>
+      <p>Every little moment, every memory we've made together...</p>
+      <p>Thank you for everything, Nao.</p>
+      <p>And thank you for being by my side.</p>
+      <p>I'll cherish it all, forever.</p>
+      <p>Thank you.</p>
+    </div>
+    <p class="dir">Haruki finishes his speech.</p>
+    <p class="dir">Nao looks at him with a smile.</p>
+    <p class="say"><span class="who nao">Nao:</span> Now, now... It's my turn!</p>
+    <p class="dir">Haruki smiles and listens.</p>
+    <p class="say"><span class="who nao">Nao:</span> Haruki, do you remember the university fireworks?</p>
+    <p class="say cont">Yeah... That time with you was my true happiness.</p>
+    <p class="say cont">Or, I should say, one of my happiest memories.</p>
+    <p class="say cont">Having you by my side is the greatest happiness I could ever ask for.</p>
+    <p class="say cont">Thank you, Haruki...</p>
+    <p class="dir">She smiles at him.</p>
+    <p class="say"><span class="who nao">Nao:</span> Thank you for being with me.</p>
+    <p class="dir">Haruki smiles back at her.</p>
+    <div class="pov"><span class="dot"></span><span class="pov-name">Narrator</span></div>
+    <p class="stanza">The petal that blooms in an odd season... Isn't it interesting?</p>
+    <p class="stanza">Somehow, this story is different.</p>
+    <p class="stanza">These people bloomed in their own time.</p>
+    <p class="stanza">Through all the seasons, all the misunderstandings, and all the moments they thought they might lose each other, they found their way forward.</p>
+    <p class="stanza">And now, they have bloomed and become bride and groom.</p>
+    <p class="stanza">Perhaps their story is stronger than even I am.</p>
+    <h2 class="epi">Epilogue</h2>
+    <p class="epi-sub">After Two Years</p>
+    <div class="card">Scene: Haruki and Nao's Home</div>
+    <p class="say"><span class="who haruki">Haruki:</span> Nao! Are you and Minato ready yet? We'll be late for the wedding!</p>
+    <p class="dir">Minato is their baby boy, one year and two months old.</p>
+    <p class="say"><span class="who nao">Nao:</span> Yes! Let's go, honey!</p>
+    <p class="dir">She finishes getting ready, and the family heads out together.</p>
+    <div class="card">Scene: The Wedding Hall</div>
+    <div class="aisle">
+    <p class="dir">Ren stands at the podium, waiting for his bride.</p>
+    <p class="dir">From a distance, Haruki watches him with a mischievous smile.</p>
+    <p class="say"><span class="who haruki">Haruki:</span> Hey, Ren! You said you'd get married soon, but I didn't think you'd actually do it!</p>
+    <p class="say"><span class="who ren">Ren:</span> Shut up, bro!</p>
+    <p class="dir">Haruki laughs.</p>
+    <p class="dir">Then, the bride appears.</p>
+    <p class="dir">Sora slowly walks toward the podium, her footsteps echoing through the hall.</p>
+    <p class="dir">Ren watches her approach.</p>
+    <p class="dir">The girl standing before him is the childhood friend he has known for so long.</p>
+    <p class="dir">The girl he once thought he had lost.</p>
+    <p class="dir">The girl he finally found his way back to.</p>
+    <p class="dir">The ceremony continues, and the officiant completes the wedding rites.</p>
+    <p class="say"><span class="who officiant">Officiant:</span> You may now kiss the bride.</p>
+    <p class="dir">Ren gently kisses Sora.</p>
+    <p class="dir" data-b="celebrate">And so, the wedding celebrations begin for the newlyweds.</p>
+    </div>
+    </section>
+    <section class="sec" data-t="night">
+    <div class="pov"><span class="dot"></span><span class="pov-name">POV: The Sakura Tree</span></div>
+    <p class="stanza">I've seen so many faces sitting beneath my branches.</p>
+    <p class="stanza">Some came here to grieve.</p>
+    <p class="stanza">Some came here to laugh.</p>
+    <p class="stanza">Some came here to find peace.</p>
+    <p class="stanza">And some came here without knowing that their lives were about to change.</p>
+    <p class="stanza">I've witnessed more stories than any ordinary human could imagine.</p>
+    <p class="stanza">I bloom in an odd season.</p>
+    <p class="stanza">And I've watched odd people grow, fall in love, and create their own stories.</p>
+    <p class="stanza">Somehow, their stories have become stronger than I am.</p>
+    <p class="stanza">They've endured the changing seasons.</p>
+    <p class="stanza">They've endured the passing of time.</p>
+    <p class="stanza">They've endured the moments when happiness seemed so far away.</p>
+    <p class="stanza">And yet, they continued to bloom.</p>
+    <p class="stanza">Perhaps that's what makes their stories so beautiful.</p>
+    <p class="fin">Even a petal that falls can leave behind a story worth remembering.</p>
+    <p class="fin">And even after falling, it can still fall with a smile.</p>
+    <div class="thanks">
+      <h2>Thank You for Reading!</h2>
+      <h3>THE PETAL THAT FALLS WITH A SMILE</h3>
+      <p class="tag">Every season ends. Every petal falls.</p>
+      <p class="tag">But some stories stay with us forever.</p>
+      <div class="announce">
+        <p class="ann-label">Announcement</p>
+        <p class="ann-title">2027 — Nao's Side Story!</p>
+        <p class="ann-sub">Her story isn't over yet...</p>
+      </div>
+    </div>
+    </section>
+  </main>
+</div>
+<script>
+(function(){
+  var b=document.body,reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var cv=document.getElementById("petals"),cx=cv.getContext("2d"),W,H,ps=[];
+  var PINK=["#ffb7c5","#f4a7c3","#f9c9d8","#e8b4d8","#fff0f4"],NIGHT=["#f9c9d8","#e9d3ff","#ffd6e8","#ffe9a8"];
+  function pal(){return b.classList.contains("night")?NIGHT:PINK}
+  function mk(y,fast){var c=pal();ps.push({x:Math.random()*W,y:y,s:Math.random()*6+5,v:fast?Math.random()*1.6+1.1:Math.random()*.4+.25,d:(Math.random()-.5)*(fast?.9:.25),r:Math.random()*6,rv:(Math.random()-.5)*.03,t:Math.random()*6,c:c[Math.floor(Math.random()*c.length)],o:fast?Math.random()*.4+.45:Math.random()*.25+.25})}
+  function celebrate(){if(reduce)return;for(var i=0;i<70;i++)mk(-Math.random()*H*.9,true)}
+  if(!reduce){
+    var size=function(){W=cv.width=innerWidth;H=cv.height=innerHeight};size();addEventListener("resize",size);
+    for(var i=0;i<12;i++)mk(Math.random()*H,false);
+    (function loop(){cx.clearRect(0,0,W,H);
+      for(var i=ps.length-1;i>=0;i--){var p=ps[i];p.t+=.015;p.y+=p.v;p.x+=p.d+Math.sin(p.t)*.4;p.r+=p.rv;
+        cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.globalAlpha=p.o;cx.fillStyle=p.c;cx.beginPath();cx.ellipse(0,0,p.s,p.s*.52,0,0,Math.PI*2);cx.fill();cx.restore();
+        if(p.y>H+20)ps.splice(i,1)}
+      if(Math.random()<.02)mk(-20,false);requestAnimationFrame(loop)})();
+  }
+  if(!("IntersectionObserver" in window))return;
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)b.classList.toggle("night",e.target.dataset.t==="night")})},{rootMargin:"-45% 0px -45% 0px"});
+  document.querySelectorAll(".sec").forEach(function(s){io.observe(s)});
+  document.querySelectorAll("[data-b=celebrate]").forEach(function(el){
+    var o=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){celebrate();o.disconnect()}})},{threshold:.9,rootMargin:"0px 0px -15% 0px"});o.observe(el);
+  });
+})();
+</script>
+</body>
+</html>

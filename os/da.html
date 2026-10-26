@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DEAD AIR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--red:#ff3b3b;--ink:#0e1013;--text:#cfc9c4;--bright:#f3eeea;--dim:#8f8983}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--ink)}
+body{font-family:"Source Serif 4",Georgia,serif;color:var(--text);min-height:100vh;overflow-x:hidden;background:radial-gradient(ellipse 70% 30% at 50% 0%,rgba(255,59,59,.08),transparent 70%),var(--ink)}
+.topbar{position:fixed;top:0;left:0;right:0;height:52px;z-index:10;display:flex;align-items:center;gap:14px;padding:0 16px;background:rgba(14,16,19,.92);backdrop-filter:blur(8px);border-bottom:1px solid #22262c}
+.lamp{flex:none;width:12px;height:12px;border-radius:50%;background:var(--red);box-shadow:0 0 14px 4px rgba(255,59,59,.55);animation:pulse 2.4s ease-in-out infinite;transition:background 1.6s,box-shadow 1.6s}
+@keyframes pulse{50%{opacity:.55}}
+body.dead .lamp{background:#3a1b1d;box-shadow:none;animation:none}
+.wave{flex:1;height:30px;display:flex;align-items:center;gap:2px}
+.wave i{flex:1;min-width:1px;border-radius:1px;background:#3a3f47}
+.wave i.p{background:var(--red)}
+.page{max-width:36rem;margin:0 auto;padding:7rem 1.5rem 6rem}
+.hero{text-align:center;margin-bottom:3.4rem}
+h1{font-family:"Space Mono",monospace;font-weight:700;font-size:clamp(2.6rem,11vw,4.8rem);letter-spacing:.1em;line-height:1;color:var(--bright);text-shadow:0 0 28px rgba(255,59,59,.35)}
+.flat{display:block;width:min(20rem,80%);height:34px;margin:1.2rem auto}
+.flat path{fill:none;stroke:var(--red);stroke-width:1.6;stroke-linecap:round}
+.tags{font-family:"Space Mono",monospace;font-size:.82rem;color:var(--dim);font-style:italic}
+.story p{font-size:1.1rem;line-height:1.85;margin-bottom:.8em;color:var(--text)}
+.story p.dlg{color:var(--bright)}
+.story p.em{font-style:italic;color:var(--dim)}
+.tc{font-family:"Space Mono",monospace;font-size:.92em;font-weight:700;color:#ff6b5f}
+.log{margin:1.6rem 0;padding:.3rem 0 .3rem 1rem;border-left:2px solid var(--red)}
+.story .log p{font-family:"Space Mono",monospace;font-size:.92rem;line-height:1.7;margin:.25em 0;color:#d9d3ce}
+.story p.readout{display:table;margin:1.8rem auto;padding:.6rem 1.2rem;background:#050607;border:1px solid #2b2f36;border-radius:6px;font-family:"Space Mono",monospace;font-weight:700;font-size:clamp(1.1rem,4.4vw,1.5rem);letter-spacing:.08em;color:#ff4d4d;text-shadow:0 0 14px rgba(255,60,60,.6)}
+.story p.msg{max-width:80%;padding:.5rem .9rem;border-radius:14px;margin:.55rem 0;font-size:1rem;line-height:1.6;color:var(--bright)}
+.msg b{font-family:"Space Mono",monospace;font-size:.85rem;margin-right:.3em;color:var(--dim)}
+.msg.mio{background:#2a2f38;border-bottom-left-radius:4px}
+.msg.me{background:#5b1f24;margin-left:auto;border-bottom-right-radius:4px}
+.story p.hand{position:relative;max-width:22rem;margin:2rem auto;padding:1.4rem 1.2rem;background:#f4ead2;color:#7a2a1f;border-radius:3px;transform:rotate(-1.2deg);font-family:"Caveat",cursive;font-weight:600;font-size:1.6rem;line-height:1.3;box-shadow:0 8px 22px rgba(0,0,0,.45)}
+.story p.hand::before{content:"";position:absolute;top:-11px;left:50%;width:70px;height:20px;margin-left:-35px;background:rgba(255,255,255,.6);transform:rotate(-3deg)}
+.gap{display:block;width:min(15rem,70%);height:24px;margin:3rem auto}
+.gap use{stroke:var(--red);fill:none;stroke-width:1.5}
+.eight{display:flex;justify-content:center;gap:7px;margin:1.6rem 0 2rem}
+.eight i{width:22px;height:22px;border:1.5px solid rgba(255,59,59,.55);border-radius:3px}
+.end{display:block;width:min(20rem,80%);height:20px;margin:4rem auto 0}
+.end line{stroke:var(--red);stroke-width:1.5;opacity:.6}
+@media(max-width:480px){.page{padding:6rem 1.25rem 5rem}.story p{font-size:1.04rem}.story p.msg{max-width:88%}}
+@media(prefers-reduced-motion:reduce){.lamp{animation:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="gapwave" viewBox="0 0 200 24"><path d="M0 12H10L14 4L18 20L22 8L26 16L30 10L34 12H60M60 12H140M140 12H146L150 7L154 17L158 9L162 14L166 12H200" /></symbol></svg>
+<div class="topbar" aria-hidden="true"><div class="lamp"></div><div class="wave" id="wave"></div></div>
+<div class="page">
+  <header class="hero">
+    <h1>DEAD AIR</h1>
+    <svg class="flat" viewBox="0 0 320 34" aria-hidden="true"><path d="M0 17H40L46 6L52 28L58 10L64 24L70 14L76 19L84 17H110L114 12L118 22L122 16L126 17H320"/></svg>
+    <p class="tags">Psychological Thriller · Murder Mystery · One-Shot</p>
+  </header>
+  <main class="story">
+    <div class="log">
+      <p>At <span class="tc">5:13 p.m.</span>, the school speakers announced that everyone should go home safely.</p>
+      <p>At <span class="tc">5:21 p.m.</span>, a first-year student found Riku Shindou dead in the broadcasting room.</p>
+    </div>
+    <p>Eight minutes separated the announcement from the discovery.</p>
+    <div class="eight" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <p>That was the detail everyone remembered.</p>
+    <p>The police initially assumed Riku had been alive when his voice came through the speakers. The murder, they thought, had happened sometime during those eight minutes.</p>
+    <p>They were wrong.</p>
+    <p>Riku had been dead for fourteen minutes when his voice filled the school.</p>
+    <p>And somebody had made sure everyone heard it.</p>
+    <svg class="gap" viewBox="0 0 200 24" aria-hidden="true"><use href="#gapwave"/></svg>
+    <p class="dlg">"You're telling me the announcement was prerecorded?"</p>
+    <p>The detective standing beside my desk looked as though he'd rather be investigating a stolen bicycle.</p>
+    <p class="dlg">"Yes."</p>
+    <p class="dlg">"How can you be certain?"</p>
+    <p class="dlg">"Riku always tapped the microphone twice before speaking. He thought it made him sound professional."</p>
+    <p class="dlg">"And the announcement?"</p>
+    <p class="dlg">"No taps."</p>
+    <p>He made a note.</p>
+    <p class="dlg">"Anything else?"</p>
+    <p>I considered lying.</p>
+    <p>Then I remembered that lying to a detective about something he could verify in thirty seconds was a special kind of stupid.</p>
+    <p class="dlg">"The ventilation fan in that room rattles every nine seconds. You can hear it in almost every recording made there. But the announcement was completely clean."</p>
+    <p class="dlg">"Meaning?"</p>
+    <p class="dlg">"Someone removed the background noise."</p>
+    <p class="dlg">"Could you do that?"</p>
+    <p>I smiled.</p>
+    <p class="dlg">"Sir, I'm the broadcasting club's audio technician. Editing is practically my only marketable skill."</p>
+    <p>He didn't laugh.</p>
+    <p>Tough crowd.</p>
+    <p>He closed his notebook and looked at me.</p>
+    <p class="dlg">"Did you have any reason to dislike Riku?"</p>
+    <p class="dlg">"No."</p>
+    <p>The answer came too quickly.</p>
+    <p>I knew it before he did.</p>
+    <p>His eyes lingered on me for another second.</p>
+    <p class="dlg">"Don't leave town."</p>
+    <p>After he left, I looked through the glass panel in the classroom door.</p>
+    <p>Across the courtyard, Mio Kisaragi stood beneath the old cherry tree.</p>
+    <p>My best friend.</p>
+    <p>Riku's ex-girlfriend.</p>
+    <p>The girl who had told the police she hadn't seen him that afternoon.</p>
+    <p>She was looking directly at me.</p>
+    <p>Then she raised two fingers beside her wrist.</p>
+    <p>Our old signal.</p>
+    <p class="em">Don't say anything.</p>
+    <p>I lowered my eyes.</p>
+    <p>I wanted to laugh.</p>
+    <p>Instead, I looked at the empty chair beside mine and wondered when I'd started being afraid of the people I knew best.</p>
+    <svg class="gap" viewBox="0 0 200 24" aria-hidden="true"><use href="#gapwave"/></svg>
+    <p>Mio and I met behind the shopping district, at an abandoned train platform where we'd spent half our teenage years complaining about things we couldn't change.</p>
+    <p>She arrived twenty minutes late, carrying two cans of coffee.</p>
+    <p>She handed me the black one.</p>
+    <p class="dlg">"Your favourite."</p>
+    <p class="dlg">"You're trying to poison me."</p>
+    <p class="dlg">"It's coffee, Akira."</p>
+    <p class="dlg">"It's liquid suffering."</p>
+    <p class="dlg">"Then suffer quietly."</p>
+    <p>She sat beside me.</p>
+    <p>A train passed on the opposite track, sending a gust of warm air across the platform.</p>
+    <p>Neither of us spoke until it disappeared.</p>
+    <p>Then Mio said, "I went to see Riku."</p>
+    <p>I kept my eyes on the tracks.</p>
+    <p class="dlg">"When?"</p>
+    <p class="dlg">"After classes. Around four-thirty."</p>
+    <p class="dlg">"Why?"</p>
+    <p class="dlg">"He had something of mine."</p>
+    <p class="dlg">"What?"</p>
+    <p>She turned the can between her hands.</p>
+    <p class="dlg">"A recording."</p>
+    <p>I glanced at her.</p>
+    <p class="dlg">"He was going to send it to the entire school. He said it would be funny watching everyone pretend to be shocked."</p>
+    <p>That sounded like Riku.</p>
+    <p>He had a talent for finding the one thing that would ruin someone's afternoon and treating it like a personal achievement.</p>
+    <p class="dlg">"What happened?"</p>
+    <p class="dlg">"We argued."</p>
+    <p>She paused.</p>
+    <p class="dlg">"I pushed him."</p>
+    <p>The can crumpled slightly between her fingers.</p>
+    <p class="dlg">"He stumbled into the desk. I thought he'd hurt himself, but he stood up and told me to get out."</p>
+    <p class="dlg">"And you left?"</p>
+    <p class="dlg">"Yes."</p>
+    <p class="dlg">"Did you see anyone else?"</p>
+    <p class="dlg">"No."</p>
+    <p>She stared at her shoes.</p>
+    <p class="dlg">"Akira, he was alive when I left. He was angry, but he was alive."</p>
+    <p>I didn't answer.</p>
+    <p class="dlg">"I know how it sounds," she continued. "I know what everyone is thinking. But I didn't kill him."</p>
+    <p>She looked at me.</p>
+    <p class="dlg">"Do you believe me?"</p>
+    <p>There it was.</p>
+    <p>Six years of friendship reduced to one question.</p>
+    <p>I remembered her stealing fries from my plate. Her terrible taste in films. The time she'd missed her last train and called me at midnight because she didn't want to walk home alone.</p>
+    <p>I remembered promising her that I'd always listen.</p>
+    <p class="dlg">"I believe you," I said.</p>
+    <p>Something in her expression loosened.</p>
+    <p>For a moment, she looked like herself again.</p>
+    <p>Then she studied my face.</p>
+    <p class="dlg">"You're acting strange."</p>
+    <p class="dlg">"I'm always strange."</p>
+    <p class="dlg">"No. You're doing that thing."</p>
+    <p class="dlg">"What thing?"</p>
+    <p class="dlg">"Your mouth stops moving, but your eyes keep talking."</p>
+    <p>I looked away.</p>
+    <p>She sighed.</p>
+    <p class="dlg">"Never mind."</p>
+    <p>She stood, brushing dust from her skirt.</p>
+    <p class="dlg">"There's something you should know. Riku wasn't just threatening me with that recording. He'd been keeping recordings of people for months. Conversations. Arguments. Things people said when they thought nobody was listening."</p>
+    <p>I didn't move.</p>
+    <p class="dlg">"He said people were honest when they were angry. That all he had to do was wait until someone gave him something useful."</p>
+    <p>She kicked a pebble off the platform.</p>
+    <p class="dlg">"Honestly, I don't even know why I dated him."</p>
+    <p class="dlg">"Because you have terrible taste."</p>
+    <p>She glanced at me.</p>
+    <p class="dlg">"You're one to talk."</p>
+    <p class="dlg">"What's that supposed to mean?"</p>
+    <p class="dlg">"Nothing."</p>
+    <p>She smiled faintly.</p>
+    <p>Then she left.</p>
+    <p>I watched her disappear around the corner.</p>
+    <p>I didn't call after her.</p>
+    <p>I had already heard enough to know that Riku's death was about to become much uglier than the school wanted it to be.</p>
+    <svg class="gap" viewBox="0 0 200 24" aria-hidden="true"><use href="#gapwave"/></svg>
+    <p>The first scandal had happened the previous year.</p>
+    <p>A girl named Yuna had been accused of cheating in an interschool competition. Someone circulated an audio recording in which she appeared to admit stealing another student's work.</p>
+    <p>Yuna denied it.</p>
+    <p>Nobody believed her.</p>
+    <p>The recording sounded genuine. Her voice was unmistakable, and she seemed to admit everything.</p>
+    <p>She transferred schools before the end of the term.</p>
+    <p>I knew the recording was fake.</p>
+    <p>I'd edited it myself.</p>
+    <p>I'd taken words she'd said during an argument, removed the surrounding conversation, and rearranged the pauses until she sounded guilty.</p>
+    <p>It had started as revenge for something stupid.</p>
+    <p>An argument. An insult. A moment when I'd wanted to make someone feel as humiliated as I'd felt.</p>
+    <p>I hadn't expected it to go so far.</p>
+    <p>That was the excuse I used when I couldn't sleep.</p>
+    <p>Riku discovered the original project file two days after the recording spread.</p>
+    <p>He could have exposed me immediately.</p>
+    <p>Instead, he told everyone that the recording had been manipulated.</p>
+    <p>That part was true.</p>
+    <p>The lie was that he'd done it because he cared about me.</p>
+    <p>He kept the original file.</p>
+    <p>He kept the editing history.</p>
+    <p>And he kept a screenshot of my account name displayed in the corner of the project window.</p>
+    <p class="readout">PROJECT OWNER: AKIRA_F.</p>
+    <p>For months, I believed he was protecting me.</p>
+    <p>Then, two days before his death, he called me into the broadcasting room.</p>
+    <p>He was sitting at the mixing console, drinking melon soda.</p>
+    <p>The disgusting kind he bought because it was ten yen cheaper than everything else.</p>
+    <p>He turned his phone toward me.</p>
+    <p>My name sat in the corner of the screenshot.</p>
+    <p class="dlg">"Do you remember this?"</p>
+    <p>I said nothing.</p>
+    <p class="dlg">"Funny how people forget things when forgetting is convenient."</p>
+    <p class="dlg">"Delete it."</p>
+    <p>He smiled.</p>
+    <p class="dlg">"No."</p>
+    <p class="dlg">"Riku."</p>
+    <p class="dlg">"What? You want to make another recording disappear?"</p>
+    <p>I stepped closer.</p>
+    <p>He put his phone away.</p>
+    <p class="dlg">"The school assembly is next Friday," he said. "I'm going to explain what actually happened to Yuna."</p>
+    <p>My stomach tightened.</p>
+    <p class="dlg">"You wouldn't."</p>
+    <p class="dlg">"Why wouldn't I?"</p>
+    <p class="dlg">"Because you helped me cover it up."</p>
+    <p>He laughed.</p>
+    <p class="dlg">"I helped you hide it. Don't confuse that with helping you."</p>
+    <p>I remember the fluorescent lights humming above us.</p>
+    <p>I remember staring at the metal edge of the console because looking at his face made it harder to pretend I was a decent person.</p>
+    <p class="dlg">"You're going to ruin my life," I said.</p>
+    <p>Riku shrugged.</p>
+    <p class="dlg">"That's not my problem."</p>
+    <p>I left that afternoon with one thought lodged in my head.</p>
+    <p>Riku had the evidence.</p>
+    <p>Riku intended to expose me.</p>
+    <p>And I couldn't let that happen.</p>
+    <p>I told myself I only needed to get the file.</p>
+    <p>I told myself I would delete it and everything would go back to normal.</p>
+    <p>I didn't think about what would happen if he refused.</p>
+    <p>Or perhaps I did.</p>
+    <p>I just didn't want to admit it.</p>
+    <svg class="gap" viewBox="0 0 200 24" aria-hidden="true"><use href="#gapwave"/></svg>
+    <p>The police searched the broadcasting room for three days.</p>
+    <p>They interviewed everyone in the club and examined the computer, the mixing console, and the school's announcement system.</p>
+    <p>They found no clear evidence of a struggle beyond signs of a hurried argument.</p>
+    <p>They found no recording of Riku speaking live at <span class="tc">5:13</span>.</p>
+    <p>They found a clean audio file.</p>
+    <p>And they found an export timestamp.</p>
+    <p class="readout">5:08 p.m.</p>
+    <p>The file had been exported from the multimedia room's editing workstation under my account.</p>
+    <p>The multimedia room was across the corridor from the broadcasting room.</p>
+    <div class="log">
+      <p>At <span class="tc">5:08</span>, I was working there.</p>
+      <p>At <span class="tc">5:13</span>, Riku's voice played over the speakers.</p>
+      <p>At <span class="tc">5:21</span>, his body was found.</p>
+    </div>
+    <p>As far as the school was concerned, I had been nowhere near Riku when he died.</p>
+    <p>That was the point.</p>
+    <p>The announcement was supposed to make everyone believe he was alive at <span class="tc">5:13</span>. My presence in the multimedia room after that time gave me an answer ready for anyone who asked where I'd been.</p>
+    <p>I had turned an audio file into an alibi.</p>
+    <p>Or so I thought.</p>
+    <p>The detective returned on Friday.</p>
+    <p>He placed two printed waveforms on my desk.</p>
+    <p class="dlg">"Recognize these?"</p>
+    <p class="dlg">"The announcement?"</p>
+    <p class="dlg">"The first one is the announcement. The second is an older recording of Riku."</p>
+    <p>I studied them.</p>
+    <p class="dlg">"They sound the same."</p>
+    <p class="dlg">"That's what we thought."</p>
+    <p>He pointed at a tiny mark on the first waveform.</p>
+    <p class="dlg">"Here. Just before the last sentence."</p>
+    <p>I leaned closer.</p>
+    <p>There was a small gap in the audio.</p>
+    <p class="dlg">"What about it?"</p>
+    <p class="dlg">"The same gap appears in three other recordings edited on your account."</p>
+    <p>I looked up.</p>
+    <p>The detective's expression hadn't changed.</p>
+    <p class="dlg">"You remove breaths before the final sentence," he said. "It creates a cleaner ending. You did it in the announcement, too."</p>
+    <p>I shrugged.</p>
+    <p class="dlg">"It's a standard editing technique."</p>
+    <p class="dlg">"It is."</p>
+    <p>He gathered the papers.</p>
+    <p class="dlg">"Do you remember where you were between <span class="tc">4:50</span> and <span class="tc">5:10</span>?"</p>
+    <p class="dlg">"The multimedia room."</p>
+    <p class="dlg">"All that time?"</p>
+    <p class="dlg">"Pretty much."</p>
+    <p>He watched me for a moment.</p>
+    <p class="dlg">"Good. We'll check the access records."</p>
+    <p>Then he left.</p>
+    <p>I sat very still.</p>
+    <p>The detective hadn't accused me of anything.</p>
+    <p>He hadn't needed to.</p>
+    <p>He'd shown me a tiny gap in a waveform and let me decide what it meant.</p>
+    <p>For the first time since Riku died, I began to wonder whether I'd made a mistake.</p>
+    <p>Not during the argument.</p>
+    <p>Not when I'd left the room.</p>
+    <p>I'd made it much earlier.</p>
+    <p>I'd assumed that if I could control what people heard, I could control what they believed.</p>
+    <p>I had forgotten that the person who knew the most about an edited recording was usually the person who made it.</p>
+    <svg class="gap" viewBox="0 0 200 24" aria-hidden="true"><use href="#gapwave"/></svg>
+    <p>Mio was waiting outside the police station that afternoon.</p>
+    <p>She looked tired.</p>
+    <p>I sat beside her on the steps.</p>
+    <p>She held out a photograph.</p>
+    <p>It showed our class on the school rooftop during the cultural festival. Somebody had made rabbit ears behind the teacher's head. Riku stood in the middle, grinning at the camera.</p>
+    <p>Mio was beside me.</p>
+    <p>She was looking at me instead of the camera.</p>
+    <p class="dlg">"You remember this?" she asked.</p>
+    <p class="dlg">"Of course."</p>
+    <p class="dlg">"You hated taking pictures."</p>
+    <p class="dlg">"I still hate taking pictures."</p>
+    <p class="dlg">"That's why I took so many. Someone had to prove you existed."</p>
+    <p>She almost smiled.</p>
+    <p>Then she turned the photograph over.</p>
+    <p>Riku had written something on the back.</p>
+    <p class="hand">October 12. Last day before everything changes.</p>
+    <p>I looked at her.</p>
+    <p class="dlg">"Where did you get this?"</p>
+    <p class="dlg">"His desk."</p>
+    <p>She took a breath.</p>
+    <p class="dlg">"Riku gave me something before he died."</p>
+    <p>My stomach tightened.</p>
+    <p class="dlg">"What?"</p>
+    <p class="dlg">"The original project file from Yuna's recording."</p>
+    <p>I stared at her.</p>
+    <p class="dlg">"He told me that if something happened to him, I should make sure the truth came out."</p>
+    <p class="dlg">"Why didn't you tell the police?"</p>
+    <p class="dlg">"I did this morning."</p>
+    <p>She looked down at the photograph.</p>
+    <p class="dlg">"I didn't understand why he kept talking about that old recording. I thought he was trying to scare me."</p>
+    <p>She turned toward me.</p>
+    <p class="dlg">"Then I remembered something."</p>
+    <p>I said nothing.</p>
+    <p class="dlg">"Two days before he died, he told me you'd come to the broadcasting room and asked him to delete the file."</p>
+    <p>I kept my face still.</p>
+    <p class="dlg">"He said you were angry," she continued. "He said he thought you might do something stupid."</p>
+    <p>The air seemed to thin around me.</p>
+    <p class="dlg">"I didn't believe him. You were his friend. You were my friend."</p>
+    <p>She looked at me.</p>
+    <p class="dlg">"But the announcement sounded wrong. I knew it the moment I heard it."</p>
+    <p>She rubbed her eyes.</p>
+    <p class="dlg">"I've been in that room for three years, Akira. I know the fan. I know the microphones. I know how the recordings sound."</p>
+    <p>Her voice dropped.</p>
+    <p class="dlg">"And I know how you edit them."</p>
+    <p>I looked away.</p>
+    <p class="dlg">"Why are you telling me this?"</p>
+    <p class="dlg">"Because the police asked me whether I knew anyone who could make an old recording sound like a live announcement."</p>
+    <p>She swallowed.</p>
+    <p class="dlg">"I told them about you."</p>
+    <p>Neither of us spoke for several seconds.</p>
+    <p>Then I asked the question I'd been avoiding.</p>
+    <p class="dlg">"Do you think I killed him?"</p>
+    <p>Mio didn't answer immediately.</p>
+    <p>She looked at the photograph one last time.</p>
+    <p class="dlg">"Riku was a terrible person sometimes," she said. "He used people. He kept things he shouldn't have kept. He made everyone around him miserable."</p>
+    <p>She placed the photograph in my hand.</p>
+    <p class="dlg">"But he was still a person."</p>
+    <p>Her eyes met mine.</p>
+    <p class="dlg">"And I don't know what you did, Akira. I just know that, whatever it was, you're terrified of someone finding out."</p>
+    <p>She stood.</p>
+    <p>For a moment, I thought she'd say something else.</p>
+    <p>Instead, she walked down the steps.</p>
+    <p>I watched her leave.</p>
+    <p>I wanted to call after her.</p>
+    <p>I wanted to tell her that I hadn't meant for it to happen.</p>
+    <p>I wanted her to turn around and tell me that everything would be all right.</p>
+    <p>But she'd already given me six years of her life.</p>
+    <p>I had no right to ask her for one more lie.</p>
+    <svg class="gap" viewBox="0 0 200 24" aria-hidden="true"><use href="#gapwave"/></svg>
+    <p>The police arrested me that evening.</p>
+    <p>They had recovered the original project file. They had the editing history, the scheduled announcement, and Riku's messages about our argument two days earlier.</p>
+    <p>The final piece was the access record.</p>
+    <div class="log">
+      <p>At <span class="tc">4:52 p.m.</span>, my student card had opened the broadcasting room.</p>
+      <p>At <span class="tc">5:00 p.m.</span>, the door had opened again.</p>
+    </div>
+    <p>My card was used for both entries.</p>
+    <p>The first time, I'd gone in to speak to Riku.</p>
+    <p>The second, I'd returned briefly to retrieve the project file from his desk.</p>
+    <p>I had assumed the room's old access system wasn't recording individual entries anymore.</p>
+    <p>It was.</p>
+    <p>That was how the police reconstructed the timeline.</p>
+    <div class="log">
+      <p>At <span class="tc">4:30</span>, Mio entered the broadcasting room.</p>
+      <p>At <span class="tc">4:42</span>, she left. Riku was alive.</p>
+      <p>At <span class="tc">4:52</span>, I entered.</p>
+      <p>At <span class="tc">4:59</span>, Riku died during our argument.</p>
+      <p>At <span class="tc">5:00</span>, I left.</p>
+      <p>At <span class="tc">5:08</span>, I exported the edited announcement from the multimedia room.</p>
+      <p>At <span class="tc">5:13</span>, Riku's prerecorded voice played over the school speakers.</p>
+      <p>At <span class="tc">5:21</span>, a first-year student discovered his body.</p>
+    </div>
+    <p>The eight minutes had never been the time of the murder.</p>
+    <p>They were the time in which everyone believed the murder hadn't happened yet.</p>
+    <p>And I had created them.</p>
+    <svg class="gap" viewBox="0 0 200 24" aria-hidden="true"><use href="#gapwave"/></svg>
+    <p>The detective sat across from me in the interview room.</p>
+    <p>He placed the photograph of the waveform on the table.</p>
+    <p class="dlg">"You can stop lying now, Akira."</p>
+    <p>I looked at it.</p>
+    <p>The tiny gap before the final sentence was still there.</p>
+    <p>A little mistake.</p>
+    <p>Nothing more than a fraction of silence.</p>
+    <p class="dlg">"I didn't plan to kill him," I said.</p>
+    <p>The detective waited.</p>
+    <p class="dlg">"I went there to get the file. He refused. We argued."</p>
+    <p>I rubbed my hands together.</p>
+    <p class="dlg">"I wanted him to stop talking. I wanted him to stop looking at me like he knew everything about me."</p>
+    <p>I stared at the table.</p>
+    <p class="dlg">"He said I was no different from the people I hated. He said I'd spent a year making someone else's life miserable and still managed to think of myself as the victim."</p>
+    <p>My voice began to shake.</p>
+    <p class="dlg">"I told him to shut up."</p>
+    <p>The detective didn't move.</p>
+    <p class="dlg">"He laughed. I lost my temper. We struggled."</p>
+    <p>I stopped.</p>
+    <p>The next words didn't want to come out.</p>
+    <p class="dlg">"Then he was on the floor."</p>
+    <p>The room remained quiet.</p>
+    <p class="dlg">"I thought he would get up. I waited. I called his name."</p>
+    <p>I closed my eyes.</p>
+    <p class="dlg">"He didn't."</p>
+    <p>The detective let me sit with that for a while.</p>
+    <p>Then he asked, "Why the announcement?"</p>
+    <p>I looked at him.</p>
+    <p class="dlg">"Because I was scared."</p>
+    <p>It sounded pathetic.</p>
+    <p>It was pathetic.</p>
+    <p class="dlg">"I'd spent a year lying about what I'd done to Yuna. I thought that if Riku's death looked like it happened later, the police wouldn't connect me to him."</p>
+    <p class="dlg">"And the eight minutes?"</p>
+    <p>I swallowed.</p>
+    <p class="dlg">"I didn't know it would be exactly eight minutes when I scheduled the announcement. I knew the system would play it at <span class="tc">5:13</span>. I knew the club's equipment was due to be returned shortly afterward."</p>
+    <p>I looked at the clock.</p>
+    <p class="dlg">"I thought I could use the announcement to make everyone believe he was still alive when I was already somewhere else."</p>
+    <p>The detective folded his hands.</p>
+    <p class="dlg">"So you created a false timeline."</p>
+    <p class="dlg">"Yes."</p>
+    <p class="dlg">"And expected us to believe it."</p>
+    <p>I didn't answer.</p>
+    <p>He stood.</p>
+    <p class="dlg">"One more question."</p>
+    <p>I looked up.</p>
+    <p class="dlg">"Did you ever consider calling for help?"</p>
+    <p>I stared at the empty chair beside him.</p>
+    <p>For a second, I was back in the broadcasting room.</p>
+    <p>The humming lights.</p>
+    <p>The bottle of melon soda.</p>
+    <p>The ordinary sounds coming through the open window.</p>
+    <p>I remembered waiting for Riku to move.</p>
+    <p>I remembered looking at the clock.</p>
+    <p>I remembered choosing to leave.</p>
+    <p class="dlg">"No," I whispered.</p>
+    <p>That was the answer that mattered.</p>
+    <p>Not the argument.</p>
+    <p>Not the recording.</p>
+    <p>Not the eight minutes.</p>
+    <p>I had seen someone who needed help, and I'd decided that protecting myself mattered more.</p>
+    <p>The detective nodded once.</p>
+    <p>Then he left.</p>
+    <svg class="gap" viewBox="0 0 200 24" aria-hidden="true"><use href="#gapwave"/></svg>
+    <p>The school held a memorial for Riku the following Monday.</p>
+    <p>Someone gave a speech about how talented he had been.</p>
+    <p>Someone cried.</p>
+    <p>Someone whispered that they'd always known something was wrong with him.</p>
+    <p>The teachers asked everyone to remember the good times.</p>
+    <p>I wondered which good times they meant.</p>
+    <p>The day he'd helped me carry equipment to the auditorium?</p>
+    <p>The afternoon he'd stayed behind to repair a broken microphone?</p>
+    <p>Or the evening he'd laughed at the thought of destroying someone's reputation?</p>
+    <p>Perhaps people were complicated enough to contain all three.</p>
+    <p>I wouldn't know.</p>
+    <p>I sat in the police station and listened to one of his old recordings.</p>
+    <p class="dlg">"That's all for today. Take care on your way home, everyone."</p>
+    <p>A pause.</p>
+    <p>Then, almost too quietly to hear—</p>
+    <p class="dlg">"See you tomorrow."</p>
+    <p>I removed the headphones.</p>
+    <p>For a long time, I stared at the empty screen.</p>
+    <p>I had spent years believing that a voice could tell me who someone was.</p>
+    <p>Riku's voice had fooled me.</p>
+    <p>Mio's voice had asked me to be honest.</p>
+    <p>And my own voice had told the world exactly what it wanted to hear.</p>
+    <p>I'd edited a girl's words until she sounded guilty.</p>
+    <p>I'd edited a dead boy's voice until he sounded alive.</p>
+    <p>And I'd spent eight minutes pretending that silence was the same thing as innocence.</p>
+    <p>My phone vibrated.</p>
+    <p>A message from Mio.</p>
+    <p class="msg mio"><b>Mio:</b> Did you keep the photograph?</p>
+    <p>I stared at the screen.</p>
+    <p>Then another message arrived.</p>
+    <p class="msg mio"><b>Mio:</b> The one from the cultural festival.</p>
+    <p>I looked at the photograph on the table beside me.</p>
+    <p class="msg me"><b>Me:</b> Yes.</p>
+    <p>The typing indicator appeared, disappeared, then appeared again.</p>
+    <p class="msg mio"><b>Mio:</b> Good.</p>
+    <p>I waited for another message.</p>
+    <p>None came.</p>
+    <p>I placed the phone face down.</p>
+    <p>Outside the interview room, someone laughed. A door closed. A telephone rang.</p>
+    <p>The world continued making noise.</p>
+    <p>I had once believed silence was something a person could manufacture. A gap between sentences. A missing piece of a recording. Eight minutes in which nobody asked the right question.</p>
+    <p>I understood now.</p>
+    <p data-b="dead">Silence didn't erase anything.</p>
+    <p>It only gave the truth time to find its way back.</p>
+    <p>And eventually, it always did.</p>
+  </main>
+  <svg class="end" viewBox="0 0 200 20" aria-hidden="true"><line x1="0" y1="10" x2="200" y2="10"/></svg>
+</div>
+<script>
+(function(){
+  var wave=document.getElementById("wave"),N=96,bars=[],i;
+  for(i=0;i<N;i++){var b=document.createElement("i"),h=(i>=60&&i<=63)?2:6+Math.abs(Math.sin(i*1.7)*Math.cos(i*.45))*22;b.style.height=h+"px";wave.appendChild(b);bars.push(b)}
+  var tick=false,last=-1;
+  function upd(){tick=false;var m=document.documentElement.scrollHeight-innerHeight,p=m>0?Math.min(1,Math.max(0,scrollY/m)):0,n=Math.round(p*N);if(n===last)return;last=n;for(var j=0;j<N;j++)bars[j].classList.toggle("p",j<n)}
+  addEventListener("scroll",function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});addEventListener("resize",upd);upd();
+  var t=document.querySelector("[data-b=dead]");
+  if(t){if(!("IntersectionObserver" in window)){document.body.classList.add("dead");return}
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){document.body.classList.add("dead");io.disconnect()}})},{threshold:.9,rootMargin:"0px 0px -15% 0px"});io.observe(t)}
+})();
+</script>
+</body>
+</html>

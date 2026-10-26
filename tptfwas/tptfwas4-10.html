@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Bet — The Petal That Falls With A Smile, Vol. IV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--text:#3a2c30;--soft:#7d6a72;--gold:#b8860b;--nao:#2f8f78;--maki:#d9822b;--keni:#5b6b8c;--sora:#c4577f;--grey:#7d6a72}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#fffaf0}
+body{font-family:"Source Serif 4",Georgia,serif;color:var(--text);min-height:100vh;overflow-x:hidden}
+.sky{position:fixed;inset:0;z-index:0;pointer-events:none;transition:opacity 1.6s}
+.sky.now{background:linear-gradient(180deg,#fffaf0,#fdeff3);opacity:1}
+.sky.then{background:linear-gradient(180deg,#dfe3ea,#c9ced9);opacity:0}
+body.past .sky.then{opacity:1}body.past .sky.now{opacity:0}
+.page{position:relative;z-index:2;max-width:36rem;margin:0 auto;padding:6rem 1.5rem 6rem}
+.hero{text-align:center;margin-bottom:3.2rem}
+.kicker{font-style:italic;font-size:.95rem;color:var(--soft);margin-bottom:1rem}
+h1{font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(2.8rem,10vw,4.6rem);line-height:1.1}
+.story{filter:saturate(1);transition:filter 1.6s}
+body.past .story{filter:saturate(.1)}
+.card{text-align:center;margin:2.6em auto;padding:1.1em 0;border-top:1px solid rgba(58,44,48,.16);border-bottom:1px solid rgba(58,44,48,.16);font-family:"Shippori Mincho",serif;font-size:1rem;letter-spacing:.03em;color:var(--soft)}
+.card.now{color:var(--gold);border-color:rgba(184,134,11,.4);text-shadow:0 0 18px rgba(233,196,106,.55)}
+.sec p{font-size:1.1rem;line-height:1.85;margin-bottom:.85em}
+.sec p.say{margin-bottom:.5em}
+.who{font-family:"Shippori Mincho",serif;font-weight:700;margin-right:.3em}
+.who.nao{color:var(--nao)}.who.maki{color:var(--maki)}.who.keni{color:var(--keni)}.who.sora{color:var(--sora)}
+.who.teacher,.who.students,.who.boy,.who.girl1,.who.girl2{color:var(--grey)}
+.sec p.voice{font-style:italic;letter-spacing:.04em;color:#4f6a9a;text-shadow:0 0 16px rgba(120,150,220,.5);margin:1.2em 0}
+.sec p.bet{position:relative;margin:1.6em 0;padding:1.2rem 1.3rem 1.2rem 3.2rem;border:1.5px dashed var(--keni);border-radius:8px;font-family:"Shippori Mincho",serif;font-weight:700;font-size:1.2rem;line-height:1.55;color:var(--keni)}
+.sec p.bet::before{content:"";position:absolute;left:1.1rem;top:50%;width:1.2rem;height:1.2rem;margin-top:-.6rem;border-radius:50%;background:#8b2c2c;box-shadow:0 0 0 3px rgba(139,44,44,.2)}
+.sec p.win{text-align:center;font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(1.3rem,3.8vw,1.8rem);line-height:1.5;color:var(--gold);margin:1.2em 0;text-shadow:0 0 20px rgba(233,196,106,.5)}
+.sec p.fin{text-align:center;font-style:italic;color:var(--soft);margin:.4em 0 1.8em}
+.timer{position:fixed;right:14px;bottom:14px;z-index:5;padding:.45rem .8rem;border-radius:10px;font-family:"Space Mono",monospace;font-weight:700;font-size:1.1rem;color:var(--gold);background:rgba(255,250,240,.9);border:1px solid rgba(184,134,11,.45);box-shadow:0 0 18px rgba(233,196,106,.35);opacity:0;transition:opacity 1s;pointer-events:none}
+.timer.on{opacity:1}
+footer{text-align:center;margin-top:4.5rem;padding-top:2rem;border-top:1px solid rgba(58,44,48,.16);font-family:"Shippori Mincho",serif;font-size:.95rem;letter-spacing:.08em;color:var(--soft)}
+footer::before{content:"";display:block;width:8px;height:8px;margin:0 auto 1rem;background:#e0b04a;border-radius:2px;transform:rotate(45deg)}
+@media(max-width:480px){.page{padding:5rem 1.25rem 5rem}.sec p{font-size:1.04rem}.sec p.bet{padding-left:2.8rem}}
+@media(prefers-reduced-motion:reduce){.sky,.story,.timer{transition:none}}
+</style>
+</head>
+<body>
+<div class="sky now"></div><div class="sky then"></div>
+<div class="timer" id="timer" aria-hidden="true">15:00</div>
+<div class="page">
+  <header class="hero">
+    <p class="kicker">The Petal That Falls With A Smile — Volume IV</p>
+    <h1>A Bet</h1>
+  </header>
+  <main class="story">
+    <section class="sec" data-t="now">
+    <div class="card">Scene: The Bride's Room</div>
+    <p class="say"><span class="who nao">Nao:</span> There's still time. I should get some rest...</p>
+    <p class="say cont">Yeah, I definitely need some rest.</p>
+    </section>
+    <section class="sec" data-t="then">
+    <div class="card">The Past</div>
+    <div class="card">Nao's First Year of High School</div>
+    <p class="say"><span class="who maki">Maki:</span> Naooo! We're in the same class! Yaaay!</p>
+    <p class="say"><span class="who nao">Nao:</span> Yeah, we are! It's so nice...</p>
+    <p class="say"><span class="who maki">Maki:</span> Let's sit together with our group!</p>
+    <p class="say"><span class="who nao">Nao:</span> Yes, we should!</p>
+    <div class="card">Scene: Classroom 1-A</div>
+    <p class="say"><span class="who teacher">Teacher:</span> So, this concludes an important part of your high school journey...</p>
+    <p class="say"><span class="who students">Students:</span> Thank you, teacher.</p>
+    <p class="say"><span class="who teacher">Teacher:</span> I've assigned you your seats, so go ahead and sit down.</p>
+    <p class="say"><span class="who maki">Maki:</span> Naooo! The teacher betrayed us! We're so far apart now! 😢</p>
+    <p class="say"><span class="who nao">Nao:</span> It's okay, Maki. We're still in the same classroom.</p>
+    <p class="say"><span class="who maki">Maki:</span> Yesss...</p>
+    <p>A boy approaches them.</p>
+    <p class="say"><span class="who boy">Boy:</span> Hello, neighbor!</p>
+    <p class="say"><span class="who maki">Maki:</span> Huh? Is he hitting on us on the first day?</p>
+    <p class="say cont">Who are you?</p>
+    <p class="say"><span class="who boy">Boy:</span> My name is Keni...</p>
+    <p class="say"><span class="who nao">Nao:</span> My name is Nao...</p>
+    <div class="card">Six Months Later</div>
+    <p class="say"><span class="who keni">Keni:</span> So, Nao, let's make a bet, shall we?</p>
+    <p class="say"><span class="who nao">Nao:</span> Terrified. Wha-what kind of bet? And leave me alone!</p>
+    <p class="say"><span class="who keni">Keni:</span> Can't, can't...</p>
+    <p class="bet">The bet is simple. Find happiness, and I'll leave you forever.</p>
+    <p class="say"><span class="who nao">Nao:</span> What? Why are you doing this to me? Why me?</p>
+    <div class="card">Two Months Later</div>
+    <p>Girls whisper in the background.</p>
+    <p class="say"><span class="who girl1">Girl 1:</span> Did you hear the news?</p>
+    <p class="say"><span class="who girl2">Girl 2:</span> Yeah... It's depression.</p>
+    <p>Nao sits quietly in her classroom.</p>
+    <p class="say"><span class="who nao">Nao:</span> He won't bother me now...</p>
+    <p>A memory flashes through her mind.</p>
+    <p class="say voice"><span class="who keni">Keni's Voice:</span> You won't find happiness...</p>
+    <p>Nao's eyes begin to fill with tears.</p>
+    <p class="say"><span class="who nao">Nao:</span> Now the bet feels more like a curse...</p>
+    </section>
+    <section class="sec" data-t="now">
+    <div class="card now">Present Day</div>
+    <p>Nao suddenly wakes up, sweating.</p>
+    <p>She immediately checks the time.</p>
+    <p data-b="count">Only fifteen minutes remain.</p>
+    <p class="say"><span class="who nao">Nao:</span> Why am I having that dream now? And why am I remembering that bet...?</p>
+    <p class="say cont">The bet I tried so hard to forget still haunts me...</p>
+    <p class="win">But I've found my happiness, you idiot!</p>
+    <p class="win">And I've won this ridiculous bet of yours!</p>
+    <p class="fin">Or should I say... your curse.</p>
+    <p>A knock comes from the door.</p>
+    <p class="say"><span class="who sora">Sora:</span> Whoa, Nao! My girl, get dressed! You've only got fifteen minutes left!</p>
+    <p class="say"><span class="who nao">Nao:</span> Oh, thanks, Sora...</p>
+    </section>
+  </main>
+  <footer>End of Chapter</footer>
+</div>
+<script>
+(function(){
+  var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var secs=document.querySelectorAll(".sec"),b=document.body;
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)b.classList.toggle("past",e.target.dataset.t==="past")})},{rootMargin:"-45% 0px -45% 0px"});
+    secs.forEach(function(s){io.observe(s)});
+  }
+  var t=document.querySelector("[data-b=count]"),tm=document.getElementById("timer"),left=900,iv;
+  function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+  function start(){tm.classList.add("on");if(reduce)return;iv=setInterval(function(){left=Math.max(0,left-1);tm.textContent=fmt(left);if(!left)clearInterval(iv)},1000)}
+  if(t){if("IntersectionObserver" in window){var io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){start();io2.disconnect()}})},{threshold:.9,rootMargin:"0px 0px -15% 0px"});io2.observe(t)}else start()}
+})();
+</script>
+</body>
+</html>

@@ -3603,6 +3603,66 @@ body.light .nav-dock {
 .reader-profile-copy span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .reader-profile-copy strong { color: var(--ink); font-size: 12px; }
 .reader-profile-copy span { color: var(--muted); font-size: 10px; }
+.reader-profile-achievements { margin-top: 12px; padding-top: 11px; border-top: 1px solid var(--panel-border); }
+.reader-profile-achievements-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; color: var(--muted); font: 600 9px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+.reader-profile-achievements-head span:last-child { color: var(--rose); }
+.reader-profile-achievement-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.reader-profile-achievement { display: inline-flex; align-items: center; gap: 5px; max-width: 100%; padding: 5px 8px; border: 1px solid var(--panel-border-strong); border-radius: 999px; color: var(--ink-soft); background: var(--panel-2); font-size: 9px; line-height: 1.2; }
+.reader-profile-achievement > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reader-profile-achievement-more { padding: 5px 8px; border: 1px dashed var(--panel-border-strong); border-radius: 999px; background: transparent; color: var(--rose); font: 9px var(--font-mono); }
+.reader-profile-achievements-empty { color: var(--muted); font-size: 10px; }
+.achievement-tier-immortal { --tier-color: #f3c76c; }
+.achievement-tier-mythic { --tier-color: #ba91ff; }
+.achievement-tier-honor { --tier-color: #f0a5c5; }
+.milestone-tile.unlocked.achievement-tier-immortal .m-icon,
+.milestone-tile.unlocked.achievement-tier-mythic .m-icon,
+.milestone-tile.unlocked.achievement-tier-honor .m-icon { animation: achievement-relic-pulse 2.8s ease-in-out infinite; }
+.rarity-tag.achievement-tier-immortal,
+.rarity-tag.achievement-tier-mythic,
+.rarity-tag.achievement-tier-honor {
+    position: relative;
+    overflow: hidden;
+    color: var(--tier-color);
+    border-color: var(--tier-color);
+    isolation: isolate;
+}
+.rarity-tag.achievement-tier-immortal { background: linear-gradient(110deg, rgba(243, 199, 108, .08), rgba(243, 199, 108, .28), rgba(243, 199, 108, .08)); background-size: 220% 100%; animation: rarity-immortal-shine 3s ease-in-out infinite; }
+.rarity-tag.achievement-tier-mythic { background: rgba(186, 145, 255, .1); animation: rarity-mythic-glow 2.6s ease-in-out infinite; }
+.rarity-tag.achievement-tier-honor { background: linear-gradient(105deg, rgba(240, 165, 197, .08), rgba(255, 225, 241, .28), rgba(186, 145, 255, .16), rgba(240, 165, 197, .08)); background-size: 240% 100%; animation: rarity-honor-shimmer 3.4s linear infinite; }
+.milestone-tile.unlocked.achievement-tier-immortal { box-shadow: 0 0 24px rgba(243, 199, 108, .18); }
+.milestone-tile.unlocked.achievement-tier-mythic { box-shadow: 0 0 24px rgba(186, 145, 255, .2); }
+.milestone-tile.unlocked.achievement-tier-honor { box-shadow: 0 0 24px rgba(240, 165, 197, .22); }
+.reader-profile-achievement.achievement-tier-immortal,
+.reader-profile-achievement.achievement-tier-mythic,
+.reader-profile-achievement.achievement-tier-honor { color: var(--tier-color); border-color: var(--tier-color); animation: achievement-relic-pulse 3s ease-in-out infinite; }
+@keyframes achievement-relic-pulse {
+    0%, 100% { filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0)); transform: translateY(0); }
+    50% { filter: drop-shadow(0 0 7px var(--tier-color)); transform: translateY(-1px); }
+}
+@keyframes rarity-immortal-shine {
+    0%, 100% { background-position: 100% 0; box-shadow: 0 0 4px rgba(243, 199, 108, .12); }
+    50% { background-position: 0 0; box-shadow: 0 0 12px rgba(243, 199, 108, .38); }
+}
+@keyframes rarity-mythic-glow {
+    0%, 100% { box-shadow: 0 0 4px rgba(186, 145, 255, .12); text-shadow: 0 0 0 transparent; }
+    50% { box-shadow: 0 0 12px rgba(186, 145, 255, .42); text-shadow: 0 0 7px rgba(215, 190, 255, .65); }
+}
+@keyframes rarity-honor-shimmer {
+    0% { background-position: 100% 0; box-shadow: 0 0 4px rgba(240, 165, 197, .12); }
+    50% { background-position: 0 0; box-shadow: 0 0 12px rgba(240, 165, 197, .38); }
+    100% { background-position: -100% 0; box-shadow: 0 0 4px rgba(186, 145, 255, .16); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .milestone-tile.unlocked.achievement-tier-immortal .m-icon,
+    .milestone-tile.unlocked.achievement-tier-mythic .m-icon,
+    .milestone-tile.unlocked.achievement-tier-honor .m-icon,
+    .reader-profile-achievement.achievement-tier-immortal,
+    .reader-profile-achievement.achievement-tier-mythic,
+    .reader-profile-achievement.achievement-tier-honor,
+    .rarity-tag.achievement-tier-immortal,
+    .rarity-tag.achievement-tier-mythic,
+    .rarity-tag.achievement-tier-honor { animation: none; }
+}
 .profile-edit-btn {
     min-height: 38px;
     padding: 0 13px;
