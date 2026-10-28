@@ -7932,6 +7932,25 @@ body.light .browser-dock { background: rgba(255, 250, 246, .94); }
 .reader-notebook-empty > span { color: var(--rose); font-size: 26px; }
 .reader-notebook-empty strong { color: var(--ink); font: 600 18px var(--font-display); }
 .reader-notebook-empty p { max-width: 420px; margin: 0; color: var(--muted); font-size: 11px; }
+.site-mode-switch {
+    position: fixed;
+    left: 14px;
+    bottom: 14px;
+    z-index: 60;
+    padding: 8px 14px;
+    border: 1px solid rgba(255, 255, 255, .2);
+    border-radius: 100px;
+    background: rgba(22, 15, 34, .88);
+    color: #f6eefc;
+    font: 600 12px Sora, sans-serif;
+    text-decoration: none;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+body.light .site-mode-switch { border-color: rgba(96, 56, 73, .2); background: rgba(255, 250, 246, .94); color: #392630; }
+@media (max-width: 640px) {
+    .site-mode-switch { left: 10px; bottom: calc(78px + env(safe-area-inset-bottom)); padding: 7px 11px; font-size: 10px; }
+}
 .achievement-card {
     position: relative;
     display: flex;
