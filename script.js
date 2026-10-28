@@ -1549,7 +1549,7 @@ function renderHeatmap() {
 var upcomingReleases = [
     { date: '2026-11-02', title: "The Other Day - Chapter 10" },
     { date: '2026-11-01', title: 'Petal Vol. 4 — chpater 3 ' },
-    { date: '2026-11-09', title: 'THE THINGS WE NEVER RETURNED ' }
+    { date: '2026-11-09', title: 'THE THINGS WE NEVER RETURNED'},
 ];
 var calSorted = [];
 var releaseReminders = store.get('releaseReminders', []);
@@ -1557,6 +1557,12 @@ if (!Array.isArray(releaseReminders)) releaseReminders = [];
 releaseReminders = releaseReminders.filter(function (item) { return item && typeof item === 'object' && typeof item.key === 'string' && typeof item.date === 'string'; });
 
 function reminderKey(r) { return r.date + '|' + r.title; }
+function localCalendarDate(date) {
+    var year = date.getFullYear();
+    var month = String(date.getMonth() + 1).padStart(2, '0');
+    var day = String(date.getDate()).padStart(2, '0');
+    return year + '-' + month + '-' + day;
+}
 function notifyDueReleaseReminders() {
     var today = localCalendarDate(new Date());
     var due = releaseReminders.filter(function (r) { return r && !r.notified && r.date <= today; });
