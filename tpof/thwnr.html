@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Things We Never Returned — Chapters</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Literata:ital,wght@0,400;0,600;1,400&family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+@property --h{syntax:'<number>';inherits:true;initial-value:210}
+:root{--h:210;--sat:48%;--lit:38%;--ink:#232a38;--soft:#5d667c;--on:#fff;transition:--h .9s ease;
+--bg:hsl(var(--h) 22% 94%);--card:hsl(var(--h) 30% 98%);--line:hsl(var(--h) 20% 82%);--accent:hsl(var(--h) var(--sat) var(--lit))}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
+--bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}}
+:root[data-theme="dark"]{--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
+--bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Literata,Georgia,serif;line-height:1.6;overflow-x:hidden}
+#fx,.aurora{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.aurora{background:radial-gradient(42vmax 42vmax at 12% 8%,hsl(var(--h) var(--sat) var(--lit)/.2),transparent 62%),
+radial-gradient(46vmax 46vmax at 92% 85%,hsl(calc(var(--h) + 45) var(--sat) var(--lit)/.16),transparent 62%);animation:drift 16s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate3d(-3%,4%,0) scale(1.1)}}
+.top,.hero,.wrap{position:relative;z-index:1}
+.top{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
+.brand{font:500 .72rem 'Space Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--soft)}
+.theme{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 14px;font:inherit;font-size:.85rem;cursor:pointer;transition:transform .2s}
+.theme:hover{transform:scale(1.07) rotate(-3deg)}
+.hero{text-align:center;padding:6vh 24px 5vh;display:flex;flex-direction:column;align-items:center}
+.stage{perspective:900px;margin-bottom:34px}
+.book{position:relative;width:132px;height:184px;transform-style:preserve-3d;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,-18deg));
+transition:transform .25s ease-out;animation:bob 4.5s ease-in-out infinite}
+@keyframes bob{50%{translate:0 -12px}}
+.book>*{position:absolute;inset:0;border-radius:3px 8px 8px 3px}
+.back{background:#d8cfb0;transform:translateZ(-3px);box-shadow:0 30px 40px -12px rgba(0,0,0,.45)}
+.pg{background:#f4ecd2;display:grid;place-items:center;font:700 3.4rem 'Space Grotesk',sans-serif;color:var(--accent);transform:translateZ(0)}
+.leaf{background:#ece3c3;transform-origin:left;transform:translateZ(2px);opacity:0}
+.leaf.turn{animation:leaf .95s ease-in-out}
+@keyframes leaf{0%{opacity:1;transform:translateZ(2px) rotateY(0)}85%{opacity:1}100%{opacity:0;transform:translateZ(2px) rotateY(-170deg)}}
+.cover{background:linear-gradient(135deg,#4a78b8,#2b4a7e);transform-origin:left;transform:translateZ(4px) rotateY(-34deg);
+display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:14px;color:#e8eefb;font:italic 600 .72rem/1.3 Literata,serif}
+.door{width:30px;height:46px;border:2px solid rgba(232,238,251,.8);border-radius:15px 15px 0 0;position:relative}
+.door::after{content:"";position:absolute;right:5px;top:24px;width:4px;height:4px;border-radius:50%;background:#e8eefb}
+.kicker{font:400 .78rem 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+h1{font:700 clamp(2.1rem,6.5vw,3.7rem)/1.08 'Space Grotesk',sans-serif;margin:0 0 14px}
+.w{display:inline-block;white-space:nowrap}
+.l{display:inline-block;animation:rise .8s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--d)}
+@keyframes rise{from{opacity:0;transform:translateY(.5em) rotate(4deg);filter:blur(6px)}}
+.genres{color:var(--soft);font-size:.95rem;margin:0 0 18px}
+.note{font:600 1.5rem Caveat,cursive;color:var(--accent);min-height:1.8em;margin:0;opacity:0;transition:opacity .5s}
+.note.show{opacity:1}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px 8vh}
+.select{display:grid;grid-template-columns:1fr 1.1fr;gap:28px;align-items:start}
+.item{display:grid;grid-template-columns:44px 1fr auto;align-items:center;width:100%;margin:0 0 8px;padding:12px 14px;text-align:left;color:inherit;font:inherit;
+border:1px solid var(--line);border-left:4px solid var(--a);border-radius:8px;cursor:pointer;--a:hsl(var(--ch) var(--sat) var(--lit));--mx:50%;--my:50%;
+background:radial-gradient(180px circle at var(--mx) var(--my),hsl(var(--ch) var(--sat) var(--lit)/.22),transparent),var(--card);
+opacity:0;transform:translateY(16px);animation:in .6s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:calc(var(--i)*70ms + .5s);transition:translate .25s,box-shadow .25s}
+@keyframes in{to{opacity:1;transform:none}}
+.item:hover{translate:5px 0}
+.item[aria-current="true"]{box-shadow:0 0 0 2px var(--a),0 8px 26px -8px var(--a);translate:8px 0}
+.item .n{font:700 .85rem 'Space Mono',monospace;color:var(--a)}
+.item .t{font-weight:600}
+.hint{font:.72rem 'Space Mono',monospace;color:var(--soft);margin:10px 4px 0}
+.detail{position:sticky;top:20px;background:var(--card);border:1px solid var(--line);border-top:6px solid var(--accent);border-radius:14px;padding:28px;box-shadow:0 24px 50px -24px var(--accent);transition:box-shadow .6s}
+.swap>*{animation:up .55s cubic-bezier(.2,.7,.2,1) both}
+@keyframes up{from{opacity:0;transform:translateY(14px)}}
+.big{font:700 3.6rem/1 'Space Grotesk',sans-serif;color:var(--accent);margin:0 0 4px}
+.label{font:400 .78rem 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:0 0 6px}
+.detail h2{font:700 1.7rem/1.2 'Space Grotesk',sans-serif;margin:0 0 12px}
+.chip{display:inline-block;border:1px solid var(--accent);color:var(--accent);border-radius:99px;padding:2px 12px;font-size:.78rem;margin-bottom:14px}
+.sum{margin:0 0 22px;min-height:5.2em}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.read{position:relative;overflow:hidden;background:var(--accent);color:var(--on);text-decoration:none;padding:12px 22px;border-radius:8px;font-weight:600;transition:transform .2s}
+.read:hover{transform:translateY(-2px)}
+.read::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.5) 50%,transparent 70%);transform:translateX(-120%)}
+.read:hover::after{transform:translateX(120%);transition:transform .7s}
+.ghost{background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:10px 14px;font:inherit;font-size:.9rem;cursor:pointer;transition:background .2s}
+.ghost:hover:not(:disabled){background:var(--line)}
+.ghost:disabled{opacity:.35;cursor:default}
+.lk{font-size:.85rem;opacity:.8}
+.read.locked{background:var(--line);color:var(--soft);border:0;font:inherit;font-weight:600;cursor:not-allowed}
+.read.locked::after{display:none}
+.read.locked:hover{transform:none}
+.shake{animation:shake .45s}
+@keyframes shake{20%,60%{translate:-6px 0}40%,80%{translate:6px 0}}
+.pvbox{overflow:hidden;max-height:0;opacity:0;margin:0;transition:max-height .7s ease,opacity .5s,margin .5s}
+.pvbox.open{max-height:560px;opacity:1;margin:20px 0 0}
+.sheet{position:relative;padding:18px 18px 74px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.sheet p{margin:0 0 .55em;font-size:.98rem}
+.pvbox.open .sheet p{animation:up .5s both;animation-delay:calc(var(--k)*110ms + .25s)}
+.sheet p.bar{height:.85em;border-radius:5px;background:var(--line)}
+.sheet::after{content:"";position:absolute;left:0;right:0;bottom:0;height:75%;border-radius:0 0 10px 10px;background:linear-gradient(transparent,var(--bg) 82%);pointer-events:none}
+.badge{position:absolute;z-index:1;left:50%;bottom:16px;transform:translateX(-50%);width:max-content;max-width:90%;text-align:center;font:.74rem 'Space Mono',monospace;color:var(--accent);border:1px solid var(--accent);background:var(--card);border-radius:99px;padding:4px 14px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
+::-webkit-scrollbar{width:14px;height:14px}
+::-webkit-scrollbar-track{background:transparent;border-left:1px solid var(--line)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--accent),hsl(calc(var(--h) + 45) var(--sat) var(--lit)));border:4px solid transparent;background-clip:padding-box;border-radius:99px;min-height:48px}
+::-webkit-scrollbar-thumb:hover{border-width:2px}
+::-webkit-scrollbar-corner{background:transparent}
+.prog{position:fixed;top:0;left:0;right:0;height:3px;z-index:9;transform-origin:left;transform:scaleX(0);pointer-events:none;
+background:linear-gradient(90deg,var(--accent),hsl(calc(var(--h) + 45) var(--sat) var(--lit)));box-shadow:0 0 12px var(--accent)}
+@media (max-width:760px){.select{grid-template-columns:1fr}.detail{position:static}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.item,.note{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="prog" id="prog" aria-hidden="true"></div>
+<div class="aurora" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<header class="top"><span class="brand">Ten Percent of Forever · Universe</span><button class="theme" id="theme" type="button">🌙 Dark</button></header>
+<section class="hero">
+  <div class="stage" aria-hidden="true">
+    <div class="book" id="book">
+      <div class="back"></div><div class="pg" id="bookn">01</div><div class="leaf" id="leaf"></div>
+      <div class="cover"><span>THE THINGS WE NEVER RETURNED</span><i class="door"></i></div>
+    </div>
+  </div>
+  <p class="kicker">A story set in the universe of Ten Percent of Forever</p>
+  <h1 id="title">The Things We Never Returned</h1>
+  <p class="genres">Romance · Mystery · Slice of Life · Psychological Drama</p>
+  <p class="note" id="note" aria-hidden="true"></p>
+</section>
+<main class="wrap">
+  <div class="select">
+    <div><nav id="list" aria-label="Chapters"></nav><p class="hint">Tip: use ↑ ↓ to browse chapters</p></div>
+    <aside class="detail" id="detail" aria-live="polite"></aside>
+  </div>
+</main>
+<script>
+var BASE = "things-we-never-returned/"; // folder holding the chapter pages
+var CH = [
+ {n:"01",label:"Chapter 1",title:"The Book with No Price",tag:"Rain · Receipts",h:210,file:"chapter1.html",sum:"Rain, a bookshop and an upside-down book. A stranger brings back a paperback full of margin arguments."},
+ {n:"02",label:"Chapter 2",title:"The First Rule of Investigating Nothing",tag:"Milk coffee · Handwriting",h:25,file:"chapter2.html",sum:"Kaito returns with coffee, and the two compare handwriting while Mrs. Takeda refuses to name names."},
+ {n:"03",label:"Chapter 3",title:"A Drawer Full of Almosts",tag:"Drawers · Keepsakes",h:165,file:"chapter3.html",sum:"Kaito digs through the things he never threw away and finds a copy of the book with a familiar drawing."},
+ {n:"04",label:"Chapter 4",title:"Someone on the Other Side of the Window",tag:"Windows · Waiting",h:235,file:"chapter4.html",sum:"Ayane meets Emi at a bookstore, then asks Mrs. Takeda about the day it rained."},
+ {n:"05",label:"Chapter 5",title:"The Girl Who Stayed",tag:"Photographs · Siblings",h:340,file:"chapter5.html",sum:"A photograph, a name and an old argument. Kaito decides to reach out to his sister."},
+ {n:"06",label:"Chapter 6",title:"The Things We Keep",tag:"Bookmarks · Phone calls",h:38,file:"chapter6.html",sum:"A phone call, a box of keepsakes and the question of why we hold on to things."},
+ {n:"07",label:"Chapter 7",title:"A Flower with No Name",tag:"Freesias · Umbrellas",h:52,file:"chapter7.html",sum:"A flower shop across the street, a woman named Saki and a rainy afternoon in the café."},
+ {n:"08",label:"Chapter 8",title:"Nobody’s Villain",tag:"Apologies · Messages",h:290,file:"chapter8.html",sum:"Yuzuna tells her side of that day, and one message crosses five years of silence."},
+ {n:"09",label:"Chapter 9",title:"The Things We Never Returned",tag:"Closing time · Confession",h:195,file:"chapter9.html",sum:"A meeting after closing, a letter on display and a confession on the way to the station."},
+ {n:"Ep",label:"Epilogue",title:"Things We Leave Behind",tag:"Folders · Rain",h:105,file:"epilogue.html",sum:"Six months later: a café, a sketch and a folder named for what is worth keeping."}
+];
+var PRE=[
+ ["At 4:37 PM, Ayane Sato discovered that someone had shelved a book upside down.","She stared at it.","Then at the shelf.","Then at the book again, as though the book might feel embarrassed and correct itself."],
+ ["Kaito Moriyama returned on Thursday.","Ayane knew it was Thursday because she’d marked the day on the calendar above the cash register, and because Mrs. Takeda had spent the morning complaining that deliveries always arrived when she was trying to eat."],
+ ["Kaito’s house had too many drawers.","That was his mother’s opinion.","His opinion was that the drawers were perfectly reasonable, and the actual problem was that nobody else understood how to use them."],
+ ["On Sunday, Ayane went to the bookstore near the station.","She almost didn’t.","At 9:00 AM, she told herself she had homework.","At 9:15, she decided the homework could wait."],
+ ["Kaito arrived at Tsubaki Books at 4:19 PM.","Ayane was already waiting.","He knew something was wrong because she had arranged three notebooks, two pencils, and the faded blue paperback in a perfectly straight line across the counter."],
+ ["Yuzuna replied the next morning.","“Of course I remember it. I thought I lost that copy.”","Kaito stared at the message."],
+ ["The flower shop across from Tsubaki Books was called Hana no Ie.","It had been there longer than Ayane could remember."],
+ ["Kaito called his sister that night.","Yuzuna answered on the third ring.","“Hey.”","“Hey.”","“Everything okay?”"],
+ ["Saki replied the following evening.","Yuzuna was at Tsubaki Books when the message arrived.","She looked at the screen.","Then locked it.","Then unlocked it again."],
+ ["Six months later, Tsubaki Books had a new sign above the entrance.","Mrs. Takeda insisted it was temporary.","Ayane thought it looked terrible.","Kaito thought it looked charming."]
+];
+var UNLOCKED=["#"]; // add a chapter's file name here to unlock it
+CH.forEach(function(c,i){c.pre=PRE[i];c.locked=UNLOCKED.indexOf(c.file)<0});
+var NOTES=["The ending was unfair.","The ending was honest.","Honest doesn’t mean good.","I’m here. You can come out now.","You said you’d tell me before you left.","I should have."];
+var RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+var root=document.documentElement,list=document.getElementById("list"),detail=document.getElementById("detail"),btn=document.getElementById("theme"),
+    book=document.getElementById("book"),leaf=document.getElementById("leaf"),bookn=document.getElementById("bookn"),cur=0,tw;
+function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function dark(){var t=root.dataset.theme;return t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches}
+function icon(){btn.textContent=dark()?"☀️ Light":"🌙 Dark"}
+btn.onclick=function(){var t=dark()?"light":"dark";root.dataset.theme=t;store("ttwnr-theme",t);icon()};
+var saved=load("ttwnr-theme");if(saved)root.dataset.theme=saved;icon();
+
+/* title letter reveal */
+var h1=document.getElementById("title"),k=0,tt=h1.textContent;h1.setAttribute("aria-label",tt);
+h1.innerHTML=tt.split(" ").map(function(w){return '<span class="w" aria-hidden="true">'+w.split("").map(function(c){return '<span class="l" style="--d:'+(k++*38)+'ms">'+c+'</span>'}).join("")+'</span>'}).join(" ");
+
+/* drifting margin notes */
+var ni=0,nel=document.getElementById("note");
+function note(){nel.classList.remove("show");setTimeout(function(){nel.textContent=NOTES[ni++%NOTES.length];nel.classList.add("show")},RM?0:500)}
+note();setInterval(note,3800);
+
+/* book follows the pointer */
+addEventListener("pointermove",function(e){book.style.setProperty("--ry",(e.clientX/innerWidth*30-33)+"deg");book.style.setProperty("--rx",(-(e.clientY/innerHeight-.5)*22)+"deg")});
+
+/* rain, ripples and (for the flower chapter) petals */
+var cv=document.getElementById("fx"),cx=cv.getContext("2d"),W,H,drops=[],rip=[],hue=210,tgt=210,mode="rain";
+function size(){W=cv.width=innerWidth;H=cv.height=innerHeight}size();addEventListener("resize",size);
+function mk(){return{x:Math.random()*W,y:-Math.random()*H,l:10+Math.random()*16,v:6+Math.random()*7,g:H*(.55+Math.random()*.45),r:Math.random()*6.28,s:3+Math.random()*4}}
+for(var q=0;q<110;q++){var d0=mk();d0.y=Math.random()*H;drops.push(d0)}
+function frame(){
+  hue+=(tgt-hue)*.04;
+  var dk=dark(),L=dk?72:42,S=dk?62:48,A=dk?.5:.36,col=function(a){return"hsla("+hue+","+S+"%,"+L+"%,"+a+")"};
+  cx.clearRect(0,0,W,H);cx.lineWidth=1.2;
+  drops.forEach(function(d,i){
+    if(mode==="rain"){
+      cx.strokeStyle=col(A);cx.beginPath();cx.moveTo(d.x,d.y);cx.lineTo(d.x-d.l*.2,d.y-d.l);cx.stroke();
+      d.y+=d.v;d.x-=d.v*.12;
+      if(d.y>d.g){rip.push({x:d.x,y:d.y,r:1,a:A});drops[i]=mk();drops[i].y=-20}
+    }else{
+      d.y+=d.v*.18;d.x+=Math.sin(d.y*.02+d.r)*.7;d.r+=.02;
+      cx.save();cx.translate(d.x,d.y);cx.rotate(d.r);cx.fillStyle=col(A+.15);cx.beginPath();cx.ellipse(0,0,d.s*1.6,d.s*.8,0,0,6.28);cx.fill();cx.restore();
+      if(d.y>H+10){drops[i]=mk();drops[i].y=-10}
+    }
+  });
+  for(var j=rip.length-1;j>=0;j--){var p=rip[j];p.r+=.7;p.a-=.012;if(p.a<=0){rip.splice(j,1);continue}
+    cx.strokeStyle=col(p.a);cx.beginPath();cx.ellipse(p.x,p.y,p.r*2,p.r*.6,0,0,6.28);cx.stroke()}
+  requestAnimationFrame(frame)}
+if(!RM)frame();
+
+/* chapter list */
+list.innerHTML=CH.map(function(c,i){
+  return '<button class="item'+(c.locked?' locked':'')+'" type="button" data-i="'+i+'" style="--ch:'+c.h+';--i:'+i+'"><span class="n">'+c.n+'</span><span class="t">'+c.title+'</span>'+(c.locked?'<span class="lk" aria-label="Locked">🔒</span>':'')+'</button>';
+}).join("");
+list.addEventListener("pointermove",function(e){var b=e.target.closest(".item");if(!b)return;var r=b.getBoundingClientRect();b.style.setProperty("--mx",(e.clientX-r.left)+"px");b.style.setProperty("--my",(e.clientY-r.top)+"px")});
+
+function type(el,txt){clearInterval(tw);if(RM){el.textContent=txt;return}el.textContent="";var i=0;tw=setInterval(function(){el.textContent=txt.slice(0,++i);if(i>=txt.length)clearInterval(tw)},16)}
+
+function select(i,scroll){
+  cur=i;var c=CH[i];
+  root.style.setProperty("--h",c.h);tgt=c.h;mode=c.h===52?"petals":"rain";
+  Array.prototype.forEach.call(list.children,function(b,j){b.setAttribute("aria-current",j===i)});
+  detail.classList.remove("swap");
+  detail.innerHTML='<p class="big">'+c.n+'</p><p class="label">'+c.label+'</p><h2>'+c.title+'</h2>'+(c.locked?'':'<span class="chip">'+c.tag+'</span> ')+'<span class="chip">'+(c.locked?'🔒 Locked':'🔓 Unlocked')+'</span><p class="sum"></p>'+
+   '<div class="actions">'+(c.locked?'<button class="read locked" type="button" id="rd">🔒 Locked</button>':'<a class="read" href="'+BASE+c.file+'">Read '+c.label.toLowerCase()+' →</a>')+'<button class="ghost" type="button" id="pv">👁 Preview</button>'+
+   '<button class="ghost" type="button" id="prev"'+(i===0?" disabled":"")+'>← Previous</button>'+
+   '<button class="ghost" type="button" id="next"'+(i===CH.length-1?" disabled":"")+'>Next →</button></div>'+
+   '<div class="pvbox" id="pvbox"><div class="sheet">'+(c.locked?[80,95,70,88]:c.pre).map(function(t,n){return c.locked?'<p class="bar" style="--k:'+n+';width:'+t+'%"></p>':'<p style="--k:'+n+'">'+t+'</p>'}).join("")+'<span class="badge">'+(c.locked?"🔒 Locked — nothing to preview yet":"🔓 Unlocked — open the chapter to keep reading")+'</span></div></div>';
+  Array.prototype.forEach.call(detail.children,function(el,n){el.style.animationDelay=(n*70)+"ms"});
+  void detail.offsetWidth;detail.classList.add("swap");
+  type(detail.querySelector(".sum"),c.locked?"This chapter is locked. Its story stays hidden until it’s unlocked.":c.sum);
+  document.getElementById("prev").onclick=function(){select(cur-1,true)};
+  document.getElementById("next").onclick=function(){select(cur+1,true)};
+  var pv=document.getElementById("pv"),box=document.getElementById("pvbox");
+  pv.onclick=function(){var o=box.classList.toggle("open");pv.textContent=o?"✕ Close preview":"👁 Preview"};
+  var rd=document.getElementById("rd");
+  if(rd)rd.onclick=function(){rd.classList.remove("shake");void rd.offsetWidth;rd.classList.add("shake");rd.textContent="🔒 Not unlocked yet";setTimeout(function(){rd.textContent="🔒 Locked"},1600)};
+  bookn.textContent=c.n;leaf.classList.remove("turn");void leaf.offsetWidth;leaf.classList.add("turn");
+  store("ttwnr-sel",i);
+  if(scroll&&innerWidth<=760)detail.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+list.onclick=function(e){var b=e.target.closest(".item");if(b)select(+b.dataset.i,true)};
+addEventListener("keydown",function(e){
+  if(e.key==="ArrowDown"||e.key==="ArrowRight"){if(cur<CH.length-1){e.preventDefault();select(cur+1,false)}}
+  else if(e.key==="ArrowUp"||e.key==="ArrowLeft"){if(cur>0){e.preventDefault();select(cur-1,false)}}
+});
+var prog=document.getElementById("prog"),tick=false;
+function upd(){tick=false;var m=document.documentElement.scrollHeight-innerHeight;prog.style.transform="scaleX("+(m>0?Math.min(1,scrollY/m):0)+")"}
+addEventListener("scroll",function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});
+addEventListener("resize",upd);upd();
+var s=parseInt(load("ttwnr-sel"),10);
+select(s>=0&&s<CH.length?s:0,false);
+</script>
+</body>
+</html>

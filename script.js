@@ -22,14 +22,14 @@ var store = {
    wipe their own locally-stored data on request (see confirmClearLocalData
    below) — nothing here is ever transmitted anywhere. */
 var APP_STORAGE_KEYS = [
-    'readProgress', 'bookmarks', 'currentlyReading', 'readingLog', 'readingQueue', 'claimedChallenges',
+    'readProgress', 'bookmarks', 'currentlyReading', 'readingLog', 'readingQueue',
     'privateReaderNotes', 'novelComments', 'recentSearches', 'lightMode', 'theme', 'morphismStyle',
     'tiltEnabled', 'motionEnabled', 'readerFontScale', 'readerAchUnlocks',
     'goldenPetalCaught', 'nightOwlRead', 'oneDayRead', 'searchedOnce', 'sharedOnce',
-    'themeChanged', 'lastCommentAt', 'readerLevel', 'achievementsCollapsed', 'readerProfile', 'releaseReminders', 'midnightMemoryWon', 'midnightMemoryBest'
+    'themeChanged', 'lastCommentAt', 'readerLevel', 'achievementsCollapsed', 'readerProfile', 'releaseReminders', 'midnightMemoryWon', 'midnightMemoryBest', 'hiddenDiscoveries'
 ];
 function confirmClearLocalData() {
-    var ok = window.confirm('This permanently erases reading progress, bookmarks, your reading queue, private notes, achievements, and saved preferences in this browser. This can\'t be undone. Continue?');
+    var ok = window.confirm('This permanently erases reading progress, bookmarks, your reading queue, private notes, and saved preferences in this browser. This can\'t be undone. Continue?');
     if (!ok) return;
     APP_STORAGE_KEYS.forEach(function (k) { try { localStorage.removeItem(k); } catch (e) { } });
     showToast('Local data cleared ✦ Reloading…');
@@ -79,7 +79,7 @@ var novels = [
         blurb: "A story about the bonds we make, the promises we keep, and the rain that falls between us.", grad: "135deg,#3a2a3f,#5c3a4a", collections: ["best-romance", "completed"]
     },
     {
-        order: 2, title: "Ten Percent of Forever", img: "./img/sub1/tpof.jpg", link: "./tpof/tpof.html", genres: ["romance", "drama", "slice"], status: "completed", ch: 7, rating: 4.7, views: 10000, releaseOffsetDays: 830,
+        order: 2, title: "Ten Percent of Forever", img: "./img/sub1/tpof.jpg", link: "./tpof/tpof.html", genres: ["romance", "drama", "slice"], status: "completed", ch: 8, rating: 4.7, views: 18000, releaseOffsetDays: 830,
         blurb: "If you only had ten percent of your time left to spend with the person you loved, how would you spend it?", grad: "135deg,#402a4a,#6a3a55", collections: ["best-romance", "completed", "editors-choice"]
     },
     {
@@ -151,8 +151,12 @@ var novels = [
         blurb: "Volume 4 — University → Adulthood Arc", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
     },
     {
-        order: 20, title: "Dead Air", img: "./img/sub2/DA.jpg", link: "#", genres: ["drama", "mystery"], status: "upcoming", ch: 0, rating: null, views: null, releaseOffsetDays: 0,
+        order: 20, title: "Dead Air", img: "./img/sub2/DA.jpg", link: "./os/da.html", genres: ["drama", "mystery"], status: "completed", ch: 1, rating: 4.2, views: 15000, releaseOffsetDays: 0,
         blurb: "Psychological Thriller · Murder Mystery · One-Shot", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
+    },
+     {
+        order: 21, title: "THE THINGS WE NEVER RETURNED", img: "./img/sub2/thwnr.jpg", link: "./tpof/thwnr.html", genres: ["drama", "mystery","slice"], status: "upcoming", ch: 0, rating: null, views: null, releaseOffsetDays: 0,
+        blurb: "A story set in the universe of Ten Percent of Forever", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
     },
 ];
 var storyWorlds = [
@@ -187,7 +191,6 @@ var currentlyReadingOrder = store.get('currentlyReading', null);
 var readingLog = store.get('readingLog', {});
 var readingQueue = store.get('readingQueue', {});
 if (!readingQueue || typeof readingQueue !== 'object' || Array.isArray(readingQueue)) readingQueue = {};
-var claimedChallenges = store.get('claimedChallenges', {});
 var privateReaderNotes = store.get('privateReaderNotes', {});
 var readerProfile = store.get('readerProfile', {});
 if (!readerProfile || typeof readerProfile !== 'object' || Array.isArray(readerProfile)) readerProfile = {};
@@ -265,7 +268,7 @@ function setTheme(theme) {
     var moodKey = activeMoodCard ? activeMoodCard.dataset.mood : 'all';
     if (moodKey === 'all') paintAurora(themeAccents[theme]);
     showToast('Theme set to ' + theme.charAt(0).toUpperCase() + theme.slice(1) + ' ✦');
-    if (markFlag('themeChanged')) setTimeout(renderReaderAchievements, 3000);
+    markFlag('themeChanged');
 }
 function initTheme() {
     var saved = store.get('theme', 'rose');
@@ -324,27 +327,10 @@ function syncCaseClosedOccasion() {
         moodColors.all = caseClosedMoodPalette;
         window.setTimeout(syncCaseClosedOccasion, ends.getTime() - now.getTime() + 100);
     } else if (wasActive) {
-        renderReaderAchievements();
-        renderProgressJourney();
+        renderReaderLevel();
     }
 }
 
-function syncVol2Announcement() {
-    var banner = document.getElementById('vol2Announcement');
-    if (!banner) return;
-    // The Vol. 2 announcement has its own 25-day window.
-    var ends = new Date(2026, 10, 11, 0, 0, 0);
-    var now = new Date();
-    var remaining = Math.ceil((ends.getTime() - now.getTime()) / 86400000);
-    banner.hidden = remaining <= 0;
-    var section = document.getElementById('announcements');
-    if (section) section.hidden = remaining <= 0 && !document.getElementById('petalVol4Announcement');
-    if (remaining > 0) {
-        var label = document.getElementById('vol2AnnouncementRemaining');
-        if (label) label.textContent = remaining === 1 ? 'last day' : remaining + ' days left';
-        window.setTimeout(syncVol2Announcement, Math.min(60000, ends.getTime() - now.getTime() + 100));
-    }
-}
 function syncMidnightArchiveEvent() {
     var banner = document.getElementById('midnightArchiveEvent');
     if (!banner) return;
@@ -359,7 +345,7 @@ function syncMidnightArchiveEvent() {
         var status = document.getElementById('midnightArchiveStatus');
         if (status) {
             var best = Number(store.get('midnightMemoryBest', 0)) || 0;
-            status.textContent = store.get('readerAchUnlocks', {}).archiveAfterDark ? 'Achievement earned ✓' : (best ? 'Best: ' + best + ' moves.' : 'Win the game to claim the badge.');
+            status.textContent = best ? 'Personal best: ' + best + ' moves.' : 'Find all six pairs to set your best.';
         }
         window.setTimeout(syncMidnightArchiveEvent, Math.min(60000, ends.getTime() - now.getTime() + 100));
     }
@@ -443,7 +429,6 @@ function flipMidnightMemoryCard(index) {
             if (!best || midnightMemoryMoves < best) store.set('midnightMemoryBest', midnightMemoryMoves);
             store.set('midnightMemoryWon', true);
             if (status) status.textContent = 'All six pairs found in ' + midnightMemoryMoves + ' moves. The archive is yours!';
-            unlockMidnightArchiveAchievement();
             syncMidnightArchiveEvent();
         } else if (status) status.textContent = 'A match. Keep going.';
     } else {
@@ -759,10 +744,9 @@ function refreshReadingUI() {
     renderContinueReading();
     renderPersonalShelf();
     renderReadingQueue();
-    renderProgressJourney();
-    renderChallenges();
-    renderCatalog();
+    renderReaderLevel();
     renderReaderAchievements();
+    renderCatalog();
     renderHeatmap();
     renderReaderStreak();
     renderReadingHistory();
@@ -1093,7 +1077,7 @@ function shareNovelQuick(order) {
     var url = window.location.href.split('#')[0] + (n.link || '');
     if (navigator.clipboard) { navigator.clipboard.writeText(url).catch(function () { }); }
     showToast('Link copied for "' + n.title + '" ↗');
-    if (markFlag('sharedOnce')) setTimeout(renderReaderAchievements, 3000);
+    markFlag('sharedOnce');
 }
 
 /* ============================================================
@@ -1106,8 +1090,7 @@ var readerFontScale = store.get('readerFontScale', 1);
 function openSpotlight(order) {
     var n = novels.find(function (x) { return x.order === order; });
     if (!n) return;
-    if (order === 6 && isCaseClosedOccasionActive()) unlockCaseClosedAchievement();
-    spotlightOrder = order;
+            spotlightOrder = order;
     var bg = document.getElementById('spCoverBg');
     bg.style.background = 'linear-gradient(' + n.grad + ')';
     bg.innerHTML = '<img src="' + esc(n.img) + '" style="width:100%;height:100%;object-fit:cover;opacity:.85" onerror="imgFail(this)">';
@@ -1252,24 +1235,6 @@ function chaptersInLastDays(days) {
 }
 function totalRead() { return novels.reduce(function (a, n) { return a + getRead(n); }, 0); }
 function completedCount() { return novels.filter(function (n) { return n.ch > 0 && getRead(n) >= n.ch; }).length; }
-function renderChallenges() {
-    var weekCh = chaptersInLastDays(7);
-    var monthDone = completedCount();
-    var challenges = [
-        { id: 'weekly', title: 'Turn 15 Pages', sub: 'Read 15 chapters this week', target: 15, cur: Math.min(weekCh, 15), xp: 150 },
-        { id: 'weekly',  title: 'turn 35 pages',  sub: 'Read 35 chapters this week',target:35,cur:Math.min(weekCh,35), xp:700},
-        { id: 'monthly', title: 'Finish two Full Story', sub: 'Complete two novel', target: 2, cur: Math.min(monthDone, 2), xp: 400 },
-        { id: 'monthly', title: 'Finish four ONESHOT', sub: 'Complete four oneshot novel', target: 4, cur: Math.min(monthDone, 4), xp: 600},                                                                                                                 
-        { id: 'variety', title: 'Genre Explorer', sub: 'Read from 3 different genres', target: 3, cur: Math.min(genresTouched(), 3), xp: 200 },
-    ];
-    document.getElementById('challengesList').innerHTML = challenges.map(function (c) {
-        var pct = Math.round(c.cur / c.target * 100);
-        var done = c.cur >= c.target;
-        return '<div class="challenge-item"><div class="challenge-title"><span>' + c.title + '</span><span class="challenge-xp">+' + c.xp + ' XP</span></div>' +
-            '<div class="challenge-bar"><div class="challenge-fill" style="width:' + pct + '%' + (done ? ';background:var(--gold)' : '') + '"></div></div>' +
-            '<div class="challenge-sub">' + c.sub + ' · ' + c.cur + '/' + c.target + (done ? ' · Complete ✓' : '') + '</div></div>';
-    }).join('');
-}
 function genresTouched() {
     var set = {};
     novels.forEach(function (n) { if (getRead(n) > 0) n.genres.forEach(function (g) { set[g] = true; }); });
@@ -1277,258 +1242,217 @@ function genresTouched() {
 }
 
 /* ============================================================
-   READER ACHIEVEMENTS
+   READER LEVEL
    ============================================================ */
-function renderProgressJourney() {
-    var tr = totalRead();
-    var rank = 'Novice Reader';
-    if (tr >= 50) rank = 'Legendary Librarian'; else if (tr >= 20) rank = 'Dedicated Scholar'; else if (tr >= 5) rank = 'Avid Reader';
-    document.getElementById('journeyRank').textContent = rank;
-    var s = computeReaderStats();
-    var visibleAchievements = getVisibleReaderAchievementEntries();
-    var unlockedCount = visibleAchievements.filter(function (entry) { return entry.achievement.metric(s) >= entry.achievement.target; }).length;
-    document.getElementById('journeyStats').textContent = unlockedCount + ' / ' + visibleAchievements.length + ' badges earned';
-
-    var lvl = computeReaderLevel(s, unlockedCount);
+function renderReaderLevel() {
+    var stats = { read: totalRead(), completed: completedCount(), days: distinctReadingDays() };
+    var level = computeReaderLevel(stats);
     var badge = document.getElementById('readerLevelBadge');
     var rankName = document.getElementById('readerRankName');
     var levelSub = document.getElementById('readerLevelSub');
     var xpFill = document.getElementById('readerXpFill');
     var xpLabel = document.getElementById('readerXpLabel');
-    if (badge) badge.textContent = lvl.level;
+    var profileRank = document.getElementById('readerProfileRank');
+    var profileTheme = document.getElementById('readerProfileRankTheme');
+    var rankInfo = readerLevelRanks[Math.min(level.level, readerLevelRanks.length) - 1];
+    var rank = rankInfo.name;
+    var rankTier = ['I', 'II', 'III', 'IV', 'V'][Math.min(4, Math.floor((level.level - 1) / 3))];
+    if (badge) badge.textContent = level.level;
     if (rankName) rankName.textContent = rank;
-    if (levelSub) levelSub.textContent = 'Level ' + lvl.level;
-    if (xpFill) xpFill.style.width = lvl.pct + '%';
-    if (xpLabel) xpLabel.textContent = lvl.into + ' / ' + lvl.need + ' XP to Level ' + (lvl.level + 1);
-    var prevLevel = store.get('readerLevel', null);
-    store.set('readerLevel', lvl.level);
-    if (prevLevel !== null && lvl.level > prevLevel) showToast('🎉 Level up! You\'re now Level ' + lvl.level + '.');
+    if (profileRank) profileRank.textContent = rank + ' · Rank ' + rankTier;
+    if (profileTheme) profileTheme.textContent = rankInfo.theme;
+    if (levelSub) levelSub.textContent = 'Level ' + level.level;
+    if (xpFill) xpFill.style.width = level.pct + '%';
+    if (xpLabel) xpLabel.textContent = level.level >= 15 ? 'Maximum rank reached · 15' : level.into + ' / ' + level.need + ' XP to Level ' + (level.level + 1);
+    var previous = store.get('readerLevel', null);
+    store.set('readerLevel', level.level);
+    if (previous !== null && level.level > previous) showToast("🎉 Level up! You're now Level " + level.level + '.');
+    renderReaderSpecialRanks();
 }
-function weekendReadFlag() {
-    var found = false;
-    Object.keys(readingLog).forEach(function (k) {
-        var day = new Date(k + 'T00:00:00').getDay();
-        if (day === 0 || day === 6) found = true;
-    });
-    return found ? 1 : 0;
+var readerLevelRanks = [
+    { name: 'Page Wanderer', theme: 'Just entered the world of stories' },
+    { name: 'Ink Novice', theme: 'Beginning the reading journey' },
+    { name: 'Story Seeker', theme: 'Exploring different novels' },
+    { name: 'Chapter Chaser', theme: 'Reading chapter after chapter' },
+    { name: 'Tale Enthusiast', theme: 'Finding a place among favorite stories' },
+    { name: 'Ink Adept', theme: 'A skilled reader in the making' },
+    { name: 'Plot Hunter', theme: 'Always searching for the next twist' },
+    { name: 'Lore Keeper', theme: 'Collecting stories and knowledge' },
+    { name: 'Fictional Soul', theme: 'Emotionally invested in fictional worlds' },
+    { name: 'Storybound', theme: 'Bound to the world of novels' },
+    { name: 'Arc Master', theme: 'Conquering entire story arcs' },
+    { name: 'Chronicle Knight', theme: 'A devoted defender of stories' },
+    { name: 'Mythic Reader', theme: 'A reader of legendary tales' },
+    { name: 'Void Archivist', theme: 'Keeper of forgotten stories' },
+    { name: 'Grand Narrator', theme: 'A master of countless narratives' }
+];
+function renderReaderSpecialRanks() {
+    var list = document.getElementById('readerSpecialRankList');
+    var count = document.getElementById('readerSpecialRankCount');
+    if (!list || typeof novels === 'undefined') return;
+    var completed = novels.filter(function (novel) { return novel.ch > 0 && getRead(novel) >= novel.ch; });
+    var hidden = store.get('hiddenDiscoveries', {});
+    if (!hidden || typeof hidden !== 'object' || Array.isArray(hidden)) hidden = {};
+    var completedMystery = completed.some(function (novel) { return novel.genres.indexOf('mystery') !== -1; });
+    var bittersweetRomance = completed.some(function (novel) { return novel.order === 2 || (novel.genres.indexOf('romance') !== -1 && novel.genres.indexOf('sad') !== -1); });
+    var tragicCount = completed.filter(function (novel) { return novel.genres.indexOf('sad') !== -1; }).length;
+    var level = computeReaderLevel({ read: totalRead(), completed: completedCount(), days: distinctReadingDays() }).level;
+    var ranks = [
+        { icon: '🌸', name: 'Petalbound', hint: 'Complete a bittersweet romance novel', earned: bittersweetRomance },
+        { icon: '🕵️', name: 'Truth Seeker', hint: 'Complete a mystery novel', earned: completedMystery },
+        { icon: '🌑', name: 'Void Walker', hint: 'Complete Dead Air', earned: completed.some(function (novel) { return novel.order === 20; }) },
+        { icon: '💔', name: 'Heartbreaker', hint: 'Complete 10 tragic novels', earned: tragicCount >= 10, progress: Math.min(tragicCount, 10) + ' / 10' },
+        { icon: '🐉', name: 'World Forger', hint: 'Complete 100 novels[locked]', earned: completed.length >= 100, progress: Math.min(completed.length, 100) + ' / 100' },
+        { icon: '👁️', name: 'The Observer', hint: 'Discover a hidden website achievement', earned: Object.keys(hidden).some(function (key) { return !!hidden[key]; }) },
+        { icon: '♾️', name: 'Beyond Fiction', hint: 'Reach the maximum reader level', earned: level >= 15 },
+        { icon: '☠️', name: 'The Spoiler King', hint: 'Join a story discussion[LOCKED]', earned: !!store.get('lastCommentAt', false) }
+    ];
+    var earnedCount = ranks.filter(function (rank) { return rank.earned; }).length;
+    if (count) count.textContent = earnedCount + ' / ' + ranks.length;
+    list.innerHTML = ranks.map(function (rank) {
+        return '<div class="reader-special-rank' + (rank.earned ? ' is-earned' : ' is-locked') + '"><span class="reader-special-rank-icon" aria-hidden="true">' + rank.icon + '</span><span class="reader-special-rank-copy"><strong>' + esc(rank.name) + '</strong><small>' + esc(rank.hint) + (rank.progress ? ' · ' + esc(rank.progress) : '') + '</small></span><span class="reader-special-rank-state" aria-label="' + (rank.earned ? 'Earned' : 'Locked') + '">' + (rank.earned ? '✓' : '·') + '</span></div>';
+    }).join('');
 }
 function distinctReadingDays() {
-    return Object.keys(readingLog).filter(function (k) { return readingLog[k] > 0; }).length;
+    return Object.keys(readingLog).filter(function (key) { return readingLog[key] > 0; }).length;
 }
-function notesWritten() {
-    return Object.keys(privateReaderNotes).filter(function (key) { return String(privateReaderNotes[key] || '').trim().length > 0; }).length;
-}
-function favoritesCount() {
-    return Object.keys(bookmarks).filter(function (k) { return bookmarks[k]; }).length;
-}
-function longFormCompleted() {
-    return novels.some(function (n) { return n.ch >= 9 && getRead(n) >= n.ch; }) ? 1 : 0;
-}
-/* Turns real reading activity into an XP total and level: 15 XP per chapter
-   read, 60 XP per novel finished, 5 XP per distinct reading day, 25 XP per
-   achievement unlocked. Level 2 starts at 100 XP; each next level costs 50 XP
-   more than the previous one. */
-function computeReaderLevel(s, unlockedCount) {
-    var totalXP = s.read * 15 + s.completed * 60 + s.days * 5 + unlockedCount * 25;
-    var level = 1;
-    var remainingXP = totalXP;
-    var need = 100;
-    while (remainingXP >= need) {
-        remainingXP -= need;
-        level++;
-        need = 100 + (level - 1) * 50;
-    }
-    var pct = Math.min(100, Math.floor(remainingXP / need * 100));
-    return { level: level, into: remainingXP, need: need, pct: pct, totalXP: totalXP };
-}
-function computeReaderStats() {
-    return {
-        read: totalRead(),
-        genres: genresTouched(),
-        completed: completedCount(),
-        week: chaptersInLastDays(7),
-        bookmarked: currentlyReadingOrder ? 1 : 0,
-        weekend: weekendReadFlag(),
-        days: distinctReadingDays(),
-        notes: notesWritten(),
-        favorites: favoritesCount(),
-        oneDay: store.get('oneDayRead', 0),
-        oneShots: novels.filter(function (n) { return isOneShot(n) && getRead(n) >= n.ch; }).length,
-        bestStreak: computeBestStreak(),
-        nightOwl: store.get('nightOwlRead', false) ? 1 : 0,
-        searched: store.get('searchedOnce', false) ? 1 : 0,
-        themed: store.get('themeChanged', false) ? 1 : 0,
-        shared: store.get('sharedOnce', false) ? 1 : 0,
-        longForm: longFormCompleted(),
-        eclipseWitness: store.get('readerAchUnlocks', {}).eclipseWitness ? 1 : 0,
-        releaseReminders: reminderAchievementCount()
-    };
-}
-/* One-time flags for achievements tied to trying a feature, not just reading.
-   Returns true only the first time a given flag is set (so callers know
-   whether to refresh the achievements grid). */
 function markFlag(key) {
     if (store.get(key, false)) return false;
     store.set(key, true);
+    renderReaderAchievements();
     return true;
 }
+function computeReaderLevel(stats) {
+    var totalXP = stats.read * 15 + stats.completed * 60 + stats.days * 5;
+    var level = 1, remainingXP = totalXP, need = 100;
+    while (remainingXP >= need && level < 15) { remainingXP -= need; level++; need = 100 + (level - 1) * 50; }
+    if (level >= 15) return { level: 15, into: 0, need: 0, pct: 100, totalXP: totalXP };
+    return { level: level, into: remainingXP, need: need, pct: Math.min(100, Math.floor(remainingXP / need * 100)), totalXP: totalXP };
+}
+var achievementFilter = 'all';
 var readerAchievementDefs = [
-    { icon: '📖', title: 'First Stamp', hint: 'Read your first chapter', rarity: 'common', metric: function (s) { return s.read; }, target: 1 },
-    { icon: '🔖', title: 'Bookmarked', hint: 'Set a novel as Currently Reading', rarity: 'common', metric: function (s) { return s.bookmarked; }, target: 1 },
-    { icon: '🧭', title: 'Genre Compass', hint: 'Read from 4 different genres', rarity: 'rare', metric: function (s) { return s.genres; }, target: 4 },
-    { icon: '🏆', title: 'Full Return', hint: 'Finish a novel start to finish', rarity: 'rare', metric: function (s) { return s.completed; }, target: 1 },
-    { icon: '⚡', title: 'Marathoner', hint: 'Read 10+ chapters in a single week', rarity: 'common', metric: function (s) { return s.week; }, target: 10 },
-    { icon: '🌅', title: 'Weekend Reader', hint: 'Read on a Saturday or Sunday', rarity: 'rare', metric: function (s) { return s.weekend; }, target: 1 },
-    { icon: '🎬', title: 'One-Shot Wonder', hint: 'Complete all ' + oneShotTotal + ' one-shots on the Shelf', rarity: 'rare', metric: function (s) { return s.oneShots; }, target: oneShotTotal },
-    { icon: '📚', title: 'Chapter Collector', hint: 'Read 25 chapters total', rarity: 'rare', metric: function (s) { return s.read; }, target: 25 },
-    { icon: '🔥', title: 'Bookworm', hint: 'Read 45+ chapters total', rarity: 'epic', metric: function (s) { return s.read; }, target: 45 },
-    { icon: '🌙', title: 'Afterglow Reader', hint: 'Read on 7 different days', rarity: 'epic', metric: function (s) { return s.days; }, target: 7 },
-    { icon: '🧡', title: 'Story Curator', hint: 'Favorite 3 stories', rarity: 'common', metric: function (s) { return s.favorites; }, target: 3 },
-    { icon: '🗂️', title: 'Archive Diver', hint: 'Finish 3 stories start to finish', rarity: 'epic', metric: function (s) { return s.completed; }, target: 3 },
-    { icon: '👑', title: 'Genre Omnivore', hint: 'Read from all 6 genres', rarity: 'legendary', metric: function (s) { return s.genres; }, target: 6 },
-{
-    icon: '⏰', title: 'Release Guardian',
-    hint: 'Save reminders for 3 upcoming releases',
-    rarity: 'legendary', unlockKey: 'releaseGuardian',
-    metric: function () {
-        var unlocks = store.get('readerAchUnlocks', {});
-        return unlocks.releaseGuardian ? 3 : reminderAchievementCount();
-    },
-    target: 3
-}
+    { id: 'first-page', icon: '🌱', title: 'A First Page', hint: 'Read your very first chapter.', category: 'Reading', target: 1, metric: function (s) { return s.read; } },
+    { id: 'ten-pages', icon: '📖', title: 'Ten Pages In', hint: 'Read 10 chapters across your stories.', category: 'Reading', target: 10, metric: function (s) { return s.read; } },
+    { id: 'chapter-stack', icon: '📚', title: 'A Little Stack', hint: 'Read 50 chapters in total.', category: 'Reading', target: 50, metric: function (s) { return s.read; } },
+    { id: 'hundred-pages', icon: '🪶', title: 'Pages Like Petals', hint: 'Read 100 chapters in total.', category: 'Reading', target: 100, metric: function (s) { return s.read; } },
+    { id: 'first-finish', icon: '🌅', title: 'The Last Page', hint: 'Finish a story from beginning to end.', category: 'Reading', target: 1, metric: function (s) { return s.completed; } },
+    { id: 'three-finish', icon: '🏡', title: 'Found Your Way Home', hint: 'Finish three stories.', category: 'Reading', target: 3, metric: function (s) { return s.completed; } },
+    { id: 'whole-library', icon: '🏛️', title: 'The Whole Library', hint: 'Finish every available story on the shelf.', category: 'Reading', target: 1, metric: function (s) { return s.libraryComplete; } },
+    { id: 'marathon', icon: '⚡', title: 'One More Chapter', hint: 'Read 10 chapters within a week.', category: 'Rhythm', target: 10, metric: function (s) { return s.week; } },
+    { id: 'weekend', icon: '☀️', title: 'A Weekend Chapter', hint: 'Log some reading on a Saturday or Sunday.', category: 'Rhythm', target: 1, metric: function (s) { return s.weekend; } },
+    { id: 'night-reader', icon: '🌙', title: 'After Hours', hint: 'Read a chapter late at night.', category: 'Rhythm', target: 1, metric: function (s) { return s.nightOwl; } },
+    { id: 'three-day', icon: '🔥', title: 'Three Days Running', hint: 'Build a three-day reading streak.', category: 'Rhythm', target: 3, metric: function (s) { return s.bestStreak; } },
+    { id: 'seven-day', icon: '🌠', title: 'A Week in Stories', hint: 'Build a seven-day reading streak.', category: 'Rhythm', target: 7, metric: function (s) { return s.bestStreak; } },
+    { id: 'ten-days', icon: '🗓️', title: 'Familiar Pages', hint: 'Read on 10 different days.', category: 'Rhythm', target: 10, metric: function (s) { return s.days; } },
+    { id: 'thirty-days', icon: '🌷', title: 'A Month of Reading', hint: 'Read on 30 different days.', category: 'Rhythm', target: 30, metric: function (s) { return s.days; } },
+    { id: 'genre-three', icon: '🧭', title: 'Follow the Feeling', hint: 'Read stories from three different genres.', category: 'Discovery', target: 3, metric: function (s) { return s.genres; } },
+    { id: 'genre-all', icon: '🌈', title: 'Every Kind of Story', hint: 'Explore all six genres on the shelf.', category: 'Discovery', target: 6, metric: function (s) { return s.genres; } },
+    { id: 'first-favorite', icon: '💗', title: 'Kept Close', hint: 'Save your first story as a favorite.', category: 'Collection', target: 1, metric: function (s) { return s.favorites; } },
+    { id: 'five-favorites', icon: '💐', title: 'A Favorite for Every Mood', hint: 'Save five stories as favorites.', category: 'Collection', target: 5, metric: function (s) { return s.favorites; } },
+    { id: 'queue-three', icon: '🪄', title: 'Stories for Later', hint: 'Save three stories to your reading queue.', category: 'Collection', target: 3, metric: function (s) { return s.queued; } },
+    { id: 'reminder-one', icon: '🔔', title: 'A Note to Come Back', hint: 'Set a reminder for an upcoming release.', category: 'Collection', target: 1, metric: function (s) { return s.reminders; } },
+    { id: 'reminder-three', icon: '📬', title: 'Release Day Ready', hint: 'Save three release reminders.', category: 'Collection', target: 3, metric: function (s) { return s.reminders; } },
+    { id: 'private-note', icon: '✍️', title: 'A Thought to Keep', hint: 'Write a private note about a story.', category: 'Personal', target: 1, metric: function (s) { return s.notes; } },
+    { id: 'search', icon: '🔎', title: 'Found It', hint: 'Use search to find a story.', category: 'Personal', target: 1, metric: function (s) { return s.searched; } },
+    { id: 'share', icon: '🕊️', title: 'Pass It Along', hint: 'Share a story link with someone.', category: 'Personal', target: 1, metric: function (s) { return s.shared; } },
+    { id: 'library-secrets', icon: '🗝️', title: 'Behind the Bookcase', hint: 'Find all three hidden Library secrets.', category: 'Secrets', target: 3, metric: function (s) { return s.secrets; } }
 ];
-readerAchievementDefs.push(
-    { icon: '🔍', title: 'Master Searcher', hint: 'Use search to find a story', rarity: 'common', metric: function (s) { return s.searched; }, target: 1 },
-    { icon: '↗️', title: 'Storyteller', hint: 'Share a story with someone', rarity: 'rare', metric: function (s) { return s.shared; }, target: 1 },
-    { icon: '🌌', title: 'Night Owl', hint: 'Read a chapter between 11pm and 5am', rarity: 'rare', metric: function (s) { return s.nightOwl; }, target: 1 },
-    { icon: '🚀', title: 'On a Roll', hint: 'Reach a 3-day reading streak', rarity: 'rare', metric: function (s) { return s.bestStreak; }, target: 3 },
-    { icon: '🐋', title: 'Deep Diver', hint: 'Finish one of the longer sagas (9+ chapters) start to finish', rarity: 'rare', metric: function (s) { return s.longForm; }, target: 1 },
-    { icon: '📅', title: 'Unstoppable', hint: 'Reach a 7-day reading streak', rarity: 'epic', metric: function (s) { return s.bestStreak; }, target: 7 },
-    { icon: '💖', title: 'Heart Collector', hint: 'Favorite 10 stories', rarity: 'epic', metric: function (s) { return s.favorites; }, target: 10 },
-    { icon: '📆', title: 'Daily Devotion', hint: 'Read on 30 different days', rarity: 'legendary', metric: function (s) { return s.days; }, target: 30 },
-    { icon: '🌘', title: 'Eclipse Witness', hint: 'Find the one book disappears when the Library goes dark [possbile of occuring is 1.5% in a day]', rarity: 'Mythic', metric: function (s) { return s.eclipseWitness; }, target: 1 },
-    {
-  icon: "👁",
-  title: "The Watcher",
-  hint: "Witness the Eye awaken [possbile of occuring is 3.5% in a day]  .",
-  rarity: "Mythic",
-  metric: function () {
-    return store.get("readerAchUnlocks", {}).eyeWatcher ? 1 : 0;
-  },
-  target: 1
-},
-{
-  icon: "🐉",
-  title: "The Keeper",
-  hint: "Wake the Eye, witness the Eclipse.",
-  rarity: "Mythical Honor",
-  metric: function () {
-    var u = store.get("readerAchUnlocks", {});
-    return (u.eyeWatcher ? 1 : 0) + (u.eclipseWitness ? 1 : 0) + (u.neonArchivist ? 1 : 0);
-  },
-  target: 2
+function getReaderAchievementStats() {
+    var weekdays = Object.keys(readingLog).filter(function (key) {
+        if (!(Number(readingLog[key]) > 0)) return false;
+        var day = new Date(key + 'T00:00:00').getDay();
+        return day === 0 || day === 6;
+    });
+    var available = novels.filter(function (novel) { return novel.status !== 'upcoming' && novel.ch > 0; });
+    var discoveries = store.get('hiddenDiscoveries', {});
+    if (!discoveries || typeof discoveries !== 'object' || Array.isArray(discoveries)) discoveries = {};
+    var notes = privateReaderNotes && typeof privateReaderNotes === 'object' ? privateReaderNotes : {};
+    return {
+        read: totalRead(),
+        completed: completedCount(),
+        libraryComplete: available.length > 0 && available.every(function (novel) { return getRead(novel) >= novel.ch; }) ? 1 : 0,
+        week: chaptersInLastDays(7),
+        weekend: weekdays.length ? 1 : 0,
+        nightOwl: store.get('nightOwlRead', false) ? 1 : 0,
+        bestStreak: computeBestStreak(),
+        days: distinctReadingDays(),
+        genres: genresTouched(),
+        favorites: Object.keys(bookmarks).filter(function (key) { return !!bookmarks[key]; }).length,
+        queued: Object.keys(readingQueue).filter(function (key) { return !!readingQueue[key]; }).length,
+        reminders: releaseReminders.length,
+        notes: Object.keys(notes).filter(function (key) { return String(notes[key] || '').trim().length > 0; }).length,
+        searched: store.get('searchedOnce', false) ? 1 : 0,
+        shared: store.get('sharedOnce', false) ? 1 : 0,
+        secrets: Object.keys(discoveries).filter(function (key) { return !!discoveries[key]; }).length
+    };
 }
-);
-
-var readerAchievementCoreCount = readerAchievementDefs.length;
-readerAchievementDefs.push({
-    icon: '🌟', title: 'Living Legend', hint: 'Unlock every other reader achievement', rarity: 'Immortal',
-    metric: function (s) {
-        var count = 0;
-        for (var i = 0; i < readerAchievementCoreCount; i++) {
-            if (readerAchievementDefs[i].metric(s) >= readerAchievementDefs[i].target) count++;
-        }
-        return count;
-    },
-    target: readerAchievementCoreCount
-});
-readerAchievementDefs.push({
-    icon: '🗃️', title: 'Case Closed',
-    hint: 'Visit Case File: You Vol. 1 during the limited celebration. Once earned, it stays in your collection.',
-    rarity: 'limited', unlockKey: 'caseClosed', limitedEvent: true,
-    eventActive: isCaseClosedOccasionActive,
-    metric: function () { return store.get('readerAchUnlocks', {}).caseClosed ? 1 : 0; },
-    target: 1
-});
-readerAchievementDefs.push({
-    icon: '🌙', title: 'Archive After Dark',
-    hint: 'Win Midnight Memory during the limited event.',
-    rarity: 'limited', unlockKey: 'archiveAfterDark', limitedEvent: true,
-    eventActive: isMidnightArchiveEventActive,
-    metric: function () { return store.get('readerAchUnlocks', {}).archiveAfterDark ? 1 : 0; },
-    target: 1
-});
-function getVisibleReaderAchievementEntries() {
-    var unlocks = store.get('readerAchUnlocks', {});
-    return readerAchievementDefs.map(function (achievement, index) { return { achievement: achievement, index: index }; })
-        .filter(function (entry) {
-            return !entry.achievement.limitedEvent || (entry.achievement.eventActive && entry.achievement.eventActive()) || !!unlocks[entry.achievement.unlockKey];
-        });
-}
-function unlockCaseClosedAchievement() {
-    if (!isCaseClosedOccasionActive()) return;
-    var unlocks = store.get('readerAchUnlocks', {});
-    if (unlocks.caseClosed) return;
-    unlocks.caseClosed = new Date().toISOString();
-    store.set('readerAchUnlocks', unlocks);
+function setAchievementFilter(filter) {
+    if (['all', 'earned', 'locked'].indexOf(filter) === -1) return;
+    achievementFilter = filter;
+    document.querySelectorAll('[data-achievement-filter]').forEach(function (button) {
+        var active = button.dataset.achievementFilter === filter;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', String(active));
+    });
     renderReaderAchievements();
-    renderProgressJourney();
-    showToast('🏆 Limited achievement unlocked: Case Closed!');
 }
-function unlockMidnightArchiveAchievement() {
-    if (!isMidnightArchiveEventActive() || !store.get('midnightMemoryWon', false)) return;
-    var unlocks = store.get('readerAchUnlocks', {});
-    if (unlocks.archiveAfterDark) return;
-    unlocks.archiveAfterDark = new Date().toISOString();
-    store.set('readerAchUnlocks', unlocks);
-    renderReaderAchievements();
-    renderProgressJourney();
-    showToast('🏆 Limited achievement unlocked: Archive After Dark!');
+function initAchievementFilters() {
+    document.querySelectorAll('[data-achievement-filter]').forEach(function (button) {
+        button.addEventListener('click', function () { setAchievementFilter(button.dataset.achievementFilter); });
+    });
 }
 function renderReaderAchievements() {
-    var s = computeReaderStats();
-    // Fetched fresh on every render (not cached at page load) so that flags set
-    // by unlockEyeAchievement()/unlockEclipseReward()/unlockNeonAchievement()
-    // in between renders aren't clobbered when this function writes back below.
-    var readerAchUnlocks = store.get('readerAchUnlocks', {});
     var grid = document.getElementById('achievementGrid');
     if (!grid) return;
-    var newlyUnlocked = [];
-    grid.innerHTML = getVisibleReaderAchievementEntries().map(function (entry) {
-        var a = entry.achievement, idx = entry.index;
-        var unlockKey = a.unlockKey || idx;
-        var cur = a.metric(s);
-        var pct = Math.min(100, Math.round(cur / a.target * 100));
-        var unlocked = cur >= a.target;
-        if (unlocked && !readerAchUnlocks[unlockKey]) { readerAchUnlocks[unlockKey] = new Date().toISOString(); store.set('readerAchUnlocks', readerAchUnlocks); newlyUnlocked.push(a.title); }
-        var dateLabel = unlocked && readerAchUnlocks[unlockKey] ? new Date(readerAchUnlocks[unlockKey]).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null;
-        var tierClass = getAchievementTierClass(a.rarity);
-        return '<div class="glass milestone-tile' + (unlocked ? ' unlocked ' + tierClass : '') + '">' +
-            '<div class="m-icon-row"><div class="m-icon">' + a.icon + '</div><span class="rarity-tag rarity-' + String(a.rarity).toLowerCase().replace(/[^a-z0-9]+/g, '-') + ' ' + tierClass + '">' + a.rarity + '</span></div>' +
-            '<div class="m-title">' + a.title + '</div><div class="m-hint">' + a.hint + '</div>' +
-            '<div class="m-progress-row"><span>' + (unlocked ? 'Complete' : pct + '%') + '</span><span>' + fmtNum(Math.min(cur, a.target)) + ' / ' + fmtNum(a.target) + '</span></div>' +
-            '<div class="m-bar"><div class="m-fill" style="width:' + pct + '%"></div></div>' +
-            '<div class="m-footer">' + (unlocked ? '<span class="m-date">Unlocked ' + dateLabel + '</span>' : '<span class="m-date" style="color:var(--muted)">Locked</span>') +
-            '<button class="m-share" onclick="shareReaderAch(' + idx + ')" aria-label="Share achievement">↗</button></div></div>';
+    var stats = getReaderAchievementStats();
+    var unlocks = store.get('readerAchUnlocks', {});
+    if (!unlocks || typeof unlocks !== 'object' || Array.isArray(unlocks)) unlocks = {};
+    var newlyEarned = [];
+    var entries = readerAchievementDefs.map(function (achievement) {
+        var current = Math.max(0, Number(achievement.metric(stats)) || 0);
+        var earned = !!unlocks[achievement.id] || current >= achievement.target;
+        if (current >= achievement.target && !unlocks[achievement.id]) {
+            unlocks[achievement.id] = new Date().toISOString();
+            newlyEarned.push(achievement.title);
+        }
+        return { achievement: achievement, current: Math.min(current, achievement.target), earned: earned, unlockedAt: unlocks[achievement.id] };
+    });
+    if (newlyEarned.length) store.set('readerAchUnlocks', unlocks);
+    var earnedCount = entries.filter(function (entry) { return entry.earned; }).length;
+    var lockedCount = readerAchievementDefs.length - earnedCount;
+    var percent = Math.round(earnedCount / readerAchievementDefs.length * 100);
+    var countEl = document.getElementById('achievementCount');
+    var earnedEl = document.getElementById('achievementEarnedCount');
+    var lockedEl = document.getElementById('achievementLockedCount');
+    var allEl = document.getElementById('achievementAllCount');
+    var percentEl = document.getElementById('achievementProgressPercent');
+    var progressLabel = document.getElementById('achievementProgressLabel');
+    var progressBar = document.getElementById('achievementProgressBar');
+    var progressFill = document.getElementById('achievementProgressFill');
+    if (countEl) countEl.innerHTML = earnedCount + ' <i>/ ' + readerAchievementDefs.length + '</i>';
+    if (earnedEl) earnedEl.textContent = earnedCount;
+    if (lockedEl) lockedEl.textContent = lockedCount;
+    if (allEl) allEl.textContent = readerAchievementDefs.length;
+    if (percentEl) percentEl.textContent = percent + '%';
+    if (progressLabel) progressLabel.textContent = earnedCount === 0 ? 'Your collection is just beginning' : earnedCount === readerAchievementDefs.length ? 'Every milestone is yours' : 'Your collection is taking shape';
+    if (progressBar) progressBar.setAttribute('aria-valuenow', String(earnedCount));
+    if (progressFill) progressFill.style.width = percent + '%';
+    var visible = entries.filter(function (entry) {
+        return achievementFilter === 'all' || (achievementFilter === 'earned' ? entry.earned : !entry.earned);
+    });
+    grid.innerHTML = visible.map(function (entry) {
+        var a = entry.achievement;
+        var pct = Math.min(100, Math.round(entry.current / a.target * 100));
+        var date = entry.earned && entry.unlockedAt ? new Date(entry.unlockedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+        return '<article class="achievement-card' + (entry.earned ? ' is-earned' : ' is-locked') + '" aria-label="' + esc(a.title + '. ' + (entry.earned ? 'Earned' : 'Locked')) + '">' +
+            '<div class="achievement-card-top"><span class="achievement-category">' + esc(a.category) + '</span><span class="achievement-state">' + (entry.earned ? '✓ Earned' : 'In progress') + '</span></div>' +
+            '<div class="achievement-emblem" aria-hidden="true"><span>' + a.icon + '</span><i></i></div>' +
+            '<h3>' + esc(a.title) + '</h3><p>' + esc(a.hint) + '</p>' +
+            '<div class="achievement-card-bottom">' + (entry.earned ? '<span class="achievement-earned-date">' + (date ? 'Collected ' + esc(date) : 'Collected') + '</span><span class="achievement-earned-mark" aria-hidden="true">✦</span>' : '<div class="achievement-card-progress"><div><span>' + esc(a.category === 'Secrets' ? 'Secrets found' : 'Progress') + '</span><span>' + fmtNum(entry.current) + ' / ' + fmtNum(a.target) + '</span></div><span class="achievement-card-track"><i style="width:' + pct + '%"></i></span></div>') + '</div>' +
+            '</article>';
     }).join('');
-    renderReaderProfileAchievements();
-    if (newlyUnlocked.length === 1) {
-        showToast('🏆 Achievement unlocked: ' + newlyUnlocked[0] + '!');
-    } else if (newlyUnlocked.length > 1) {
-        showToast('🏆 ' + newlyUnlocked.length + ' achievements unlocked!');
-    }
-}
-function toggleAchievements() {
-    var grid = document.getElementById('achievementGrid');
-    var button = document.getElementById('achievementsToggle');
-    if (!grid || !button) return;
-    var collapsed = !grid.hidden;
-    grid.hidden = collapsed;
-    button.setAttribute('aria-expanded', String(!collapsed));
-    button.innerHTML = collapsed
-        ? 'Show achievements <span aria-hidden="true">⌄</span>'
-        : 'Minimize achievements <span aria-hidden="true">⌃</span>';
-    store.set('achievementsCollapsed', collapsed);
+    if (newlyEarned.length === 1) showToast('✦ Milestone earned: ' + newlyEarned[0]);
+    else if (newlyEarned.length > 1) showToast('✦ ' + newlyEarned.length + ' reading milestones added to your collection.');
 }
 function toggleSectionContent(contentId, buttonId, storageKey, label) {
     var content = document.getElementById(contentId);
@@ -1551,14 +1475,6 @@ function restoreSectionContent(contentId, buttonId, storageKey, label) {
     button.innerHTML = (collapsed ? 'Show ' : 'Minimize ') + label +
         ' <span aria-hidden="true">' + (collapsed ? '⌄' : '⌃') + '</span>';
 }
-function shareReaderAch(idx) {
-    var a = readerAchievementDefs[idx];
-    if (!a) return;
-    var s = computeReaderStats();
-    var unlocked = a.metric(s) >= a.target;
-    showToast(unlocked ? ('"' + a.title + '" copied to share ↗') : 'Keep reading to unlock this one ✦');
-}
-
 /* ============================================================
    SURPRISE ME — WEIGHTED RANDOM PICK
    ============================================================ */
@@ -1633,7 +1549,7 @@ function renderHeatmap() {
 var upcomingReleases = [
     { date: '2026-11-02', title: "The Other Day - Chapter 10" },
     { date: '2026-11-01', title: 'Petal Vol. 4 — chpater 3 ' },
-    { date: '2026-10-28', title: "Dead Air - ONE SHOT" }
+    { date: '2026-11-09', title: 'THE THINGS WE NEVER RETURNED ' }
 ];
 var calSorted = [];
 var releaseReminders = store.get('releaseReminders', []);
@@ -1641,14 +1557,6 @@ if (!Array.isArray(releaseReminders)) releaseReminders = [];
 releaseReminders = releaseReminders.filter(function (item) { return item && typeof item === 'object' && typeof item.key === 'string' && typeof item.date === 'string'; });
 
 function reminderKey(r) { return r.date + '|' + r.title; }
-function reminderAchievementCount() {
-    var saved = store.get('releaseReminders', []);
-    if (!Array.isArray(saved)) return 0;
-    return saved.filter(function (r) { return r && r.key && upcomingReleases.some(function (release) { return reminderKey(release) === r.key; }); }).length;
-}
-function localCalendarDate(date) {
-    return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
-}
 function notifyDueReleaseReminders() {
     var today = localCalendarDate(new Date());
     var due = releaseReminders.filter(function (r) { return r && !r.notified && r.date <= today; });
@@ -1679,8 +1587,8 @@ function calRemind(idx) {
     }
     store.set('releaseReminders', releaseReminders);
     renderCalendar();
+    renderReaderLevel();
     renderReaderAchievements();
-    renderProgressJourney();
 }
 
 function renderCalendar() {
@@ -1747,6 +1655,7 @@ function savePrivateNote() {
     else delete privateReaderNotes[order];
 
     store.set('privateReaderNotes', privateReaderNotes);
+    renderReaderAchievements();
 
     if (saved) {
         saved.textContent = value ? 'Saved locally ✓' : 'Note cleared ✓';
@@ -1768,7 +1677,7 @@ function openCmdk() {
     document.getElementById('cmdkInput').value = '';
     cmdkRender();
     setTimeout(function () { document.getElementById('cmdkInput').focus(); }, 50);
-    if (markFlag('searchedOnce')) renderReaderAchievements();
+    markFlag('searchedOnce');
 }
 function closeCmdk() {
     document.getElementById('cmdkOverlay').classList.remove('open');
@@ -1848,43 +1757,6 @@ function renderReaderProfile() {
     if (avatar) avatar.textContent = initials;
     if (nameInput) nameInput.value = name;
     if (bioInput) bioInput.value = bio;
-    renderReaderProfileAchievements();
-}
-function getAchievementTierClass(rarity) {
-    var normalized = String(rarity || '').toLowerCase();
-    if (normalized.indexOf('immortal') !== -1) return 'achievement-tier-immortal';
-    if (normalized.indexOf('mythic') !== -1 && normalized.indexOf('honor') !== -1) return 'achievement-tier-honor';
-    if (normalized.indexOf('mythic') !== -1) return 'achievement-tier-mythic';
-    return '';
-}
-function renderReaderProfileAchievements() {
-    var list = document.getElementById('readerProfileAchievementList');
-    var count = document.getElementById('readerProfileAchievementCount');
-    if (!list || !count || typeof readerAchievementDefs === 'undefined') return;
-    var stats = computeReaderStats();
-    var earned = getVisibleReaderAchievementEntries().filter(function (entry) {
-        return entry.achievement.metric(stats) >= entry.achievement.target;
-    });
-    count.textContent = String(earned.length);
-    if (!earned.length) {
-        list.innerHTML = '<span class="reader-profile-achievements-empty">Your earned badges will appear here.</span>';
-        return;
-    }
-    var unlocks = store.get('readerAchUnlocks', {});
-    earned.sort(function (a, b) {
-        var aKey = a.achievement.unlockKey || a.index;
-        var bKey = b.achievement.unlockKey || b.index;
-        return (Date.parse(unlocks[bKey]) || 0) - (Date.parse(unlocks[aKey]) || 0);
-    });
-    var visibleEarned = earned.slice(0, 4);
-    list.innerHTML = visibleEarned.map(function (entry) {
-        var achievement = entry.achievement;
-        var tierClass = getAchievementTierClass(achievement.rarity);
-        var title = esc(achievement.title);
-        return '<span class="reader-profile-achievement ' + tierClass + '" title="' + title + ' · ' + esc(achievement.rarity) + '" aria-label="' + title + ', ' + esc(achievement.rarity) + '"><span aria-hidden="true">' + achievement.icon + '</span><span>' + title + '</span></span>';
-    }).join('') + (earned.length > visibleEarned.length
-        ? '<button type="button" class="reader-profile-achievement-more" onclick="scrollToId(\'achievements\')">+' + (earned.length - visibleEarned.length) + ' more</button>'
-        : '');
 }
 function saveReaderProfile() {
     var nameInput = document.getElementById('readerProfileNameInput');
@@ -1934,24 +1806,16 @@ window.addEventListener('scroll', function () {
    INIT
    ============================================================ */
 window.addEventListener('load', function () {
+    initAchievementFilters();
     renderReaderProfile();
     renderReadingHistory();
     renderStoryWorlds();
     renderStorySampler();
     renderForYouPicks();
+    renderReaderAchievements();
     restoreSectionContent('storySamplerContent', 'storySamplerToggle', 'storySamplerCollapsed', 'story sampler');
     restoreSectionContent('storyWorldGrid', 'storyWorldsToggle', 'storyWorldsCollapsed', 'connected stories');
     restoreSectionContent('leaderboardContent', 'leaderboardToggle', 'leaderboardCollapsed', 'leaderboard');
-    var achievementsCollapsed = store.get('achievementsCollapsed', false);
-    var achievementGrid = document.getElementById('achievementGrid');
-    var achievementToggle = document.getElementById('achievementsToggle');
-    if (achievementGrid && achievementToggle) {
-        achievementGrid.hidden = achievementsCollapsed;
-        achievementToggle.setAttribute('aria-expanded', String(!achievementsCollapsed));
-        achievementToggle.innerHTML = achievementsCollapsed
-            ? 'Show achievements <span aria-hidden="true">⌄</span>'
-            : 'Minimize achievements <span aria-hidden="true">⌃</span>';
-    }
     var defaultLightMode = 'on';
     var wantLight = store.get('lightMode', defaultLightMode) === 'on';
     document.body.classList.toggle('light', wantLight);
@@ -1962,7 +1826,6 @@ window.addEventListener('load', function () {
     initTheme();
     initMorphismStyle();
     syncCaseClosedOccasion();
-    syncVol2Announcement();
     syncMidnightArchiveEvent();
 
     paintAurora(moodColors.all);
@@ -2127,43 +1990,21 @@ function wakeEye(){
         window.removeEventListener("mousemove",follow);
         clearInterval(glitch);
 
-        unlockEyeAchievement();
+        revealWatcherSecret();
 
     },45000);
 }
 
-/* Mythic unlocks once all three of these hidden achievements are earned.
-   showToast() has no queue — it just overwrites whatever's showing — so
-   firing the Mythic toast right away would get stomped by the specific
-   achievement's own toast below it. Each unlock function only reaches
-   this point the one time its own flag flips from false to true, so
-   this fires exactly once, whichever of the three completes last, and
-   its toast is delayed to land just after the other one finishes. */
-function announceMythicIfComplete() {
-    const u = store.get("readerAchUnlocks", {});
-    if (u.eyeWatcher && u.eclipseWitness && u.neonArchivist) {
-        setTimeout(() => {
-            showToast("🐉 Hidden Achievement: Mythic — every secret of the Library, found.");
-        }, 3000);
-    }
-}
-
-function unlockEyeAchievement(){
-
-    const unlocks=store.get("readerAchUnlocks",{});
-
-    if(unlocks.eyeWatcher) return;
-
-    unlocks.eyeWatcher=true;
-
-    store.set("readerAchUnlocks",unlocks);
-
+function revealLibrarySecret(key, message) {
+    var discoveries = store.get('hiddenDiscoveries', {});
+    if (discoveries[key]) return;
+    discoveries[key] = new Date().toISOString();
+    store.set('hiddenDiscoveries', discoveries);
+    showToast(message);
     renderReaderAchievements();
-    renderProgressJourney();
-
-    showToast("👁 Hidden Achievement: The Watcher");
-
-    announceMythicIfComplete();
+}
+function revealWatcherSecret() {
+    revealLibrarySecret('watcher', '👁 The Watcher has seen you.');
 }
 document.addEventListener('DOMContentLoaded', function () {
     updateShelfSearchUI();
@@ -2191,7 +2032,7 @@ setTimeout(() => {
 /* ============================================================
    ECLIPSE EVENT
    (Declared at top level — not inside DOMContentLoaded — so that
-   triggerEclipse()/unlockEclipseReward() are reachable from the
+   triggerEclipse()/revealEclipseSecret() are reachable from the
    Ctrl/Cmd+Shift+E shortcut and window.debugEclipse() below, which
    live outside that handler's scope. Previously these were declared
    inside the DOMContentLoaded callback, which made them local to that
@@ -2259,7 +2100,7 @@ const cards = [...document.querySelectorAll("#catalogGrid .novel-card")];
 
         blessed.style.pointerEvents="auto";
 
-        blessed.addEventListener("click",unlockEclipseReward,{once:true});
+        blessed.addEventListener("click",revealEclipseSecret,{once:true});
     }
 
     setTimeout(()=>{
@@ -2275,22 +2116,8 @@ const cards = [...document.querySelectorAll("#catalogGrid .novel-card")];
     },120000); // 2 minutes
 }
 
-function unlockEclipseReward(){
-
-    const unlocks=store.get("readerAchUnlocks",{});
-
-    if(unlocks.eclipseWitness) return;
-
-    unlocks.eclipseWitness=true;
-
-    store.set("readerAchUnlocks",unlocks);
-
-    renderReaderAchievements();
-    renderProgressJourney();
-
-    showToast("🌘 Hidden Achievement: Eclipse Witness — the Library remembers you were here.");
-
-    announceMythicIfComplete();
+function revealEclipseSecret() {
+    revealLibrarySecret('eclipse', '🌘 The Library remembers you were here.');
 }
 // Developer shortcut - Ctrl/Cmd + Shift + E
 // Previously Alt+Shift+E: dropped because bare Alt+Shift is a reserved
@@ -2347,7 +2174,7 @@ function activateNeonMode() {
   document.body.classList.add("neon-mode");
 
   if (!neonUnlocked) {
-    unlockNeonAchievement();
+    revealNeonSecret();
     neonUnlocked = true;
   }
 
@@ -2356,20 +2183,6 @@ function activateNeonMode() {
   }, 10000);
 }
 
-function unlockNeonAchievement(){
-
-    const unlocks=store.get("readerAchUnlocks",{});
-
-    if(unlocks.neonArchivist) return;
-
-    unlocks.neonArchivist=true;
-
-    store.set("readerAchUnlocks",unlocks);
-
-    renderReaderAchievements();
-    renderProgressJourney();
-
-    showToast("🕹️ Hidden Achievement: Neon Archivist — you found the old cheat code.");
-
-    announceMythicIfComplete();
+function revealNeonSecret() {
+    revealLibrarySecret('neon', '🕹️ You found the old arcade secret.');
 }
