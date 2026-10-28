@@ -10,7 +10,7 @@ body.light{--bg:#fff7f9;--bg2:#fff;--ink:#2a1a2e;--soft:#4d3a55;--mut:#76657e;--
 html.light{scrollbar-color:#d9446d #fff}
 html.light::-webkit-scrollbar-track,html.light::-webkit-scrollbar-corner{background:#fff}
 html.light::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#d9446d,#c23560) padding-box}
-*{box-sizing:border-box;margin:0}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--ink);font:calc(16px*var(--fs))/1.6 Sora,system-ui,sans-serif;min-height:100vh;scrollbar-color:var(--rose) var(--bg2)}
 a{color:inherit}
 :focus-visible{outline:3px solid var(--rose);outline-offset:2px;border-radius:6px}
