@@ -31,6 +31,7 @@
   <div id="eyePupil" class="eye-pupil"></div>
 </div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <a href="lite.html" id="switchToLite" title="Open the simpler Lite version (same reader data)" style="position:fixed;left:14px;bottom:14px;z-index:60;padding:8px 14px;border-radius:100px;background:rgba(22,15,34,.88);color:#f6eefc;border:1px solid rgba(255,255,255,.2);font:600 12px Sora,sans-serif;text-decoration:none;backdrop-filter:blur(8px)">Full · Switch to Lite →</a>
 
     <!-- ============ COMMAND-K ============ -->
     <div class="cmdk-overlay" id="cmdkOverlay" onclick="closeCmdk()"></div>
@@ -519,13 +520,25 @@
                     <h2 class="section-title">Your reading <em>corner</em></h2>
                     <p class="section-sub">Pick up where you left off, revisit favorites, and find completed reads.</p>
                 </div>
-                <button class="pill-btn" onclick="scrollToId('readingQueueSection')">Open reading queue ↓</button>
+                <div class="personal-shelf-actions"><button class="pill-btn" onclick="scrollToId('readingQueueSection')">Open reading queue ↓</button><button class="pill-btn" onclick="scrollToId('readerNotebook')">Open notebook ↓</button></div>
             </div>
             <div class="personal-shelf-grid">
                 <article class="glass personal-shelf-card personal-current-card" id="personalCurrentCard"></article>
                 <article class="glass personal-shelf-card" id="personalFavoritesCard"></article>
                 <article class="glass personal-shelf-card" id="personalFinishedCard"></article>
             </div>
+        </div>
+    </section>
+
+    <!-- ============ READER'S NOTEBOOK ============ -->
+    <section class="section reader-notebook-section" id="readerNotebook" aria-labelledby="readerNotebookTitle">
+        <div class="wrap">
+            <div class="section-head reader-notebook-head">
+                <div><span class="eyebrow">Your private story notes</span><h2 class="section-title" id="readerNotebookTitle">Reader’s <em>notebook</em></h2><p class="section-sub">Every note you save, gathered in one place. Notes stay in this browser.</p></div>
+                <label class="reader-notebook-search"><span class="sr-only">Search your notes</span><input type="search" id="readerNotebookSearch" placeholder="Search notes or novels…" autocomplete="off"><span aria-hidden="true">⌕</span></label>
+            </div>
+            <div class="reader-notebook-summary"><span id="readerNotebookCount">0 notes</span><span id="readerNotebookSearchStatus" aria-live="polite">Your private reading notebook</span></div>
+            <div class="reader-notebook-grid" id="readerNotebookList" aria-live="polite"></div>
         </div>
     </section>
 
@@ -538,21 +551,29 @@
                     <h2 class="section-title" id="achievementsTitle">Your reading <em>milestones</em></h2>
                     <p class="section-sub">Twenty-five ways your time with stories adds up.</p>
                 </div>
-                <div class="achievement-total-card" aria-live="polite">
-                    <span class="achievement-total-icon" aria-hidden="true">✦</span>
-                    <span><strong id="achievementCount">0 <i>/ 25</i></strong><small>milestones earned</small></span>
+                <div class="achievement-header-actions">
+                    <div class="achievement-total-card" aria-live="polite">
+                        <span class="achievement-total-icon" aria-hidden="true">✦</span>
+                        <span><strong id="achievementCount">0 <i>/ 25</i></strong><small>milestones earned</small></span>
+                    </div>
+                    <div class="achievement-view-controls" role="group" aria-label="Milestones display controls">
+                        <button class="achievement-view-button" type="button" id="achievementMinimize" onclick="setAchievementContent(true)" aria-controls="achievementContent" aria-pressed="false"><span aria-hidden="true">−</span> Minimize</button>
+                        <button class="achievement-view-button" type="button" id="achievementMaximize" onclick="setAchievementContent(false)" aria-controls="achievementContent" aria-pressed="true"><span aria-hidden="true">＋</span> Maximize</button>
+                    </div>
                 </div>
             </div>
-            <div class="achievement-collection-bar">
-                <div class="achievement-progress-copy"><span id="achievementProgressLabel">Your collection is just beginning</span><span id="achievementProgressPercent">0%</span></div>
-                <div class="achievement-progress-track" role="progressbar" id="achievementProgressBar" aria-label="Achievement collection progress" aria-valuemin="0" aria-valuemax="25" aria-valuenow="0"><span id="achievementProgressFill"></span></div>
-                <div class="achievement-filter-row" role="group" aria-label="Filter milestones">
-                    <button class="achievement-filter active" type="button" data-achievement-filter="all" aria-pressed="true">All <span id="achievementAllCount">25</span></button>
-                    <button class="achievement-filter" type="button" data-achievement-filter="earned" aria-pressed="false">Earned <span id="achievementEarnedCount">0</span></button>
-                    <button class="achievement-filter" type="button" data-achievement-filter="locked" aria-pressed="false">Still ahead <span id="achievementLockedCount">25</span></button>
+            <div id="achievementContent">
+                <div class="achievement-collection-bar">
+                    <div class="achievement-progress-copy"><span id="achievementProgressLabel">Your collection is just beginning</span><span id="achievementProgressPercent">0%</span></div>
+                    <div class="achievement-progress-track" role="progressbar" id="achievementProgressBar" aria-label="Achievement collection progress" aria-valuemin="0" aria-valuemax="25" aria-valuenow="0"><span id="achievementProgressFill"></span></div>
+                    <div class="achievement-filter-row" role="group" aria-label="Filter milestones">
+                        <button class="achievement-filter active" type="button" data-achievement-filter="all" aria-pressed="true">All <span id="achievementAllCount">25</span></button>
+                        <button class="achievement-filter" type="button" data-achievement-filter="earned" aria-pressed="false">Earned <span id="achievementEarnedCount">0</span></button>
+                        <button class="achievement-filter" type="button" data-achievement-filter="locked" aria-pressed="false">Still ahead <span id="achievementLockedCount">25</span></button>
+                    </div>
                 </div>
+                <div class="achievement-grid" id="achievementGrid" aria-live="polite"></div>
             </div>
-            <div class="achievement-grid" id="achievementGrid" aria-live="polite"></div>
         </div>
     </section>
 
@@ -630,7 +651,7 @@
                         <div class="footer-col-title">Explore</div>
                         <div class="footer-links">
                             <a href="#catalog">The Shelf</a><a href="#story-worlds">Story worlds</a><a href="#story-sampler">Read a sample</a><a href="#announcements">Announcements</a><a href="#readingQueueSection">Reading Queue</a><a
-                            href="#achievements">Milestones</a><a href="#leaderboard">Leaderboard</a><a href="#readingHeatmap">Reading activity</a>
+                            href="#achievements">Milestones</a><a href="#readerNotebook">Reader’s notebook</a><a href="#leaderboard">Leaderboard</a><a href="#readingHeatmap">Reading activity</a>
                         </div>
                     </div>
                 </div>
@@ -667,6 +688,7 @@
     </nav>
     <button id="scrollBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">↑</button>
 
+    <script src="novels-data.js"></script>
     <script src="script.js"></script>
 </body>
 
