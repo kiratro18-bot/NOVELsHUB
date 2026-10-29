@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chapter 2 — The First Rule of Investigating Nothing</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Literata:ital,wght@0,400;0,600;1,400&family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+@property --h{syntax:'<number>';inherits:true;initial-value:25}
+:root{--h:25;--sat:48%;--lit:38%;--ink:#232a38;--soft:#5d667c;--on:#fff;
+--bg:hsl(var(--h) 22% 94%);--card:hsl(var(--h) 30% 98%);--line:hsl(var(--h) 20% 82%);--accent:hsl(var(--h) var(--sat) var(--lit))}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
+--bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}}
+:root[data-theme="dark"]{--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
+--bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Literata,Georgia,serif;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:14px}
+::-webkit-scrollbar-track{background:transparent;border-left:1px solid var(--line)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--accent),hsl(calc(var(--h) + 45) var(--sat) var(--lit)));border:4px solid transparent;background-clip:padding-box;border-radius:99px;min-height:48px}
+#fx,.aurora{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.aurora{background:radial-gradient(42vmax 42vmax at 12% 8%,hsl(var(--h) var(--sat) var(--lit)/.2),transparent 62%),radial-gradient(46vmax 46vmax at 92% 85%,hsl(calc(var(--h) + 45) var(--sat) var(--lit)/.16),transparent 62%);animation:drift 16s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate3d(-3%,4%,0) scale(1.1)}}
+.prog{position:fixed;top:0;left:0;right:0;height:3px;z-index:9;transform-origin:left;transform:scaleX(0);pointer-events:none;background:linear-gradient(90deg,var(--accent),hsl(calc(var(--h) + 45) var(--sat) var(--lit)));box-shadow:0 0 12px var(--accent)}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line);backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 78%,transparent)}
+.back{color:var(--accent);text-decoration:none;font-size:.9rem;font-weight:600;transition:translate .2s}
+.back:hover{translate:-4px 0}
+.theme{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 14px;font:inherit;font-size:.85rem;cursor:pointer}
+.hero,.prose,.end{position:relative;z-index:1}
+.hero{text-align:center;padding:12vh 24px 7vh}
+.kicker{font:400 .78rem 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+h1{font:700 clamp(2.2rem,7vw,3.9rem)/1.08 'Space Grotesk',sans-serif;margin:0 0 16px;animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(.4em);filter:blur(8px)}}
+.chip{display:inline-block;border:1px solid var(--accent);color:var(--accent);border-radius:99px;padding:2px 12px;font-size:.78rem;margin:0 3px 6px}
+.prose{max-width:680px;margin:0 auto;padding:0 22px 8vh}
+.prose p{margin:0 0 .95em;font-size:clamp(1.04rem,1vw + .75rem,1.18rem);line-height:1.9;opacity:0;transform:translateY(12px);transition:opacity .6s,transform .6s}
+.prose p.v{opacity:1;transform:none}
+.prose p.d{padding-left:1em}
+.prose p.first::first-letter{float:left;font:700 3.6em/.85 'Space Grotesk',sans-serif;color:var(--accent);padding:.08em .1em 0 0}
+.prose p.it{font-style:italic;text-align:center;color:var(--accent)}
+.prose p.msg{width:fit-content;max-width:82%;padding:9px 16px;font-size:.98rem;line-height:1.5;background:var(--card);border:1px solid var(--line);border-radius:18px 18px 18px 4px}
+.prose p.msg.out{margin-left:auto;background:var(--accent);color:var(--on);border-color:transparent;border-radius:18px 18px 4px 18px}
+.prose p.rec{display:block;width:fit-content;font:400 .92rem 'Space Mono',monospace;background:var(--card);border:1px solid var(--line);border-radius:3px;padding:4px 12px;line-height:1.5}
+.prose p.note{position:relative;width:min(92%,430px);margin:1.9em auto;padding:22px 24px 30px;background:#f4ecd2;color:#8a2d1f;font:700 1.7rem/1.3 Caveat,cursive;text-align:center;box-shadow:0 12px 22px rgba(35,20,10,.2),0 2px 5px rgba(35,20,10,.14);transform:rotate(0) scale(.95)}
+.prose p.note.v{transform:rotate(var(--r,-1.4deg)) scale(1)}
+.prose p.note::before{content:"";position:absolute;top:-13px;left:50%;width:76px;height:24px;background:rgba(255,255,255,.6);transform:translateX(-50%) rotate(-3deg);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.end{text-align:center;padding:0 24px 12vh}
+.end .mark{display:block;width:9px;height:9px;margin:0 auto 14px;background:var(--accent);border-radius:2px;transform:rotate(45deg)}
+.end p{font:600 1.35rem Caveat,cursive;color:var(--soft);margin:0 0 26px}
+.nav{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:11px 22px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;font:inherit;font-size:.92rem;font-weight:600}
+.btn.lock{opacity:.55;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.prose p{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="prog" id="prog" aria-hidden="true"></div>
+<div class="aurora" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<header class="top"><a class="back" href="thwnr.html">← All chapters</a><button class="theme" id="theme" type="button">🌙 Dark</button></header>
+<section class="hero">
+  <p class="kicker">Chapter 2 · The Things We Never Returned</p>
+  <h1>The First Rule of Investigating Nothing</h1>
+  <span class="chip">Milk coffee · Handwriting</span><span class="chip" id="mins"></span>
+</section>
+<main class="prose" id="story"></main>
+<footer class="end">
+  <span class="mark"></span>
+  <p>— end of chapter two —</p>
+  
+</footer>
+<script>
+var T=`Kaito Moriyama returned on Thursday.
+Ayane knew it was Thursday because she'd marked the day on the calendar above the cash register, and because Mrs. Takeda had spent the morning complaining that deliveries always arrived when she was trying to eat.
+It was also the day Ayane had decided to stop thinking about the book.
+She had lasted three days.
+A personal record, considering the book had somehow invaded her sleep twice.
+The bell rang at 4:11 PM.
+Ayane looked up.
+Kaito stood in the doorway with two canned coffees in one hand.
+She looked at the cans.
+Then at him.
+"No."
+He blinked.
+"I haven't said anything."
+"Whatever you're about to say, no."
+He glanced at the coffee.
+"One of these is for me."
+"That's reassuring."
+"The other one's for you."
+"I don't drink coffee."
+"It's milk coffee."
+"I don't like milk coffee."
+He considered this.
+"Do you dislike happiness in general, or is it just beverages?"
+Ayane returned to her ledger.
+Kaito placed the can on the counter.
+"Anyway, I came to ask about the book."
+"Then ask."
+"Have you found anything?"
+"No."
+"Have you looked?"
+"No."
+He stared at her.
+She stared at the ledger.
+"You're lying."
+"Prove it."
+He smiled.
+It was an irritatingly pleased smile, the kind people wore when they discovered that the vending machine had accidentally given them two drinks.
+Ayane hated it.
+"Why are you so interested?" she asked.
+"Because someone wrote a conversation in a book."
+"That's not an answer."
+"It's the answer I have."
+"Then get a better one."
+"Do you always interrogate your customers?"
+"Only the annoying ones."
+He nodded thoughtfully.
+"Then I'm honored."
+Mrs. Takeda's voice came from the back room.
+"Ayane, if he buys something, you can insult him as much as you like."
+"I'm not buying anything," Kaito called back.
+"Then stop taking up space!"
+He turned to Ayane.
+"She likes me."
+"She doesn't."
+"She's hiding her feelings."
+"Go away."
+He laughed and pulled out the chair he'd used the previous time.
+Ayane pointed at it.
+"Don't sit there."
+"Why?"
+"Because I said so."
+"Right."
+He remained standing.
+For almost ten seconds.
+Then he sat down.
+Ayane put her pen down.
+"Are you trying to get thrown out?"
+"Not particularly."
+"Then why are you doing the exact thing I've asked you not to do?"
+"Honestly? The chair looked comfortable."
+She closed her ledger.
+"Fine. I'll tell you one thing."
+He sat up.
+"The receipt is from this shop. June 22, 2021. The date on some of the handwritten messages appears to match it, but there are other notes from different years. The handwriting changes several times. Mrs. Takeda recognizes the book. She doesn't want to talk about it."
+Kaito listened without interrupting.
+Ayane continued.
+"I also found the book's original cover online. It was published twenty-three years ago. That's all."
+He stared at her.
+Then glanced down at the coffee.
+"You investigated it."
+"No."
+"You just recited four days of research."
+"It was a coincidence."
+"Of course."
+She picked up her pen again.
+Kaito didn't move.
+After a while, he asked, "Did you figure out the names?"
+"What names?"
+"The people who wrote in it."
+"No."
+"Can we?"
+"No."
+"Why not?"
+"Because I don't know where to start."
+"Great. We're making progress."
+She glared at him.
+He grinned.
+It was, Ayane decided, very unfortunate that she found his stupidity mildly entertaining.
+"Fine," she said. "We can look at the book again. But we're not contacting anyone or doing anything ridiculous."
+"Agreed."
+"And you don't get to write in it."
+"I wasn't planning to."
+"And stop agreeing so quickly. It makes you look suspicious."
+Kaito placed a hand over his heart.
+"I can't win with you."
+"You could leave."
+He didn't.
+They brought the book out from beneath the counter and spread it across the desk.
+Ayane retrieved a notebook.
+Kaito took out his phone.
+She immediately pointed at it.
+"Don't photograph the pages."
+He looked up.
+"Why?"
+"Because they might contain personal things."
+"We're literally reading them."
+"I know."
+"That's a little hypocritical."
+"I know that too."
+He considered arguing, then placed his phone face down.
+"Okay. No photographs."
+Ayane blinked.
+She'd expected more resistance.
+It was annoying when people made it difficult to dislike them.
+She opened her notebook.
+"Let's start with the handwriting."
+They examined the messages one by one.
+There were at least six distinct styles.
+One person wrote in tiny, disciplined letters. Another used heavy pencil strokes that sometimes tore through the paper. Someone had a habit of underlining every other sentence, usually when they disagreed with something.
+One writer used green ink.
+Another wrote almost exclusively in blue.
+There were doodles between the arguments: cats, stars, umbrellas, a badly drawn fish, and a little person with an enormous head.
+Kaito pointed at the person.
+"That's definitely the author."
+"How do you know?"
+"Look at the tragic expression. It's a man who has made terrible literary decisions."
+Ayane tried not to smile.
+Failed.
+Then immediately stopped.
+Kaito noticed.
+He wisely said nothing.
+They worked for nearly an hour.
+At first, the task felt straightforward. Identify the handwriting, mark the dates, compare repeated words.
+But the more they examined the pages, the less sense the entries made.
+Some dates appeared beside arguments that seemed to begin long before them.
+Some messages answered questions that hadn't been written down.
+And some entries appeared to refer to events that had nothing to do with the novel.
+On one page, beside a paragraph about a character leaving home, someone had written:
+!You said you'd tell me before you left.
+Beneath it:
+!I tried.
+!You sent a three-word message.
+!I was seventeen.
+!So was I.
+Ayane reread the exchange.
+The next page contained a drawing of a door with a small flower beside it.
+Kaito had gone quiet.
+She glanced at him.
+"What's wrong?"
+"Nothing."
+"You've been staring at the same page for a minute."
+"Maybe it's a very interesting page."
+"Is there something you recognize?"
+He looked up too quickly.
+"No."
+Ayane narrowed her eyes.
+"That was a suspiciously bad lie."
+"You're a suspiciously nosy person."
+"I've been called worse."
+"I bet."
+He stood and walked to the shelves.
+Ayane watched him browse aimlessly for a while.
+Then she looked back at the page.
+!You said you'd tell me before you left.
+She didn't know why, but the sentence bothered her more than the others.
+Perhaps because she knew how easy it was to say something vague and pretend it was enough.
+She had done it herself.
+With Emi.
+With her mother.
+With people who invited her places and received vague excuses until they stopped asking.
+She closed the notebook.
+"We should ask Mrs. Takeda what she remembers."
+Kaito turned around.
+"I thought she didn't want to talk."
+"She didn't say she would never talk. She said she didn't know."
+"That's not the same thing."
+"Exactly."
+Mrs. Takeda appeared in the doorway carrying a cardboard box.
+"No."
+Ayane looked at her.
+"I haven't asked anything."
+"You have the face."
+"What face?"
+"The one you get when you're about to make my evening difficult."
+Kaito coughed into his fist.
+Ayane ignored him.
+"Mrs. Takeda, please."
+The older woman looked at the open book.
+For a moment, she seemed to forget they were there.
+Then she put down the box.
+"I remember the rain," she said.
+Ayane sat up.
+"What?"
+"June 22, 2021. It rained that evening. Not much at first, but heavily after five. The old roof leaked above the front shelves, so I had to move three boxes."
+She wiped her hands on her apron.
+"There were students in and out all afternoon. Some came to wait for the rain to stop. Others came because they didn't have anywhere else to be."
+"Do you remember anyone who wrote in this book?"
+Mrs. Takeda didn't answer immediately.
+"Perhaps."
+"Who?"
+"I'm not telling you."
+Ayane's shoulders dropped.
+"Why?"
+"Because you don't know these people. Because their handwriting has survived longer than some friendships. Because finding a name isn't the same thing as earning the right to know a person's life."
+Ayane looked at the book.
+Kaito leaned forward.
+"We're not trying to expose anyone."
+"I believe you."
+"Then—"
+"I believe you," Mrs. Takeda repeated. "But you two have known each other for less than a week, and already you're trying to solve a five-year-old problem you don't understand."
+Kaito opened his mouth.
+Ayane elbowed him.
+Mrs. Takeda continued.
+"Put the book away. Go home. Eat something. Do whatever seventeen-year-olds are supposed to do."
+"Is that an official instruction?" Kaito asked.
+"Would you like it written down?"
+"No, thank you."
+"Good."
+She carried the box into the back room.
+Ayane sat quietly for a moment.
+Then Kaito picked up the coffee he'd brought.
+"You really don't like milk coffee?"
+"No."
+He placed it beside her notebook.
+"Give it to someone."
+"You're not getting it back."
+"I was going to drink the other one."
+"Then you should have bought only one."
+He laughed.
+Ayane closed the book.
+"We're not going to solve this by guessing."
+"Probably not."
+"We need something real."
+"Like what?"
+She thought about the date on the receipt.
+The handwriting.
+The sentence about waiting until the shop closed.
+A person had waited for someone.
+Someone hadn't arrived.
+Or perhaps someone had arrived and left without being seen.
+Ayane rubbed her forehead.
+"I don't know yet."
+Kaito looked at the book.
+"That's okay."
+She glanced at him.
+He wasn't joking this time.
+For once, his face looked almost serious.
+"We don't have to figure everything out today."
+Ayane looked away.
+Something about the sentence irritated her.
+Perhaps because it was reasonable.
+And perhaps because she wanted him to be wrong.
+They put the book back beneath the counter.
+Kaito left without buying anything.
+At the doorway, he turned around.
+"Sato?"
+"What?"
+"Tomorrow?"
+Ayane considered telling him no.
+She had homework. A test next week. A room she'd promised to clean. A message from Emi she still hadn't properly answered.
+Instead, she said, "Four-thirty."
+He blinked.
+"Really?"
+"If you're late, I'm not opening the book."
+He smiled.
+"Four-thirty it is."
+The bell rang as he left.
+Ayane sat behind the counter, listening to the rain begin again.
+Then she opened her notebook.
+Beneath the four questions she'd written earlier, she added a fifth.
+#5. Why is he so difficult to send away?
+She stared at it.
+Crossed it out.
+Then underlined it twice.
+That evening, she received another message from Emi.
+~Are you free on Sunday? Nothing special. I'm just going to the bookstore near the station.
+Ayane typed a reply.
+>Maybe. What time?
+The response arrived almost immediately.
+~Really? I'll send you the details!
+Ayane looked at the screen.
+Then at the notebook beside her.
+For no clear reason, she felt as if she'd made a mistake.
+Not a terrible one.
+Just the kind that might eventually become important.`;
+
+var root=document.documentElement,btn=document.getElementById("theme"),RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function dark(){var t=root.dataset.theme;return t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches}
+function icon(){btn.textContent=dark()?"☀️ Light":"🌙 Dark"}
+btn.onclick=function(){var t=dark()?"light":"dark";root.dataset.theme=t;store("ttwnr-theme",t);icon()};
+var sv=load("ttwnr-theme");if(sv)root.dataset.theme=sv;icon();
+
+/* build the story */
+function sq(t){return t.replace(/(^|[\s(\[—])"/g,"$1“").replace(/"/g,"”").replace(/'/g,"’").replace(/_(.+?)_/g,"<em>$1</em>")}
+var lines=T.split("\n"),words=T.split(/\s+/).length,k=0;
+document.getElementById("mins").textContent=Math.round(words/200)+" min read";
+var host=document.getElementById("story");
+host.innerHTML=lines.map(function(l,i){
+  var c=l.charAt(0),cls="",t=l;
+  if(c==="!"){cls="note";t=l.slice(1)}
+  else if(c==="#"){cls="rec";t=l.slice(1)}
+  else if(c==="~"){cls="msg";t=l.slice(1)}
+  else if(c===">"){cls="msg out";t=l.slice(1)}
+  else if(c==="*"){cls="it";t=l.slice(1)}
+  else if(c==='"'){cls="d"}
+  if(i===0)cls+=" first";
+  var st=cls.indexOf("note")>-1?' style="--r:'+((k++%2)?1.3:-1.5)+'deg"':"";
+  return '<p class="'+cls+'"'+st+'>'+sq(t)+'</p>';
+}).join("");
+
+/* scroll reveal */
+var ps=host.querySelectorAll("p");
+if(RM||!("IntersectionObserver" in window)){ps.forEach(function(p){p.classList.add("v")})}
+else{var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("v");io.unobserve(e.target)}})},{threshold:.15,rootMargin:"0px 0px -30px 0px"});ps.forEach(function(p){io.observe(p)})}
+
+/* progress */
+var prog=document.getElementById("prog"),tick=false;
+function upd(){tick=false;var m=document.documentElement.scrollHeight-innerHeight;prog.style.transform="scaleX("+(m>0?Math.min(1,scrollY/m):0)+")"}
+addEventListener("scroll",function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});addEventListener("resize",upd);upd();
+
+/* rain + ripples */
+var cv=document.getElementById("fx"),cx=cv.getContext("2d"),W,H,drops=[],rip=[];
+function size(){W=cv.width=innerWidth;H=cv.height=innerHeight}size();addEventListener("resize",size);
+function mk(){return{x:Math.random()*W,y:-Math.random()*H,l:10+Math.random()*16,v:6+Math.random()*7,g:H*(.55+Math.random()*.45)}}
+for(var q=0;q<110;q++){var d0=mk();d0.y=Math.random()*H;drops.push(d0)}
+function frame(){
+  var dk=dark(),L=dk?72:42,S=dk?62:48,A=dk?.5:.36,col=function(a){return"hsla(25,"+S+"%,"+L+"%,"+a+")"};
+  cx.clearRect(0,0,W,H);cx.lineWidth=1.2;
+  drops.forEach(function(d,i){
+    cx.strokeStyle=col(A);cx.beginPath();cx.moveTo(d.x,d.y);cx.lineTo(d.x-d.l*.2,d.y-d.l);cx.stroke();
+    d.y+=d.v;d.x-=d.v*.12;
+    if(d.y>d.g){rip.push({x:d.x,y:d.y,r:1,a:A});drops[i]=mk();drops[i].y=-20}
+  });
+  for(var j=rip.length-1;j>=0;j--){var p=rip[j];p.r+=.7;p.a-=.012;if(p.a<=0){rip.splice(j,1);continue}
+    cx.strokeStyle=col(p.a);cx.beginPath();cx.ellipse(p.x,p.y,p.r*2,p.r*.6,0,0,6.28);cx.stroke()}
+  requestAnimationFrame(frame)}
+if(!RM)frame();
+</script>
+</body>
+</html>

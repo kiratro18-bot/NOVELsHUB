@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chapter 3 — A Drawer Full of Almosts</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Literata:ital,wght@0,400;0,600;1,400&family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+@property --h{syntax:'<number>';inherits:true;initial-value:165}
+:root{--h:165;--sat:48%;--lit:38%;--ink:#232a38;--soft:#5d667c;--on:#fff;
+--bg:hsl(var(--h) 22% 94%);--card:hsl(var(--h) 30% 98%);--line:hsl(var(--h) 20% 82%);--accent:hsl(var(--h) var(--sat) var(--lit))}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
+--bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}}
+:root[data-theme="dark"]{--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
+--bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Literata,Georgia,serif;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:14px}
+::-webkit-scrollbar-track{background:transparent;border-left:1px solid var(--line)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--accent),hsl(calc(var(--h) + 45) var(--sat) var(--lit)));border:4px solid transparent;background-clip:padding-box;border-radius:99px;min-height:48px}
+#fx,.aurora{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.aurora{background:radial-gradient(42vmax 42vmax at 12% 8%,hsl(var(--h) var(--sat) var(--lit)/.2),transparent 62%),radial-gradient(46vmax 46vmax at 92% 85%,hsl(calc(var(--h) + 45) var(--sat) var(--lit)/.16),transparent 62%);animation:drift 16s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate3d(-3%,4%,0) scale(1.1)}}
+.prog{position:fixed;top:0;left:0;right:0;height:3px;z-index:9;transform-origin:left;transform:scaleX(0);pointer-events:none;background:linear-gradient(90deg,var(--accent),hsl(calc(var(--h) + 45) var(--sat) var(--lit)));box-shadow:0 0 12px var(--accent)}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line);backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 78%,transparent)}
+.back{color:var(--accent);text-decoration:none;font-size:.9rem;font-weight:600;transition:translate .2s}
+.back:hover{translate:-4px 0}
+.theme{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 14px;font:inherit;font-size:.85rem;cursor:pointer}
+.hero,.prose,.end{position:relative;z-index:1}
+.hero{text-align:center;padding:12vh 24px 7vh}
+.kicker{font:400 .78rem 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+h1{font:700 clamp(2.2rem,7vw,3.9rem)/1.08 'Space Grotesk',sans-serif;margin:0 0 16px;animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(.4em);filter:blur(8px)}}
+.chip{display:inline-block;border:1px solid var(--accent);color:var(--accent);border-radius:99px;padding:2px 12px;font-size:.78rem;margin:0 3px 6px}
+.prose{max-width:680px;margin:0 auto;padding:0 22px 8vh}
+.prose p{margin:0 0 .95em;font-size:clamp(1.04rem,1vw + .75rem,1.18rem);line-height:1.9;opacity:0;transform:translateY(12px);transition:opacity .6s,transform .6s}
+.prose p.v{opacity:1;transform:none}
+.prose p.d{padding-left:1em}
+.prose p.first::first-letter{float:left;font:700 3.6em/.85 'Space Grotesk',sans-serif;color:var(--accent);padding:.08em .1em 0 0}
+.prose p.it{font-style:italic;text-align:center;color:var(--accent)}
+.prose p.msg{width:fit-content;max-width:82%;padding:9px 16px;font-size:.98rem;line-height:1.5;background:var(--card);border:1px solid var(--line);border-radius:18px 18px 18px 4px}
+.prose p.msg.out{margin-left:auto;background:var(--accent);color:var(--on);border-color:transparent;border-radius:18px 18px 4px 18px}
+.prose p.rec{display:block;width:fit-content;font:400 .92rem 'Space Mono',monospace;background:var(--card);border:1px solid var(--line);border-radius:3px;padding:4px 12px;line-height:1.5}
+.prose p.note{position:relative;width:min(92%,430px);margin:1.9em auto;padding:22px 24px 30px;background:#f4ecd2;color:#8a2d1f;font:700 1.7rem/1.3 Caveat,cursive;text-align:center;box-shadow:0 12px 22px rgba(35,20,10,.2),0 2px 5px rgba(35,20,10,.14);transform:rotate(0) scale(.95)}
+.prose p.note.v{transform:rotate(var(--r,-1.4deg)) scale(1)}
+.prose p.note::before{content:"";position:absolute;top:-13px;left:50%;width:76px;height:24px;background:rgba(255,255,255,.6);transform:translateX(-50%) rotate(-3deg);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.end{text-align:center;padding:0 24px 12vh}
+.end .mark{display:block;width:9px;height:9px;margin:0 auto 14px;background:var(--accent);border-radius:2px;transform:rotate(45deg)}
+.end p{font:600 1.35rem Caveat,cursive;color:var(--soft);margin:0 0 26px}
+.nav{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:11px 22px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;font:inherit;font-size:.92rem;font-weight:600}
+.btn.lock{opacity:.55;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.prose p{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="prog" id="prog" aria-hidden="true"></div>
+<div class="aurora" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<header class="top"><a class="back" href="thwnr.html">← All chapters</a><button class="theme" id="theme" type="button">🌙 Dark</button></header>
+<section class="hero">
+  <p class="kicker">Chapter 3 · The Things We Never Returned</p>
+  <h1>A Drawer Full of Almosts</h1>
+  <span class="chip">Drawers · Keepsakes</span><span class="chip" id="mins"></span>
+</section>
+<main class="prose" id="story"></main>
+<footer class="end">
+  <span class="mark"></span>
+  <p>— end of chapter three —</p>
+  
+</footer>
+<script>
+var T=`Kaito's house had too many drawers.
+That was his mother's opinion.
+His opinion was that the drawers were perfectly reasonable, and the actual problem was that nobody else understood how to use them.
+The drawer beneath the television contained charging cables.
+The drawer beside the entrance contained keys, batteries, spare masks, and three different types of tape.
+The drawer in his room contained things he couldn't explain.
+A broken keychain.
+A railway ticket from a trip he barely remembered.
+A button from an old cardigan.
+A receipt for a meal he'd eaten two years ago.
+A small plastic dinosaur missing its left arm.
+And a bookmark.
+The bookmark was the reason he was sitting on his bedroom floor at seven in the evening, holding a paperback book he'd borrowed from his older sister five years ago.
+He hadn't borrowed it, technically.
+He'd taken it from her desk when he was twelve because she was leaving for school and he wanted to annoy her.
+She'd chased him around the house for ten minutes.
+He'd laughed.
+She'd threatened to throw his game console out the window.
+It was a perfectly ordinary afternoon.
+Then she left.
+And somehow, the book stayed with him.
+Itsuki turned the bookmark over.
+On the back, in his sister's handwriting, were the words:
+!Return this when you're done, idiot.
+He had been done for approximately five years.
+His phone lit up beside him.
+A message from Ayane.
+~Did you find anything?
+He typed:
+>No.
+Then added:
+>I found three yen in my pocket, though.
+She replied:
+~Incredible detective work.
+He smiled at the screen.
+Then his eyes moved toward the wardrobe.
+His sister's old room was still being used for storage, but a box of her belongings remained beneath the bed. His mother had suggested sorting it several times.
+Kaito had always found something else to do.
+He wasn't proud of that.
+He wasn't proud of a lot of things.
+He opened the box.
+Inside were old schoolbooks, notebooks, a scarf, two faded photographs, and a collection of paperback novels.
+He pulled them out one by one.
+There was a cookbook.
+A mystery novel.
+A book of poems.
+And at the bottom, a thin paperback with a blue cover.
+His heart gave a strange little jump.
+*The House at the End of June.
+He sat down.
+The copy he'd found at Tsubaki Books was the same edition, though its cover had been more damaged. This one was clean enough to read, its spine slightly bent but intact.
+He opened the front cover.
+On the inside flap, someone had written:
+!Yuzuna Moriyama. Class 2-B.
+His sister's name.
+Below it, in smaller writing:
+!If found, return to the owner. She bites.
+Kaito stared at the page.
+Then laughed once, softly.
+"Of course."
+He turned the page.
+There were no annotations in the margins.
+Not on the first few pages.
+But near the middle, a small drawing appeared beside a paragraph about a girl standing outside a house.
+A little cat.
+An angry cat.
+He recognized the way its ears had been drawn.
+He recognized the tiny scar on its left paw, a detail that made no sense on an imaginary animal.
+His sister used to draw cats like that on his mathematics worksheets.
+She'd drawn one on his hand when he was ten, then refused to wash it off for him because, apparently, he needed to learn responsibility.
+It had taken three days to disappear.
+Kaito turned another page.
+There was a tiny blue umbrella.
+Then a badly drawn fish.
+Then a sentence in the margin.
+!The ending was unfair.
+His smile faded.
+He picked up his phone and opened his sister's contact.
+#Yuzuna.
+Her profile picture showed a ceramic cup on a windowsill.
+He had no idea where she'd taken it.
+The last message between them was from three weeks ago.
+>Mom says your train arrives at 8:20. Do you want me to pick you up?
+His sister had replied:
+~No, don't worry. I've got it.
+He'd sent a thumbs-up.
+That was their relationship in miniature.
+Polite.
+Functional.
+Completely inadequate.
+He scrolled upward.
+There were older messages.
+A picture of a birthday cake.
+A complaint about their father's terrible cooking.
+A photograph of a cat sleeping on a washing machine.
+His sister had sent him that one because she'd known he would laugh.
+He remembered laughing.
+He couldn't remember the last time they'd spoken for more than five minutes without someone checking the clock.
+His phone buzzed.
+Ayane again.
+~You there?
+He typed:
+>I found something.
+Then paused.
+He could tell her.
+He could explain that his sister had owned the book, that she'd written in another copy of it, that there might be a connection.
+Instead, he typed:
+>Nothing important.
+He sent it.
+The moment the message disappeared, he wanted to throw his phone across the room.
+He didn't.
+It was an expensive phone.
+And he was, apparently, a coward with excellent financial instincts.
+The next afternoon, Kaito arrived at Tsubaki Books five minutes early.
+Ayane looked up from the counter.
+"You're early."
+"That's an accusation."
+"It's an observation."
+"I can leave and come back at four-thirty."
+"Please do."
+He smiled.
+Then he noticed the notebook beside her.
+She had written a list of dates and handwriting styles.
+He leaned over.
+"Wow."
+"What?"
+"You made a chart."
+"It's a list."
+"With columns."
+"That's how lists work."
+He sat down.
+Ayane opened the book again.
+"I found something yesterday."
+"So did I."
+She looked at him.
+He immediately wished he hadn't said it.
+"What?"
+"Nothing."
+Her eyes narrowed.
+"Moriyama."
+He froze.
+It was the first time she'd used his surname without sounding as though she was reading it from a wanted poster.
+"Yes?"
+"What did you find?"
+He looked at the book.
+Then at the notebook.
+Then at her.
+"My sister used to own this edition."
+Ayane blinked.
+"Your sister?"
+"Yeah. She had it when she was in high school."
+"Was she one of the people writing in it?"
+"I don't know."
+"Do you recognize the handwriting?"
+"Some of it."
+"Then why didn't you say so yesterday?"
+He rubbed his forehead.
+"Because I wasn't sure."
+"That's not a reason to lie."
+He looked up sharply.
+"I didn't lie."
+"You said you found nothing."
+"I said nothing important."
+"That is a lie with extra steps."
+"You're impossible."
+"And you're avoiding the question."
+They stared at each other.
+Then Kaito looked away.
+"My sister moved out a few years ago. She left a lot of things behind. I haven't really looked through them."
+Ayane's expression changed slightly.
+"Why not?"
+"Because I didn't want to."
+It came out more sharply than he'd intended.
+Ayane went quiet.
+Kaito exhaled.
+"Sorry."
+She picked up her pen.
+"You don't have to tell me everything."
+"I know."
+"But if we're investigating this together, you have to tell me when something matters."
+He looked at her.
+She was watching the notebook instead of him.
+"I know," he repeated.
+This time, he meant it.
+They examined the book for another hour.
+Kaito pointed out several doodles that looked familiar.
+Ayane recorded them.
+Neither mentioned his sister again.
+But when he left, he stopped at the doorway.
+"Sato?"
+"What?"
+"Do you ever keep things just because you're afraid of losing them?"
+She frowned.
+"What does that have to do with anything?"
+He shrugged.
+"Nothing."
+He stepped outside.
+For a moment, Ayane considered calling him back.
+Instead, she watched him disappear around the corner.
+Then she opened her notebook to a clean page.
+At the top, she wrote:
+#Yuzuna Moriyama.
+Beneath it:
+#Possible connection to the book.
+She stared at the name.
+Then, almost against her will, she added:
+#Ask Kaito when he's ready.
+It was a small thing.
+But it felt different from the other questions she'd written.
+For once, she wasn't trying to find an answer.
+She was leaving room for someone to give it to her.`;
+
+var root=document.documentElement,btn=document.getElementById("theme"),RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function dark(){var t=root.dataset.theme;return t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches}
+function icon(){btn.textContent=dark()?"☀️ Light":"🌙 Dark"}
+btn.onclick=function(){var t=dark()?"light":"dark";root.dataset.theme=t;store("ttwnr-theme",t);icon()};
+var sv=load("ttwnr-theme");if(sv)root.dataset.theme=sv;icon();
+
+/* build the story */
+function sq(t){return t.replace(/(^|[\s(\[—])"/g,"$1“").replace(/"/g,"”").replace(/'/g,"’").replace(/_(.+?)_/g,"<em>$1</em>")}
+var lines=T.split("\n"),words=T.split(/\s+/).length,k=0;
+document.getElementById("mins").textContent=Math.round(words/200)+" min read";
+var host=document.getElementById("story");
+host.innerHTML=lines.map(function(l,i){
+  var c=l.charAt(0),cls="",t=l;
+  if(c==="!"){cls="note";t=l.slice(1)}
+  else if(c==="#"){cls="rec";t=l.slice(1)}
+  else if(c==="~"){cls="msg";t=l.slice(1)}
+  else if(c===">"){cls="msg out";t=l.slice(1)}
+  else if(c==="*"){cls="it";t=l.slice(1)}
+  else if(c==='"'){cls="d"}
+  if(i===0)cls+=" first";
+  var st=cls.indexOf("note")>-1?' style="--r:'+((k++%2)?1.3:-1.5)+'deg"':"";
+  return '<p class="'+cls+'"'+st+'>'+sq(t)+'</p>';
+}).join("");
+
+/* scroll reveal */
+var ps=host.querySelectorAll("p");
+if(RM||!("IntersectionObserver" in window)){ps.forEach(function(p){p.classList.add("v")})}
+else{var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("v");io.unobserve(e.target)}})},{threshold:.15,rootMargin:"0px 0px -30px 0px"});ps.forEach(function(p){io.observe(p)})}
+
+/* progress */
+var prog=document.getElementById("prog"),tick=false;
+function upd(){tick=false;var m=document.documentElement.scrollHeight-innerHeight;prog.style.transform="scaleX("+(m>0?Math.min(1,scrollY/m):0)+")"}
+addEventListener("scroll",function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});addEventListener("resize",upd);upd();
+
+/* drifting dust motes */
+var cv=document.getElementById("fx"),cx=cv.getContext("2d"),W,H,m=[];
+function size(){W=cv.width=innerWidth;H=cv.height=innerHeight}size();addEventListener("resize",size);
+for(var q=0;q<70;q++)m.push({x:Math.random()*W,y:Math.random()*H,r:1+Math.random()*2.6,v:.15+Math.random()*.35,p:Math.random()*6.28});
+function frame(){var dk=dark(),L=dk?72:42,S=dk?62:48,A=dk?.5:.34;cx.clearRect(0,0,W,H);
+  m.forEach(function(d){d.p+=.01;d.y-=d.v;d.x+=Math.sin(d.p)*.4;if(d.y<-8){d.y=H+8;d.x=Math.random()*W}
+    cx.fillStyle="hsla(165,"+S+"%,"+L+"%,"+(A*(.45+.55*Math.sin(d.p*2)))+")";cx.beginPath();cx.arc(d.x,d.y,d.r,0,6.28);cx.fill()});
+  requestAnimationFrame(frame)}
+if(!RM)frame();
+</script>
+</body>
+</html>

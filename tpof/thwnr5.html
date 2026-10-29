@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chapter 5 — The Girl Who Stayed</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Literata:ital,wght@0,400;0,600;1,400&family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+@property --h{syntax:'<number>';inherits:true;initial-value:340}
+:root{--h:340;--sat:48%;--lit:38%;--ink:#232a38;--soft:#5d667c;--on:#fff;
+--bg:hsl(var(--h) 22% 94%);--card:hsl(var(--h) 30% 98%);--line:hsl(var(--h) 20% 82%);--accent:hsl(var(--h) var(--sat) var(--lit))}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
+--bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}}
+:root[data-theme="dark"]{--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
+--bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Literata,Georgia,serif;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:14px}
+::-webkit-scrollbar-track{background:transparent;border-left:1px solid var(--line)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--accent),hsl(calc(var(--h) + 45) var(--sat) var(--lit)));border:4px solid transparent;background-clip:padding-box;border-radius:99px;min-height:48px}
+#fx,.aurora{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.aurora{background:radial-gradient(42vmax 42vmax at 12% 8%,hsl(var(--h) var(--sat) var(--lit)/.2),transparent 62%),radial-gradient(46vmax 46vmax at 92% 85%,hsl(calc(var(--h) + 45) var(--sat) var(--lit)/.16),transparent 62%);animation:drift 16s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate3d(-3%,4%,0) scale(1.1)}}
+.prog{position:fixed;top:0;left:0;right:0;height:3px;z-index:9;transform-origin:left;transform:scaleX(0);pointer-events:none;background:linear-gradient(90deg,var(--accent),hsl(calc(var(--h) + 45) var(--sat) var(--lit)));box-shadow:0 0 12px var(--accent)}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line);backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 78%,transparent)}
+.back{color:var(--accent);text-decoration:none;font-size:.9rem;font-weight:600;transition:translate .2s}
+.back:hover{translate:-4px 0}
+.theme{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 14px;font:inherit;font-size:.85rem;cursor:pointer}
+.hero,.prose,.end{position:relative;z-index:1}
+.hero{text-align:center;padding:12vh 24px 7vh}
+.kicker{font:400 .78rem 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+h1{font:700 clamp(2.2rem,7vw,3.9rem)/1.08 'Space Grotesk',sans-serif;margin:0 0 16px;animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(.4em);filter:blur(8px)}}
+.chip{display:inline-block;border:1px solid var(--accent);color:var(--accent);border-radius:99px;padding:2px 12px;font-size:.78rem;margin:0 3px 6px}
+.prose{max-width:680px;margin:0 auto;padding:0 22px 8vh}
+.prose p{margin:0 0 .95em;font-size:clamp(1.04rem,1vw + .75rem,1.18rem);line-height:1.9;opacity:0;transform:translateY(12px);transition:opacity .6s,transform .6s}
+.prose p.v{opacity:1;transform:none}
+.prose p.d{padding-left:1em}
+.prose p.first::first-letter{float:left;font:700 3.6em/.85 'Space Grotesk',sans-serif;color:var(--accent);padding:.08em .1em 0 0}
+.prose p.it{font-style:italic;text-align:center;color:var(--accent)}
+.prose p.msg{width:fit-content;max-width:82%;padding:9px 16px;font-size:.98rem;line-height:1.5;background:var(--card);border:1px solid var(--line);border-radius:18px 18px 18px 4px}
+.prose p.msg.out{margin-left:auto;background:var(--accent);color:var(--on);border-color:transparent;border-radius:18px 18px 4px 18px}
+.prose p.rec{display:block;width:fit-content;font:400 .92rem 'Space Mono',monospace;background:var(--card);border:1px solid var(--line);border-radius:3px;padding:4px 12px;line-height:1.5}
+.prose p.note{position:relative;width:min(92%,430px);margin:1.9em auto;padding:22px 24px 30px;background:#f4ecd2;color:#8a2d1f;font:700 1.7rem/1.3 Caveat,cursive;text-align:center;box-shadow:0 12px 22px rgba(35,20,10,.2),0 2px 5px rgba(35,20,10,.14);transform:rotate(0) scale(.95)}
+.prose p.note.v{transform:rotate(var(--r,-1.4deg)) scale(1)}
+.prose p.note::before{content:"";position:absolute;top:-13px;left:50%;width:76px;height:24px;background:rgba(255,255,255,.6);transform:translateX(-50%) rotate(-3deg);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.end{text-align:center;padding:0 24px 12vh}
+.end .mark{display:block;width:9px;height:9px;margin:0 auto 14px;background:var(--accent);border-radius:2px;transform:rotate(45deg)}
+.end p{font:600 1.35rem Caveat,cursive;color:var(--soft);margin:0 0 26px}
+.nav{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:11px 22px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;font:inherit;font-size:.92rem;font-weight:600}
+.btn.lock{opacity:.55;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.prose p{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="prog" id="prog" aria-hidden="true"></div>
+<div class="aurora" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<header class="top"><a class="back" href="thwnr.html">← All chapters</a><button class="theme" id="theme" type="button">🌙 Dark</button></header>
+<section class="hero">
+  <p class="kicker">Chapter 5 · The Things We Never Returned</p>
+  <h1>The Girl Who Stayed</h1>
+  <span class="chip">Photographs · Siblings</span><span class="chip" id="mins"></span>
+</section>
+<main class="prose" id="story"></main>
+<footer class="end">
+  <span class="mark"></span>
+  <p>— end of chapter five —</p>
+ 
+</footer>
+<script>
+var T=`Kaito arrived at Tsubaki Books at 4:19 PM.
+Ayane was already waiting.
+He knew something was wrong because she had arranged three notebooks, two pencils, and the faded blue paperback in a perfectly straight line across the counter.
+She only arranged things that carefully when she was upset.
+"What's happened?"
+She looked up.
+"Nothing."
+He glanced at the notebooks.
+"Right. And I suppose you've organized them for fun."
+"Sit down."
+He sat.
+Ayane showed him the photograph of the bookstore.
+Then she explained what Mrs. Takeda had told her.
+The two girls.
+The one inside.
+The one outside.
+The rain.
+The missed meeting.
+Kaito listened without interrupting.
+When she finished, he looked at the photograph.
+"That's my sister."
+Ayane blinked.
+"You're sure?"
+"I think so."
+He leaned closer.
+"The umbrella. She used to carry one with a wooden handle. She broke it when I was little because I accidentally sat on it."
+He smiled faintly.
+"I cried more than she did."
+Ayane studied the image.
+The person outside had a dark umbrella.
+"Then the other girl must be—"
+"Mio."
+Kaito said the name so suddenly that Ayane stopped.
+He looked surprised himself.
+"Sorry. I don't know why I said that."
+"Your sister's friend?"
+"I remember the name from a notebook. Yuzuna used to mention someone called Mio."
+Ayane opened her notebook.
+"Mio."
+She wrote it down.
+Then put her pen away.
+"Before we do anything else, I need to tell you something."
+Kaito looked wary.
+"That sounds expensive."
+"I'm serious."
+"Okay."
+She hesitated.
+"I think your sister wrote some of these messages. But that doesn't mean we should contact her without asking you first."
+He stared at her.
+"You've been doing a lot of things without asking lately."
+Ayane stiffened.
+"What?"
+"You looked at the book. You photographed the picture. You made lists. You spoke to Mrs. Takeda. You asked about my sister."
+"I didn't force anyone to answer."
+"I know."
+"Then what's the problem?"
+Kaito rubbed a hand across his face.
+"The problem is that this is my family, and I haven't even figured out what I want to do about it."
+Ayane went quiet.
+He looked at her.
+"I'm not saying you did anything wrong. I just—"
+He stopped.
+Then laughed once, without humor.
+"I don't know. I thought I'd have more time before this became real."
+Ayane looked at the book.
+For once, she didn't have an answer.
+Kaito took a breath.
+"My sister left home when I was twelve. Not in a dramatic way. She went to college, got a place with some friends, and started building her life somewhere else."
+He shrugged.
+"That was the normal thing to do."
+"Then why are you upset?"
+The question came out before Ayane could stop it.
+Kaito looked at her.
+She immediately regretted asking.
+"Sorry."
+"No. It's fine."
+He looked down at his hands.
+"Because we fought before she left."
+Ayane waited.
+"I told her she was always leaving things behind. Clothes. Books. Promises. I told her she was selfish for expecting me to miss her when she couldn't even remember to call."
+He rubbed his thumb across his knuckle.
+"She said she wasn't asking me to miss her. She was asking me to stop making her feel guilty for growing up."
+Ayane didn't move.
+"I told her I didn't care if she left."
+He laughed quietly.
+"She left."
+The shop was silent.
+Kaito stared at the book.
+"She called me the next week. I didn't answer. Then she sent a message. I replied with one word. After that, we just… stopped trying very hard."
+Ayane felt something twist in her chest.
+"Have you ever apologized?"
+"No."
+"Why?"
+He glanced up.
+"Because she should apologize too."
+The answer came too quickly.
+They both knew it.
+Kaito looked away.
+"Yeah. I know."
+Ayane sat down opposite him.
+She didn't tell him that he was wrong.
+She didn't tell him that his sister probably missed him.
+She didn't try to turn the moment into something neat.
+Instead, she said, "You don't have to decide today."
+He looked at her.
+"You're stealing my lines now."
+"You were right the first time."
+He smiled a little.
+Then looked at the book again.
+"I want to call her."
+Ayane nodded.
+"Okay."
+"But not today."
+"Okay."
+"And don't write that down."
+She closed her notebook.
+"I wasn't going to."
+He stared at her.
+She sighed.
+"Fine. I was going to write it down."
+He laughed.
+It was a small laugh, but some of the tension left his shoulders.
+They put the book away.
+For the rest of the afternoon, they talked about ordinary things.
+A teacher who had apparently confused two students' names for three weeks.
+A vending machine that had stolen Kaito's money.
+A girl in Ayane's class who had started wearing sunglasses indoors after an unfortunate eyebrow incident.
+It was pleasant.
+And for some reason, that made the subject of his sister feel less frightening.
+That evening, Kaito took the book from the box beneath his bed.
+He sat at his desk and opened it to the inside cover.
+His sister's name stared back at him.
+!Yuzuna Moriyama.
+He opened his phone.
+For a long time, he did nothing.
+Then he typed:
+>Hey. Do you remember a book called The House at the End of June?
+He stared at the sentence.
+Added another line.
+>I found a copy.
+He almost sent it.
+Then he imagined her reading the message and wondering why he was asking.
+He imagined her replying politely.
+He imagined the conversation ending before it began.
+His thumb hovered over the screen.
+Finally, he added:
+>I think it might be yours.
+He pressed send.
+The message turned blue.
+Delivered.
+Kaito placed the phone facedown.
+Then he stood up and went to the kitchen.
+His mother was making dinner.
+"Can you set the table?" she asked.
+"Sure."
+He took out three plates.
+Stopped.
+Put one back.
+Then took it out again.
+His mother watched him.
+"Everything okay?"
+"Yeah."
+She looked at him for another moment.
+"Did you talk to your sister?"
+He froze.
+"What?"
+"She messaged me earlier. She said you'd contacted her."
+Kaito looked away.
+"Oh."
+His mother turned back to the stove.
+"She's happy you did."
+He stared at the plates.
+"She said that?"
+"She said, 'Kaito finally remembered I exist.'"
+He groaned.
+"That's exactly what she'd say."
+His mother laughed.
+And for the first time in a long while, he didn't feel as though the conversation about his sister had ended before it began.`;
+
+var root=document.documentElement,btn=document.getElementById("theme"),RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function dark(){var t=root.dataset.theme;return t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches}
+function icon(){btn.textContent=dark()?"☀️ Light":"🌙 Dark"}
+btn.onclick=function(){var t=dark()?"light":"dark";root.dataset.theme=t;store("ttwnr-theme",t);icon()};
+var sv=load("ttwnr-theme");if(sv)root.dataset.theme=sv;icon();
+
+/* build the story */
+function sq(t){return t.replace(/(^|[\s(\[—])"/g,"$1“").replace(/"/g,"”").replace(/(^|[\s(“])'/g,"$1‘").replace(/'/g,"’").replace(/_(.+?)_/g,"<em>$1</em>")}
+var lines=T.split("\n"),words=T.split(/\s+/).length,k=0;
+document.getElementById("mins").textContent=Math.round(words/200)+" min read";
+var host=document.getElementById("story");
+host.innerHTML=lines.map(function(l,i){
+  var c=l.charAt(0),cls="",t=l;
+  if(c==="!"){cls="note";t=l.slice(1)}
+  else if(c==="#"){cls="rec";t=l.slice(1)}
+  else if(c==="~"){cls="msg";t=l.slice(1)}
+  else if(c===">"){cls="msg out";t=l.slice(1)}
+  else if(c==="*"){cls="it";t=l.slice(1)}
+  else if(c==='"'){cls="d"}
+  if(i===0)cls+=" first";
+  var st=cls.indexOf("note")>-1?' style="--r:'+((k++%2)?1.3:-1.5)+'deg"':"";
+  return '<p class="'+cls+'"'+st+'>'+sq(t)+'</p>';
+}).join("");
+
+/* scroll reveal */
+var ps=host.querySelectorAll("p");
+if(RM||!("IntersectionObserver" in window)){ps.forEach(function(p){p.classList.add("v")})}
+else{var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("v");io.unobserve(e.target)}})},{threshold:.15,rootMargin:"0px 0px -30px 0px"});ps.forEach(function(p){io.observe(p)})}
+
+/* progress */
+var prog=document.getElementById("prog"),tick=false;
+function upd(){tick=false;var m=document.documentElement.scrollHeight-innerHeight;prog.style.transform="scaleX("+(m>0?Math.min(1,scrollY/m):0)+")"}
+addEventListener("scroll",function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});addEventListener("resize",upd);upd();
+
+/* drifting photographs */
+var cv=document.getElementById("fx"),cx=cv.getContext("2d"),W,H,m=[];
+function size(){W=cv.width=innerWidth;H=cv.height=innerHeight}size();addEventListener("resize",size);
+for(var q=0;q<20;q++)m.push({x:Math.random()*W,y:Math.random()*H,w:18+Math.random()*22,r:Math.random()*6.28,rv:(Math.random()-.5)*.006,v:.2+Math.random()*.35,s:Math.random()*6.28});
+function frame(){var dk=dark(),L=dk?72:42,S=dk?62:48,A=dk?.5:.34,col=function(a){return"hsla(340,"+S+"%,"+L+"%,"+a+")"};
+  cx.clearRect(0,0,W,H);cx.lineWidth=1.2;
+  m.forEach(function(d){d.s+=.008;d.y+=d.v;d.x+=Math.sin(d.s)*.3;d.r+=d.rv;if(d.y>H+40){d.y=-40;d.x=Math.random()*W}
+    cx.save();cx.translate(d.x,d.y);cx.rotate(d.r);var w=d.w,h=w*1.15;
+    cx.fillStyle=col(A*.22);cx.fillRect(-w/2,-h/2,w,h);cx.strokeStyle=col(A);cx.strokeRect(-w/2,-h/2,w,h);
+    cx.fillStyle=col(A*.5);cx.fillRect(-w/2+3,-h/2+3,w-6,h*.68);cx.restore()});
+  requestAnimationFrame(frame)}
+if(!RM)frame();
+</script>
+</body>
+</html>

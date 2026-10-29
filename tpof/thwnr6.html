@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chapter 6 — The Things We Keep</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Literata:ital,wght@0,400;0,600;1,400&family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+@property --h{syntax:'<number>';inherits:true;initial-value:38}
+:root{--h:38;--sat:48%;--lit:38%;--ink:#232a38;--soft:#5d667c;--on:#fff;
+--bg:hsl(var(--h) 22% 94%);--card:hsl(var(--h) 30% 98%);--line:hsl(var(--h) 20% 82%);--accent:hsl(var(--h) var(--sat) var(--lit))}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
+--bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}}
+:root[data-theme="dark"]{--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
+--bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Literata,Georgia,serif;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:14px}
+::-webkit-scrollbar-track{background:transparent;border-left:1px solid var(--line)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--accent),hsl(calc(var(--h) + 45) var(--sat) var(--lit)));border:4px solid transparent;background-clip:padding-box;border-radius:99px;min-height:48px}
+#fx,.aurora{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.aurora{background:radial-gradient(42vmax 42vmax at 12% 8%,hsl(var(--h) var(--sat) var(--lit)/.2),transparent 62%),radial-gradient(46vmax 46vmax at 92% 85%,hsl(calc(var(--h) + 45) var(--sat) var(--lit)/.16),transparent 62%);animation:drift 16s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate3d(-3%,4%,0) scale(1.1)}}
+.prog{position:fixed;top:0;left:0;right:0;height:3px;z-index:9;transform-origin:left;transform:scaleX(0);pointer-events:none;background:linear-gradient(90deg,var(--accent),hsl(calc(var(--h) + 45) var(--sat) var(--lit)));box-shadow:0 0 12px var(--accent)}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line);backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 78%,transparent)}
+.back{color:var(--accent);text-decoration:none;font-size:.9rem;font-weight:600;transition:translate .2s}
+.back:hover{translate:-4px 0}
+.theme{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 14px;font:inherit;font-size:.85rem;cursor:pointer}
+.hero,.prose,.end{position:relative;z-index:1}
+.hero{text-align:center;padding:12vh 24px 7vh}
+.kicker{font:400 .78rem 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+h1{font:700 clamp(2.2rem,7vw,3.9rem)/1.08 'Space Grotesk',sans-serif;margin:0 0 16px;animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(.4em);filter:blur(8px)}}
+.chip{display:inline-block;border:1px solid var(--accent);color:var(--accent);border-radius:99px;padding:2px 12px;font-size:.78rem;margin:0 3px 6px}
+.prose{max-width:680px;margin:0 auto;padding:0 22px 8vh}
+.prose p{margin:0 0 .95em;font-size:clamp(1.04rem,1vw + .75rem,1.18rem);line-height:1.9;opacity:0;transform:translateY(12px);transition:opacity .6s,transform .6s}
+.prose p.v{opacity:1;transform:none}
+.prose p.d{padding-left:1em}
+.prose p.first::first-letter{float:left;font:700 3.6em/.85 'Space Grotesk',sans-serif;color:var(--accent);padding:.08em .1em 0 0}
+.prose p.it{font-style:italic;text-align:center;color:var(--accent)}
+.prose p.msg{width:fit-content;max-width:82%;padding:9px 16px;font-size:.98rem;line-height:1.5;background:var(--card);border:1px solid var(--line);border-radius:18px 18px 18px 4px}
+.prose p.msg.out{margin-left:auto;background:var(--accent);color:var(--on);border-color:transparent;border-radius:18px 18px 4px 18px}
+.prose p.rec{display:block;width:fit-content;font:400 .92rem 'Space Mono',monospace;background:var(--card);border:1px solid var(--line);border-radius:3px;padding:4px 12px;line-height:1.5}
+.prose p.note{position:relative;width:min(92%,430px);margin:1.9em auto;padding:22px 24px 30px;background:#f4ecd2;color:#8a2d1f;font:700 1.7rem/1.3 Caveat,cursive;text-align:center;box-shadow:0 12px 22px rgba(35,20,10,.2),0 2px 5px rgba(35,20,10,.14);transform:rotate(0) scale(.95)}
+.prose p.note.v{transform:rotate(var(--r,-1.4deg)) scale(1)}
+.prose p.note::before{content:"";position:absolute;top:-13px;left:50%;width:76px;height:24px;background:rgba(255,255,255,.6);transform:translateX(-50%) rotate(-3deg);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.end{text-align:center;padding:0 24px 12vh}
+.end .mark{display:block;width:9px;height:9px;margin:0 auto 14px;background:var(--accent);border-radius:2px;transform:rotate(45deg)}
+.end p{font:600 1.35rem Caveat,cursive;color:var(--soft);margin:0 0 26px}
+.nav{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:11px 22px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;font:inherit;font-size:.92rem;font-weight:600}
+.btn.lock{opacity:.55;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.prose p{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="prog" id="prog" aria-hidden="true"></div>
+<div class="aurora" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<header class="top"><a class="back" href="thwnr.html">← All chapters</a><button class="theme" id="theme" type="button">🌙 Dark</button></header>
+<section class="hero">
+  <p class="kicker">Chapter 6 · The Things We Never Returned</p>
+  <h1>The Things We Keep</h1>
+  <span class="chip">Bookmarks · Phone calls</span><span class="chip" id="mins"></span>
+</section>
+<main class="prose" id="story"></main>
+<footer class="end">
+  <span class="mark"></span>
+  <p>— end of chapter six —</p>
+ 
+</footer>
+<script>
+var T=`Yuzuna replied the next morning.
+~Of course I remember it. I thought I lost that copy.
+Kaito stared at the message.
+Then typed:
+>Did you write in it?
+The reply took twelve minutes.
+~Some of the drawings. The writing too, I think. Why?
+He took a photograph of one of the pages.
+Then hesitated.
+He could ask her about the receipt.
+About the date.
+About the girl named Mio.
+But he didn't want to dump five years of silence into one conversation.
+So he wrote:
+>Can we talk on the phone sometime?
+Her answer came almost immediately.
+~Yes. When are you free?
+He looked at the clock.
+Then at his schoolbag.
+Then at the book.
+>Sunday?
+~Sunday works.
+He put the phone down.
+For the next three hours, he behaved as if he'd just received a university acceptance letter.
+He cleaned his room.
+He finished his homework.
+He even sorted the drawer of useless things.
+He found the broken keychain.
+The plastic dinosaur.
+The old receipt.
+The bookmark from Yuzuna's book.
+He placed them in a small box.
+Then stared at it.
+He hadn't thrown anything away.
+He'd simply moved the mess somewhere else.
+Progress, apparently.
+At school, Ayane was having a terrible day.
+Her mathematics teacher had returned a test.
+She had scored forty-six.
+This was not unusual.
+What was unusual was that she'd been so distracted by the book that she had forgotten to answer the final two questions.
+She stared at the paper.
+Then at Emi's score.
+Eighty-eight.
+"Don't look at mine," Emi said.
+"I'm not."
+"You're looking directly at it."
+"I'm comparing the handwriting."
+"Sure."
+Ayane turned away.
+Emi leaned over.
+"Are you okay?"
+"Fine."
+"You're doing the thing again."
+"What thing?"
+"The thing where you say fine because the real answer requires more than one sentence."
+Ayane looked at her.
+Emi held up both hands.
+"Sorry. I'll stop."
+"No."
+Ayane took a breath.
+"I'm thinking about something."
+"Something good?"
+"I don't know."
+"Something bad?"
+"I don't know."
+Emi nodded.
+"Okay."
+Ayane stared at her.
+"That's it?"
+"What?"
+"You're not going to ask?"
+Emi looked puzzled.
+"You just told me you don't know."
+Ayane had no answer.
+Emi packed her books.
+"Come over after school. My mother bought too many pastries again."
+"Why?"
+"Because she thinks buying pastries will somehow stop my brother from eating all the pastries."
+"Will it?"
+"No. But watching him try to hide the wrappers is very entertaining."
+Ayane considered the invitation.
+Then nodded.
+"Okay."
+Emi smiled.
+"Good. And if you cancel, I'll come to your house and eat your family's food instead."
+"That's a threat."
+"It's a promise."
+They walked to class together.
+Ayane still felt anxious.
+She still wondered whether she would say something awkward or whether Emi would suddenly discover that she was much more interesting without her.
+But she went anyway.
+That counted for something.
+That evening, Ayane arrived at Tsubaki Books to find Kaito standing beside the counter with a paper bag.
+She stopped.
+"What's that?"
+"Food."
+"I can see that."
+"Then we're making progress."
+She stared at him.
+He smiled.
+Inside the bag were two sandwiches.
+One looked perfectly normal.
+The other contained a suspicious quantity of mayonnaise.
+Ayane took a step back.
+"What is that?"
+"Tuna."
+"And?"
+"Apple."
+She closed her eyes.
+"Why?"
+"Because I was thinking about something."
+"Apparently not very hard."
+He laughed.
+Then offered her the normal sandwich.
+She took it.
+They sat on the floor between two shelves because the only free table was covered in boxes.
+For a while, they ate without talking.
+Then Kaito said, "I'm calling my sister on Sunday."
+Ayane looked at him.
+"How do you feel?"
+"Terrible."
+"Good."
+He turned toward her.
+"Good?"
+"Not good that you feel terrible. Good that you're doing it anyway."
+He considered that.
+Then nodded.
+"That's annoyingly reasonable."
+"I learned from the best."
+They finished their sandwiches.
+Ayane brushed crumbs off her skirt.
+"Can I ask you something?"
+Kaito looked at her.
+"Is it about my sandwich?"
+"Why do you keep things you don't need?"
+He went still.
+The question hung between them.
+Ayane immediately wanted to take it back.
+"Sorry. You don't have to answer."
+"It's okay."
+He looked at the paper bag.
+"I think I like knowing things existed."
+She waited.
+He picked at the label.
+"A ticket from a trip means I went somewhere. A broken keychain means someone gave it to me. A receipt means I ate something on a day I might otherwise forget."
+He shrugged.
+"It doesn't have to mean anything important."
+He looked at her.
+"Sometimes I just don't want to throw away a perfectly good memory because the object stopped being useful."
+Ayane thought about that.
+She had very few keepsakes.
+She deleted old photographs when her phone became full. She threw away notebooks once she'd finished a school year. She rarely reread messages.
+It had never occurred to her that keeping something could be a way of making room for the past.
+"What about things that hurt?" she asked.
+Kaito looked down.
+"Those are harder."
+She nodded.
+Neither spoke for a while.
+Then he said, "What about you?"
+"What about me?"
+"Why do you hate not knowing things?"
+She stiffened.
+"I don't."
+He gave her a look.
+She sighed.
+"Fine. Maybe I do."
+"Why?"
+She stared at the shelves.
+"Because when I don't know what someone thinks, I start guessing. And when I guess, I usually imagine the worst."
+Kaito was quiet.
+"So I try to figure things out before anyone can surprise me," she continued. "I make lists. I plan what I'll say. I decide whether people like me based on absolutely nothing."
+She laughed awkwardly.
+"It's stupid."
+"No," he said.
+She glanced at him.
+"It's exhausting," he added. "But it's not stupid."
+Ayane looked away.
+For a moment, she didn't know what to do with the kindness in his voice.
+So she did what she usually did.
+She tried to ruin it.
+"You're getting sentimental."
+"Sorry. I can insult your sandwich instead."
+"You didn't bring me the bad sandwich."
+"Exactly. I was saving the worst part of myself for later."
+She laughed.
+He smiled.
+And for a moment, she forgot to worry about what would happen next.
+On Sunday, Kaito called his sister.
+The phone rang.
+And rang.
+And rang.
+He almost hung up.
+Then she answered.
+"Hey, idiot."
+His eyes widened.
+"Hey."
+"Wow. You actually called."
+"You said we should talk."
+"I did. I wasn't sure you'd remember."
+He looked at the box beside his desk.
+The broken keychain.
+The old bookmark.
+The things he had kept because he didn't know how to return them.
+"I remember," he said.
+There was a pause.
+Then Yuzuna asked, more softly, "How have you been?"
+Kaito opened his mouth.
+He had a dozen possible answers.
+*Fine.
+*Busy.
+*School's annoying.
+Instead, he said, "I missed you."
+The silence on the other end was so complete that he checked whether the call had disconnected.
+Then his sister made a strange noise.
+A laugh that wasn't quite a laugh.
+"Oh, you absolute idiot."
+He smiled.
+"Yeah."
+"I missed you too."
+Neither of them said anything for a while.
+They didn't solve the argument.
+They didn't apologize for everything.
+But they stayed on the phone for forty minutes.
+They talked about their mother, school, Yuzuna's apartment, and a cat she had started feeding outside her building.
+Kaito complained that she'd named it something embarrassing.
+Yuzuna accused him of having no imagination.
+They argued about whether their father could cook.
+Then, just before hanging up, she said:
+"Hey, Kaito?"
+"Yeah?"
+"Do you still have my blue bookmark?"
+He looked at the desk.
+The old one lay beside the box.
+"Yeah."
+A pause.
+"Keep it for now," she said.
+"Okay."
+"And don't lose it."
+"I won't."
+She laughed.
+"I know you won't."
+The call ended.
+Kaito sat quietly for a moment.
+Then he picked up the bookmark.
+It was still bent at the corner.
+Still faded.
+Still covered in his sister's handwriting.
+But for the first time in years, it no longer felt like something he couldn't return.
+It felt like something he had been allowed to keep.
+For now.`;
+
+var root=document.documentElement,btn=document.getElementById("theme"),RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function dark(){var t=root.dataset.theme;return t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches}
+function icon(){btn.textContent=dark()?"☀️ Light":"🌙 Dark"}
+btn.onclick=function(){var t=dark()?"light":"dark";root.dataset.theme=t;store("ttwnr-theme",t);icon()};
+var sv=load("ttwnr-theme");if(sv)root.dataset.theme=sv;icon();
+
+/* build the story */
+function sq(t){return t.replace(/(^|[\s(\[—])"/g,"$1“").replace(/"/g,"”").replace(/'/g,"’").replace(/_(.+?)_/g,"<em>$1</em>")}
+var lines=T.split("\n"),words=T.split(/\s+/).length,k=0;
+document.getElementById("mins").textContent=Math.round(words/200)+" min read";
+var host=document.getElementById("story");
+host.innerHTML=lines.map(function(l,i){
+  var c=l.charAt(0),cls="",t=l;
+  if(c==="!"){cls="note";t=l.slice(1)}
+  else if(c==="#"){cls="rec";t=l.slice(1)}
+  else if(c==="~"){cls="msg";t=l.slice(1)}
+  else if(c===">"){cls="msg out";t=l.slice(1)}
+  else if(c==="*"){cls="it";t=l.slice(1)}
+  else if(c==='"'){cls="d"}
+  if(i===0)cls+=" first";
+  var st=cls.indexOf("note")>-1?' style="--r:'+((k++%2)?1.3:-1.5)+'deg"':"";
+  return '<p class="'+cls+'"'+st+'>'+sq(t)+'</p>';
+}).join("");
+
+/* scroll reveal */
+var ps=host.querySelectorAll("p");
+if(RM||!("IntersectionObserver" in window)){ps.forEach(function(p){p.classList.add("v")})}
+else{var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("v");io.unobserve(e.target)}})},{threshold:.15,rootMargin:"0px 0px -30px 0px"});ps.forEach(function(p){io.observe(p)})}
+
+/* progress */
+var prog=document.getElementById("prog"),tick=false;
+function upd(){tick=false;var m=document.documentElement.scrollHeight-innerHeight;prog.style.transform="scaleX("+(m>0?Math.min(1,scrollY/m):0)+")"}
+addEventListener("scroll",function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});addEventListener("resize",upd);upd();
+
+/* drifting bookmarks */
+var cv=document.getElementById("fx"),cx=cv.getContext("2d"),W,H,m=[];
+function size(){W=cv.width=innerWidth;H=cv.height=innerHeight}size();addEventListener("resize",size);
+for(var q=0;q<26;q++)m.push({x:Math.random()*W,y:Math.random()*H,h:26+Math.random()*22,r:(Math.random()-.5)*.8,rv:(Math.random()-.5)*.004,v:.2+Math.random()*.3,s:Math.random()*6.28});
+function frame(){var dk=dark(),L=dk?72:42,S=dk?62:48,A=dk?.5:.34;
+  cx.clearRect(0,0,W,H);
+  m.forEach(function(d){d.s+=.008;d.y-=d.v;d.x+=Math.sin(d.s)*.3;d.r+=d.rv;if(d.y<-60){d.y=H+60;d.x=Math.random()*W}
+    cx.save();cx.translate(d.x,d.y);cx.rotate(d.r);var h=d.h,w=h*.26;
+    cx.beginPath();cx.moveTo(-w/2,-h/2);cx.lineTo(w/2,-h/2);cx.lineTo(w/2,h/2);cx.lineTo(0,h/2-w*.7);cx.lineTo(-w/2,h/2);cx.closePath();
+    cx.fillStyle="hsla(38,"+S+"%,"+L+"%,"+(A*.8)+")";cx.fill();cx.restore()});
+  requestAnimationFrame(frame)}
+if(!RM)frame();
+</script>
+</body>
+</html>

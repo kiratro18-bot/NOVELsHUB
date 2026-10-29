@@ -8046,3 +8046,58 @@ body.light .site-mode-switch { border-color: rgba(96, 56, 73, .2); background: r
     .achievement-card, .achievement-progress-track > span, .achievement-card-track i { transition: none; }
     .is-earned .achievement-emblem > span { animation: none; }
 }
+
+/* Cohesive responsive layout overrides for the full reader site. */
+@media (min-width: 641px) and (max-width: 960px) {
+    .personal-shelf-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    #personalFinishedCard { grid-column: 1 / -1; }
+    .reader-notebook-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .achievements-gallery-head { align-items: flex-start; }
+    .achievement-header-actions { flex-wrap: wrap; justify-content: flex-end; }
+}
+@media (max-width: 640px) {
+    html { scroll-padding-top: 68px; }
+    body { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+    .site-nav { display: flex; min-height: 58px; height: auto; gap: 8px; }
+    .nav-links { display: none; }
+    .nav-brand { min-width: 0; font-size: 15px; }
+    .nav-actions { flex: 0 0 auto; }
+    .hero-bento { grid-template-columns: minmax(0, 1fr); }
+    .hero-side { display: grid; grid-template-columns: minmax(0, 1fr); }
+    .hero-feature { min-height: clamp(350px, 78svh, 470px); }
+    .section-head { align-items: flex-start; flex-wrap: wrap; }
+    .section-head > :last-child { max-width: 100%; }
+    #catalog .shelf-section-head { flex-direction: column; }
+    #catalog .sidebar-stack .side-card:first-child { grid-template-columns: minmax(0, 1fr); }
+    #catalog .sidebar-stack .side-card:first-child > *,
+    #catalog .sidebar-stack .side-card:first-child > * > * { min-width: 0; }
+    #catalog #catalogGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .personal-shelf-grid { grid-template-columns: minmax(0, 1fr); }
+    .personal-shelf-actions { width: 100%; }
+    .personal-shelf-actions .pill-btn { flex: 1 1 auto; }
+    .reader-notebook-head { align-items: stretch; }
+    .reader-notebook-grid { grid-template-columns: minmax(0, 1fr); }
+    .achievement-header-actions { align-items: flex-start; }
+    .achievement-collection-bar { grid-template-columns: minmax(0, 1fr); }
+    .achievement-filter-row { grid-column: 1; grid-row: auto; }
+    #readingHeatmap .two-col { grid-template-columns: minmax(0, 1fr); }
+    #readingQueueSection .reading-queue-grid { grid-template-columns: minmax(0, 1fr); }
+    .browser-dock { z-index: 500; }
+}
+@media (max-width: 420px) {
+    .wrap { padding-inline: 13px; }
+    .site-nav { padding-inline: 12px; }
+    .nav-brand { font-size: 13px; }
+    .nav-brand-mark { width: 28px; height: 28px; }
+    .hero-bento { padding-inline: 9px; }
+    .hero-feature { min-height: 355px; padding: 23px 14px 17px; }
+    .hero-feature-title { font-size: clamp(27px, 9vw, 35px); }
+    .stats-grid { gap: 7px; }
+    #catalog #catalogGrid { gap: 9px; }
+    #catalog .nc-cover { height: clamp(155px, 55vw, 220px); }
+    .achievement-grid { grid-template-columns: minmax(0, 1fr); }
+    .achievement-view-controls { width: 100%; }
+    .achievement-view-button { flex: 1; justify-content: center; }
+    .reader-notebook-card { min-height: 0; }
+    .site-mode-switch { bottom: calc(78px + env(safe-area-inset-bottom)); }
+}

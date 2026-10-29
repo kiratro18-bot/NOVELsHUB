@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chapter 1 — The Book with No Price</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Literata:ital,wght@0,400;0,600;1,400&family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+@property --h{syntax:'<number>';inherits:true;initial-value:210}
+:root{--h:210;--sat:48%;--lit:38%;--ink:#232a38;--soft:#5d667c;--on:#fff;
+--bg:hsl(var(--h) 22% 94%);--card:hsl(var(--h) 30% 98%);--line:hsl(var(--h) 20% 82%);--accent:hsl(var(--h) var(--sat) var(--lit))}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
+--bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}}
+:root[data-theme="dark"]{--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
+--bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Literata,Georgia,serif;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:14px}
+::-webkit-scrollbar-track{background:transparent;border-left:1px solid var(--line)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--accent),hsl(calc(var(--h) + 45) var(--sat) var(--lit)));border:4px solid transparent;background-clip:padding-box;border-radius:99px;min-height:48px}
+#fx,.aurora{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.aurora{background:radial-gradient(42vmax 42vmax at 12% 8%,hsl(var(--h) var(--sat) var(--lit)/.2),transparent 62%),radial-gradient(46vmax 46vmax at 92% 85%,hsl(calc(var(--h) + 45) var(--sat) var(--lit)/.16),transparent 62%);animation:drift 16s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate3d(-3%,4%,0) scale(1.1)}}
+.prog{position:fixed;top:0;left:0;right:0;height:3px;z-index:9;transform-origin:left;transform:scaleX(0);pointer-events:none;background:linear-gradient(90deg,var(--accent),hsl(calc(var(--h) + 45) var(--sat) var(--lit)));box-shadow:0 0 12px var(--accent)}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line);backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 78%,transparent)}
+.back{color:var(--accent);text-decoration:none;font-size:.9rem;font-weight:600;transition:translate .2s}
+.back:hover{translate:-4px 0}
+.theme{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 14px;font:inherit;font-size:.85rem;cursor:pointer}
+.hero,.prose,.end{position:relative;z-index:1}
+.hero{text-align:center;padding:12vh 24px 7vh}
+.kicker{font:400 .78rem 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+h1{font:700 clamp(2.2rem,7vw,3.9rem)/1.08 'Space Grotesk',sans-serif;margin:0 0 16px;animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(.4em);filter:blur(8px)}}
+.chip{display:inline-block;border:1px solid var(--accent);color:var(--accent);border-radius:99px;padding:2px 12px;font-size:.78rem;margin:0 3px 6px}
+.prose{max-width:680px;margin:0 auto;padding:0 22px 8vh}
+.prose p{margin:0 0 .95em;font-size:clamp(1.04rem,1vw + .75rem,1.18rem);line-height:1.9;opacity:0;transform:translateY(12px);transition:opacity .6s,transform .6s}
+.prose p.v{opacity:1;transform:none}
+.prose p.d{padding-left:1em}
+.prose p.first::first-letter{float:left;font:700 3.6em/.85 'Space Grotesk',sans-serif;color:var(--accent);padding:.08em .1em 0 0}
+.prose p.it{font-style:italic;text-align:center;color:var(--accent)}
+.prose p.msg{width:fit-content;max-width:82%;padding:9px 16px;font-size:.98rem;line-height:1.5;background:var(--card);border:1px solid var(--line);border-radius:18px 18px 18px 4px}
+.prose p.msg.out{margin-left:auto;background:var(--accent);color:var(--on);border-color:transparent;border-radius:18px 18px 4px 18px}
+.prose p.rec{display:block;width:fit-content;font:400 .92rem 'Space Mono',monospace;background:var(--card);border:1px solid var(--line);border-radius:3px;padding:4px 12px;line-height:1.5}
+.prose p.note{position:relative;width:min(92%,430px);margin:1.9em auto;padding:22px 24px 30px;background:#f4ecd2;color:#8a2d1f;font:700 1.7rem/1.3 Caveat,cursive;text-align:center;box-shadow:0 12px 22px rgba(35,20,10,.2),0 2px 5px rgba(35,20,10,.14);transform:rotate(0) scale(.95)}
+.prose p.note.v{transform:rotate(var(--r,-1.4deg)) scale(1)}
+.prose p.note::before{content:"";position:absolute;top:-13px;left:50%;width:76px;height:24px;background:rgba(255,255,255,.6);transform:translateX(-50%) rotate(-3deg);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.end{text-align:center;padding:0 24px 12vh}
+.end .mark{display:block;width:9px;height:9px;margin:0 auto 14px;background:var(--accent);border-radius:2px;transform:rotate(45deg)}
+.end p{font:600 1.35rem Caveat,cursive;color:var(--soft);margin:0 0 26px}
+.nav{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:11px 22px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;font:inherit;font-size:.92rem;font-weight:600}
+.btn.lock{opacity:.55;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.prose p{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="prog" id="prog" aria-hidden="true"></div>
+<div class="aurora" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<header class="top"><a class="back" href="thwnr.html">← All chapters</a><button class="theme" id="theme" type="button">🌙 Dark</button></header>
+<section class="hero">
+  <p class="kicker">Chapter 1 · The Things We Never Returned</p>
+  <h1>The Book with No Price</h1>
+  <span class="chip">Rain · Receipts</span><span class="chip" id="mins"></span>
+</section>
+<main class="prose" id="story"></main>
+<footer class="end">
+  <span class="mark"></span>
+  <p>— end of chapter one —</p>
+  
+</footer>
+<script>
+var T=`At 4:37 PM, Ayane Sato discovered that someone had shelved a book upside down.
+She stared at it.
+Then at the shelf.
+Then at the book again, as though the book might feel embarrassed and correct itself.
+It didn't.
+"Who does this?"
+Mrs. Takeda, the bookstore's owner, didn't look up from her packet of crackers.
+"Someone who doesn't get paid enough to care."
+"I don't get paid enough to care either."
+"Then you should have left it upside down."
+Ayane pulled the book out, turned it around, and slid it back into place.
+"There. Now it looks like a bookstore."
+"It looked like a bookstore before."
+"It looked like a crime scene."
+Mrs. Takeda crunched another cracker.
+"You're seventeen. How do you already sound like someone's disappointed mother?"
+Ayane ignored her.
+She was good at ignoring people. Not because she was particularly mature or emotionally intelligent, as her literature teacher had suggested during a parent meeting.
+She just needed a little longer than other people to think of something worth saying.
+Unfortunately, by the time she thought of something, the conversation was usually over.
+So she'd developed a system.
+Say little. Observe everything. Never let anyone rearrange the shelves.
+The third rule was the most important.
+Outside, the rain had started again.
+It wasn't particularly heavy, but the pavement was wet enough to make passing bicycles hiss. Across the narrow street, the flower shop owner was bringing her potted plants inside. The little café next door had switched on its lights, turning the windows a warm yellow.
+Ayane glanced through the glass.
+A couple sat at the corner table.
+The boy was attempting to steal a piece of food from the girl's plate.
+She slapped his hand away without looking up from her sketchbook.
+He tried again.
+She stabbed his fingers with a fork.
+He immediately withdrew.
+Ayane looked away.
+"Disgusting."
+Mrs. Takeda swallowed a cracker.
+"What is?"
+"Nothing."
+"You're staring at the café again."
+"I'm checking the weather."
+"Through a wall?"
+Ayane returned to her books.
+She wasn't staring at the café.
+And even if she was, it wasn't because of the couple.
+She simply found it irritating that some people could sit in a public place and behave as if the rest of the world didn't exist. They could steal food from each other's plates, argue over something stupid, and occupy the same corner table every week without appearing remotely embarrassed about it.
+Must be nice.
+Not that she wanted it.
+She had other things to worry about.
+Like the stack of donated books beside her.
+And the fact that she'd accidentally agreed to work on Saturday.
+And the message her classmate had sent twenty minutes ago.
+~Hey, are you coming tomorrow? Everyone's going.
+She'd read it six times.
+She still hadn't replied.
+Tomorrow was a class gathering at an amusement park. She had already decided not to go, but saying no felt unnecessarily cruel, so she'd been considering sending a thumbs-up emoji and hoping the conversation somehow resolved itself.
+Her phone vibrated.
+Another message.
+~Ayane?
+She turned it face down.
+"Very healthy," Mrs. Takeda remarked.
+"You're not helping."
+"I wasn't trying to."
+The bell above the bookstore door rang.
+Someone entered, bringing a gust of cold air and several raindrops onto the wooden floor.
+Ayane immediately reached for the cleaning cloth.
+"Umbrella."
+The newcomer looked at her.
+"Huh?"
+"You're dripping."
+He looked down at his shoes.
+Then at his jacket.
+Then back at her.
+"Oh."
+He stepped outside again and shook his umbrella over the pavement.
+"Outside," Ayane reminded him.
+"I am outside."
+"You're half inside."
+He stepped farther out.
+"Here?"
+"Yes."
+He shook the umbrella.
+Water landed on the pavement.
+"Good?"
+"Acceptable."
+He gave her a strange look before folding the umbrella and entering properly.
+He was a student, probably around her age, wearing the uniform of the high school across town. His tie was crooked, his bag hung from one shoulder, and his dark hair looked as though he'd attempted to fix it with his fingers and eventually given up.
+He had a paper bag tucked under his arm.
+Ayane pointed at the entrance.
+"Umbrella stand."
+He looked at the stand.
+Then at his umbrella.
+Then at her.
+"You know, most shops have a sign."
+"Most people know what an umbrella stand is."
+"Fair point."
+He put the umbrella away.
+Ayane returned to her books, satisfied.
+Problem solved.
+Then the boy walked directly past the counter, stopped in front of the shelves, and began examining the books.
+She watched him from the corner of her eye.
+He picked up a novel.
+Opened it.
+Read the first few pages.
+Put it back.
+Picked up another.
+Read the back cover.
+Put that back too.
+After five minutes, he hadn't purchased anything.
+Ayane was beginning to wonder whether he was a thief with an unusually specific browsing routine.
+Then he approached the counter.
+"Excuse me."
+She looked up.
+"Yes?"
+"Do you have somewhere I can put this?"
+He placed the paper bag on the counter.
+Ayane looked at it.
+"What is it?"
+"A book."
+"I can see that."
+"Then we're making progress."
+She stared at him.
+He stared back.
+For one terrible second, she considered telling him to leave.
+Instead, she opened the paper bag.
+Inside was a battered paperback with a faded blue cover.
+There was no price sticker.
+The corners were bent, the spine had begun to split, and a pale stain marked the bottom edge of the back cover. Someone had written a number in pencil on the inside flap, then crossed it out so many times that the paper had nearly torn.
+Ayane lifted it carefully.
+"Where did you get this?"
+"Here."
+She looked up.
+"What?"
+"I bought it here."
+"When?"
+"Last week."
+"That's impossible."
+He tilted his head.
+"I've been told that before."
+"We don't sell books without price stickers."
+"Well, apparently you do."
+"No, we don't."
+"Okay."
+He said it so casually that Ayane immediately suspected he was lying.
+She turned the book over.
+The title was printed in small, faded letters.
+*The House at the End of June.
+She had never heard of it.
+"Why are you bringing it back?"
+"Because there's something inside."
+"An insect?"
+"No."
+"Money?"
+"No."
+"Then what?"
+He opened the book to a page near the middle and placed it in front of her.
+"That."
+Ayane leaned over the counter.
+At first, she saw nothing unusual.
+Just a paragraph of printed text.
+Then she noticed the handwriting in the margin.
+Someone had written a sentence in blue ink.
+!The ending was unfair.
+Below it, in a different hand, someone had replied in pencil.
+!The ending was honest.
+Ayane turned the page.
+Another note.
+!Honest doesn't mean good.
+On the next page:
+!Neither does happy.
+She flipped farther.
+There were more messages scattered throughout the book. Some were written in neat handwriting, others hurriedly, as though their authors had been trying to write without being caught.
+The messages didn't appear random.
+They argued with each other.
+They disagreed about the characters, complained about the plot, and occasionally insulted the author.
+One person had written, _He should have apologized._
+Someone else had answered, _For what? Being human?_
+A third person had added beneath it:
+!Both of you need hobbies.
+Ayane almost smiled.
+Almost.
+She kept turning the pages.
+"How many people wrote these?"
+"That's what I'm trying to figure out."
+"Why?"
+"Because the handwriting changes."
+He leaned over the counter and pointed to the margins.
+"Look. This one's blue ink. This one's pencil. That one looks like it was written with a mechanical pencil, and that one—"
+"You're leaning on the book."
+He immediately straightened.
+"Sorry."
+Ayane examined the notes more closely.
+He was right.
+The handwriting changed from page to page, sometimes within the same conversation. There were different pens, different writing styles, even different levels of pressure against the paper.
+Some notes were faded almost beyond recognition.
+Others looked relatively recent.
+She found a date written beside a sentence near the bottom of one page.
+#June 22, 2021.
+Below it, in another handwriting, someone had replied in cramped letters.
+!I waited until the shop closed.
+Ayane turned the page.
+A few lines farther down, another message caught her attention.
+!If you're reading this, I'm sorry I never came back.
+She read it twice.
+Then she turned the page again.
+The following sheet contained only a small drawing of a door.
+Beneath it was a sentence in dark green ink.
+!I'm here. You can come out now.
+Ayane's fingers stopped.
+She looked at the boy.
+He was watching her now, his earlier amusement gone.
+"See?" he said quietly.
+She looked back at the page.
+"These could be from different people who have nothing to do with one another."
+"Could be."
+"People sometimes write in books."
+"Sure."
+"Some of them are probably just bored."
+"Definitely."
+She frowned.
+"You're being annoyingly reasonable."
+"Sorry. I'll start shouting about conspiracies."
+She ignored him.
+The receipt tucked into the back of the book was old, its edges yellowed. Most of the printed text had faded, but the shop's name remained visible at the top.
+#Tsubaki Books.
+Below it was the same date.
+#June 22, 2021.
+Someone had written on the back of the receipt.
+!I'm here. You can come out now.
+The same sentence as the one in the book.
+Ayane looked at the boy.
+"Why did you buy this?"
+He rubbed the back of his neck.
+"Because I thought it was interesting."
+"That's not a reason to spend three hundred yen."
+"Have you seen the price of convenience-store pudding lately?"
+"What does pudding have to do with anything?"
+"Nothing. I just wanted pudding."
+She stared at him for another moment.
+Then she laughed.
+It escaped before she could stop it.
+Just one short laugh, barely more than a breath.
+The boy looked so surprised that she immediately regretted it.
+"Don't."
+"I didn't say anything."
+"Your face did."
+"My face is innocent."
+"Your face looks stupid."
+He pressed a hand to his chest.
+"That's a terrible thing to say to a customer."
+"You're not a customer anymore."
+"What am I?"
+"An inconvenience."
+He considered this.
+"That's fair."
+Mrs. Takeda appeared beside them, holding a cardboard box.
+"What have you two broken?"
+"Nothing," Ayane said.
+"Nothing," the boy echoed.
+The old woman looked from one to the other.
+Then at the book.
+She stopped.
+For the first time since the boy had entered, she wasn't smiling.
+"Where did you get that?"
+The boy sat up.
+"From here. Last week."
+Mrs. Takeda took the book.
+She turned it over slowly, her thumb brushing the faded blue cover.
+Ayane had worked at Tsubaki Books for nearly a year. She had seen the owner become annoyed over misplaced invoices, damaged deliveries, missing keys, and once, a customer who'd used a perfectly good bookmark to scrape chewing gum off his shoe.
+She had never seen her look at a book like this.
+"Mrs. Takeda?"
+The old woman didn't answer.
+She opened the book to the page with the receipt.
+For a moment, her expression became difficult to read.
+Then she folded the receipt along its original crease and slipped it back into the book.
+"Don't throw this away," she said.
+"I wasn't planning to," the boy replied.
+"And don't write in it."
+He held up both hands.
+"I didn't."
+Mrs. Takeda looked at him.
+He lowered them.
+"Okay. That sounded suspicious, but I really didn't."
+She ignored him.
+Ayane moved closer to the counter.
+"You know something about it."
+It wasn't a question.
+Mrs. Takeda closed the book.
+"Many books come through this shop."
+"That's not an answer."
+"No," the owner agreed. "It isn't."
+"Then—"
+"Ayane."
+The older woman rarely used her name like that.
+Ayane stopped.
+Mrs. Takeda placed the paperback on the counter, away from the other books.
+"Some things aren't mysteries just because nobody has explained them to you."
+Ayane disliked that sentence immediately.
+It sounded like something teachers said when they didn't know the answer themselves.
+"Then what are they?"
+Mrs. Takeda glanced toward the rain-streaked window.
+"I don't know."
+That answer was worse.
+Because it sounded honest.
+The boy stood and picked up his umbrella.
+"So, should I leave?"
+"Probably," Ayane said.
+"Right."
+He started toward the door.
+Then turned back.
+"Hey, Sato?"
+She looked up sharply.
+"How do you know my name?"
+He pointed toward the small name tag pinned to her cardigan.
+"Oh. Right."
+For someone who had spent an entire afternoon examining a book for clues, he could be remarkably stupid.
+He opened the door.
+"See you around."
+"Don't leave your umbrella dripping everywhere next time."
+"I'll consider it."
+"And don't call me Sato like we're friends."
+He paused.
+"What should I call you, then?"
+"Nothing."
+He grinned.
+"Got it, Nothing."
+Before she could throw the cleaning cloth at him, he disappeared into the rain.
+The bell above the door rang once.
+Then the shop was quiet again.
+Ayane stood behind the counter, staring at the empty doorway.
+She should have been relieved.
+Instead, she found herself looking at the book.
+The faded blue cover.
+The damaged spine.
+The receipt hidden behind the last page.
+!I'm here. You can come out now.
+She thought about the date.
+June 22, 2021.
+Five years ago.
+She tried to picture the person who'd written it.
+Were they young? Old? Did they live nearby? Had they stood outside this same bookstore, getting impatient in the rain, checking their phone every few minutes?
+Had someone actually come out?
+Or had they waited alone until closing time?
+Ayane hated questions she couldn't answer.
+She hated them even more when they had nothing to do with her.
+She reached for the book and slipped it beneath the counter, away from the shelves.
+Then she took out her phone.
+The unanswered message from her classmate was still there.
+~Ayane?
+She typed:
+>Sorry. I'm not coming tomorrow.
+She stared at the message.
+Then added:
+>Have fun, though.
+She pressed send before she could reconsider.
+It wasn't a particularly brave thing to do.
+But when the reply arrived almost immediately—
+~Okay!! I'll tell you everything afterward lol.
+—Ayane felt a little lighter.
+She put her phone away.
+At 6:15 PM, she locked the front door.
+She stood beneath the awning for a moment, watching the rain run along the edge of the pavement.
+Then she looked back through the glass.
+The book was still beneath the counter.
+Waiting, apparently.
+Ayane sighed.
+"You're just a book," she muttered.
+The book offered no objection.
+She went home.
+But that night, at 11:42 PM, she found herself searching for _The House at the End of June_ on the internet.
+There were no recent reviews.
+No official website.
+No discussion forums worth reading.
+The book had been published twenty-three years ago by a small company that no longer existed.
+Its author had written three other novels.
+None had sold particularly well.
+Ayane scrolled through the available information until she found a photograph of the original cover.
+It was different from the copy she'd seen that afternoon.
+The original had a pale blue door on the front.
+And beneath the title was a line of text.
+*For the people who almost made it home.
+Ayane read it twice.
+Then closed the browser.
+"Stupid book."
+She rolled over and pulled her blanket up to her chin.
+Tomorrow, she'd return it to the shelf.
+She wouldn't investigate the receipt.
+She wouldn't ask Mrs. Takeda any more questions.
+And she certainly wouldn't think about the boy with the irritating face.
+She closed her eyes.
+Five minutes passed.
+Then she reached for her phone again.
+She opened her notes application and typed four questions.
+#1. Who wrote the receipt?
+#2. Who was supposed to come out?
+#3. Why did Mrs. Takeda look like she'd seen a ghost?
+#4. Why did that stupid boy buy the book in the first place?
+She stared at the fourth question for a long time.
+Then closed the application.
+Outside, the rain continued until well past midnight.
+And somewhere in the quiet neighborhood, beneath the sign of a secondhand bookstore, a small blue paperback sat in the dark.
+Its final page remained closed.
+For now.`;
+
+var root=document.documentElement,btn=document.getElementById("theme"),RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function dark(){var t=root.dataset.theme;return t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches}
+function icon(){btn.textContent=dark()?"☀️ Light":"🌙 Dark"}
+btn.onclick=function(){var t=dark()?"light":"dark";root.dataset.theme=t;store("ttwnr-theme",t);icon()};
+var sv=load("ttwnr-theme");if(sv)root.dataset.theme=sv;icon();
+
+/* build the story */
+function sq(t){return t.replace(/(^|[\s(\[—])"/g,"$1“").replace(/"/g,"”").replace(/'/g,"’").replace(/_(.+?)_/g,"<em>$1</em>")}
+var lines=T.split("\n"),words=T.split(/\s+/).length,k=0;
+document.getElementById("mins").textContent=Math.round(words/200)+" min read";
+var host=document.getElementById("story");
+host.innerHTML=lines.map(function(l,i){
+  var c=l.charAt(0),cls="",t=l;
+  if(c==="!"){cls="note";t=l.slice(1)}
+  else if(c==="#"){cls="rec";t=l.slice(1)}
+  else if(c==="~"){cls="msg";t=l.slice(1)}
+  else if(c===">"){cls="msg out";t=l.slice(1)}
+  else if(c==="*"){cls="it";t=l.slice(1)}
+  else if(c==='"'){cls="d"}
+  if(i===0)cls+=" first";
+  var st=cls.indexOf("note")>-1?' style="--r:'+((k++%2)?1.3:-1.5)+'deg"':"";
+  return '<p class="'+cls+'"'+st+'>'+sq(t)+'</p>';
+}).join("");
+
+/* scroll reveal */
+var ps=host.querySelectorAll("p");
+if(RM||!("IntersectionObserver" in window)){ps.forEach(function(p){p.classList.add("v")})}
+else{var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("v");io.unobserve(e.target)}})},{threshold:.15,rootMargin:"0px 0px -30px 0px"});ps.forEach(function(p){io.observe(p)})}
+
+/* progress */
+var prog=document.getElementById("prog"),tick=false;
+function upd(){tick=false;var m=document.documentElement.scrollHeight-innerHeight;prog.style.transform="scaleX("+(m>0?Math.min(1,scrollY/m):0)+")"}
+addEventListener("scroll",function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});addEventListener("resize",upd);upd();
+
+/* rain + ripples */
+var cv=document.getElementById("fx"),cx=cv.getContext("2d"),W,H,drops=[],rip=[];
+function size(){W=cv.width=innerWidth;H=cv.height=innerHeight}size();addEventListener("resize",size);
+function mk(){return{x:Math.random()*W,y:-Math.random()*H,l:10+Math.random()*16,v:6+Math.random()*7,g:H*(.55+Math.random()*.45)}}
+for(var q=0;q<110;q++){var d0=mk();d0.y=Math.random()*H;drops.push(d0)}
+function frame(){
+  var dk=dark(),L=dk?72:42,S=dk?62:48,A=dk?.5:.36,col=function(a){return"hsla(210,"+S+"%,"+L+"%,"+a+")"};
+  cx.clearRect(0,0,W,H);cx.lineWidth=1.2;
+  drops.forEach(function(d,i){
+    cx.strokeStyle=col(A);cx.beginPath();cx.moveTo(d.x,d.y);cx.lineTo(d.x-d.l*.2,d.y-d.l);cx.stroke();
+    d.y+=d.v;d.x-=d.v*.12;
+    if(d.y>d.g){rip.push({x:d.x,y:d.y,r:1,a:A});drops[i]=mk();drops[i].y=-20}
+  });
+  for(var j=rip.length-1;j>=0;j--){var p=rip[j];p.r+=.7;p.a-=.012;if(p.a<=0){rip.splice(j,1);continue}
+    cx.strokeStyle=col(p.a);cx.beginPath();cx.ellipse(p.x,p.y,p.r*2,p.r*.6,0,0,6.28);cx.stroke()}
+  requestAnimationFrame(frame)}
+if(!RM)frame();
+</script>
+</body>
+</html>

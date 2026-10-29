@@ -1520,7 +1520,7 @@ function renderHeatmap() {
 var upcomingReleases = [
     { date: '2026-11-02', title: "The Other Day - Chapter 10" },
     { date: '2026-11-01', title: 'Petal Vol. 4 — chpater 3 ' },
-    { date: '2026-11-09', title: 'THE THINGS WE NEVER RETURNED'},
+    { date: '2026-11-01', title: 'THE THINGS WE NEVER RETURNED'},
 ];
 var calSorted = [];
 var releaseReminders = store.get('releaseReminders', []);

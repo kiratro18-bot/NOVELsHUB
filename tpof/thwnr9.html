@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chapter 9 — The Things We Never Returned</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Literata:ital,wght@0,400;0,600;1,400&family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+@property --h{syntax:'<number>';inherits:true;initial-value:195}
+:root{--h:195;--sat:48%;--lit:38%;--ink:#232a38;--soft:#5d667c;--on:#fff;
+--bg:hsl(var(--h) 22% 94%);--card:hsl(var(--h) 30% 98%);--line:hsl(var(--h) 20% 82%);--accent:hsl(var(--h) var(--sat) var(--lit))}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
+--bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}}
+:root[data-theme="dark"]{--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
+--bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Literata,Georgia,serif;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:14px}
+::-webkit-scrollbar-track{background:transparent;border-left:1px solid var(--line)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--accent),hsl(calc(var(--h) + 45) var(--sat) var(--lit)));border:4px solid transparent;background-clip:padding-box;border-radius:99px;min-height:48px}
+#fx,.aurora{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.aurora{background:radial-gradient(42vmax 42vmax at 12% 8%,hsl(var(--h) var(--sat) var(--lit)/.2),transparent 62%),radial-gradient(46vmax 46vmax at 92% 85%,hsl(calc(var(--h) + 45) var(--sat) var(--lit)/.16),transparent 62%);animation:drift 16s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate3d(-3%,4%,0) scale(1.1)}}
+.prog{position:fixed;top:0;left:0;right:0;height:3px;z-index:9;transform-origin:left;transform:scaleX(0);pointer-events:none;background:linear-gradient(90deg,var(--accent),hsl(calc(var(--h) + 45) var(--sat) var(--lit)));box-shadow:0 0 12px var(--accent)}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line);backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 78%,transparent)}
+.back{color:var(--accent);text-decoration:none;font-size:.9rem;font-weight:600;transition:translate .2s}
+.back:hover{translate:-4px 0}
+.theme{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 14px;font:inherit;font-size:.85rem;cursor:pointer}
+.hero,.prose,.end{position:relative;z-index:1}
+.hero{text-align:center;padding:12vh 24px 7vh}
+.kicker{font:400 .78rem 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+h1{font:700 clamp(2.2rem,7vw,3.9rem)/1.08 'Space Grotesk',sans-serif;margin:0 0 16px;animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(.4em);filter:blur(8px)}}
+.chip{display:inline-block;border:1px solid var(--accent);color:var(--accent);border-radius:99px;padding:2px 12px;font-size:.78rem;margin:0 3px 6px}
+.prose{max-width:680px;margin:0 auto;padding:0 22px 8vh}
+.prose p{margin:0 0 .95em;font-size:clamp(1.04rem,1vw + .75rem,1.18rem);line-height:1.9;opacity:0;transform:translateY(12px);transition:opacity .6s,transform .6s}
+.prose p.v{opacity:1;transform:none}
+.prose p.d{padding-left:1em}
+.prose p.first::first-letter{float:left;font:700 3.6em/.85 'Space Grotesk',sans-serif;color:var(--accent);padding:.08em .1em 0 0}
+.prose p.it{font-style:italic;text-align:center;color:var(--accent)}
+.prose p.msg{width:fit-content;max-width:82%;padding:9px 16px;font-size:.98rem;line-height:1.5;background:var(--card);border:1px solid var(--line);border-radius:18px 18px 18px 4px}
+.prose p.msg.out{margin-left:auto;background:var(--accent);color:var(--on);border-color:transparent;border-radius:18px 18px 4px 18px}
+.prose p.rec{display:block;width:fit-content;font:400 .92rem 'Space Mono',monospace;background:var(--card);border:1px solid var(--line);border-radius:3px;padding:4px 12px;line-height:1.5}
+.prose p.note{position:relative;width:min(92%,430px);margin:1.9em auto;padding:22px 24px 30px;background:#f4ecd2;color:#8a2d1f;font:700 1.7rem/1.3 Caveat,cursive;text-align:center;box-shadow:0 12px 22px rgba(35,20,10,.2),0 2px 5px rgba(35,20,10,.14);transform:rotate(0) scale(.95)}
+.prose p.note.v{transform:rotate(var(--r,-1.4deg)) scale(1)}
+.prose p.note::before{content:"";position:absolute;top:-13px;left:50%;width:76px;height:24px;background:rgba(255,255,255,.6);transform:translateX(-50%) rotate(-3deg);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.end{text-align:center;padding:0 24px 12vh}
+.end .mark{display:block;width:9px;height:9px;margin:0 auto 14px;background:var(--accent);border-radius:2px;transform:rotate(45deg)}
+.end p{font:600 1.35rem Caveat,cursive;color:var(--soft);margin:0 0 26px}
+.nav{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:11px 22px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;font:inherit;font-size:.92rem;font-weight:600}
+.btn.lock{opacity:.55;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.prose p{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="prog" id="prog" aria-hidden="true"></div>
+<div class="aurora" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<header class="top"><a class="back" href="thwnr.html">← All chapters</a><button class="theme" id="theme" type="button">🌙 Dark</button></header>
+<section class="hero">
+  <p class="kicker">Chapter 9 · The Things We Never Returned</p>
+  <h1>The Things We Never Returned</h1>
+  <span class="chip">Closing time · Confession</span><span class="chip" id="mins"></span>
+</section>
+<main class="prose" id="story"></main>
+<footer class="end">
+  <span class="mark"></span>
+  <p>— end of chapter nine —</p>
+  
+</footer>
+<script>
+var T=`Saki replied the following evening.
+Yuzuna was at Tsubaki Books when the message arrived.
+She looked at the screen.
+Then locked it.
+Then unlocked it again.
+Kaito watched from the opposite side of the table.
+"Are you going to read it?"
+"No."
+"Why?"
+"Because I'm seventeen again."
+He blinked.
+"You're twenty-two."
+"Thank you, Kaito. I'd forgotten."
+He leaned back.
+Yuzuna looked at the phone.
+Then opened the message.
+It contained only three lines.
+~I remember that day.
+~I'm sorry I didn't come outside.
+~Would you like to meet?
+Yuzuna covered her mouth.
+Kaito looked away.
+He didn't want to watch her cry again.
+Not because it was unpleasant.
+Because he didn't know how to help, and that made him feel useless.
+Yuzuna wiped her eyes.
+"She wants to meet."
+Kaito nodded.
+"Good."
+She stared at the message.
+"I don't know what to do."
+"Neither does she, probably."
+Yuzuna laughed.
+Then she typed:
+>Yes. If you're sure.
+Saki replied:
+~Saturday? After the shop closes?
+Yuzuna smiled through her tears.
+>Saturday.
+She pressed send.
+Then placed the phone on the table.
+For several seconds, neither sibling spoke.
+Finally, Yuzuna looked at Kaito.
+"Hey."
+"What?"
+"Thank you."
+He shrugged.
+"Don't make it weird."
+She smiled.
+"You're the worst."
+"I know."
+She reached across the table and squeezed his hand.
+He didn't pull away.
+Saturday arrived too quickly.
+Yuzuna reached Tsubaki Books at 4:00 PM.
+The meeting wasn't until six.
+She spent the first hour pretending to browse the shelves.
+The second hour was spent reorganizing a display that didn't need reorganizing.
+By 5:30, Mrs. Takeda had threatened to charge her for damages if she moved one more book.
+Kaito arrived at 5:42.
+He found his sister standing near the window, holding a paper cup of tea she hadn't touched.
+"You're early."
+"You're late."
+"It's five forty-two."
+"I've been here for two hours."
+"That's a personal problem."
+She glared at him.
+He grinned.
+Then looked at the cup.
+"Are you going to drink that?"
+"No."
+"Can I have it?"
+"Absolutely not."
+He took it anyway.
+She smacked his arm.
+For a moment, they were twelve and seventeen again.
+Then the bell rang.
+Saki entered.
+She was carrying a small bouquet of yellow freesias.
+Yuzuna went still.
+Saki stopped near the door.
+Neither moved.
+Kaito slowly placed the tea on the counter.
+Then looked at Ayane.
+Ayane looked at him.
+They both understood.
+This wasn't their moment.
+They gathered the notebooks and stepped into the back room with Mrs. Takeda, leaving the front of the shop to the two women who had spent five years trying to understand a day neither had properly seen.
+Through the glass partition, Ayane watched them sit across from each other.
+Yuzuna kept her hands folded on the table.
+Saki placed the flowers between them.
+Neither spoke for a while.
+Then Yuzuna laughed nervously.
+Saki laughed too.
+The tension loosened.
+Not enough to disappear.
+But enough for words to begin.
+Later, Yuzuna told Kaito what they had said.
+They talked about the day.
+About the rain.
+About the messages.
+About the things they'd both believed.
+Yuzuna had thought Saki was angry enough to refuse to see her.
+Saki had thought Yuzuna had decided to leave without saying goodbye.
+Both had been waiting.
+Both had been hurt.
+And neither had known.
+"I told her I should have gone inside," Yuzuna said.
+They were sitting on the bench outside Tsubaki Books.
+Kaito was eating a packet of biscuits.
+"She told me she should have come outside."
+Kaito swallowed.
+"Sounds like you both need better communication skills."
+She hit him.
+He laughed.
+Then Yuzuna looked at the flowers Saki had left behind.
+"She remembered."
+"Remembered what?"
+"That I like freesias."
+Kaito smiled.
+"That's good."
+Yuzuna nodded.
+Then her expression changed.
+"Do you think we'll be friends again?"
+Kaito thought about it.
+"I don't know."
+She looked at him.
+He shrugged.
+"You both changed. You might not like the same things anymore. You might argue about something stupid and realize you don't have as much in common as you used to."
+Yuzuna stared at him.
+"You're terrible at comforting people."
+"I'm being honest."
+She sighed.
+Then nodded.
+"That's fair."
+He looked at her.
+"But you can still get to know each other again."
+Yuzuna went quiet.
+Then smiled.
+"You're getting better at this."
+"Don't get used to it."
+She laughed.
+And for a while, they sat together in the evening air.
+No grand promises.
+No perfect reconciliation.
+Just a brother and sister who had finally started speaking honestly.
+Two weeks later, Ayane returned to Tsubaki Books after school.
+The book was no longer beneath the counter.
+Mrs. Takeda had placed it on a small display near the entrance, alongside a handwritten sign.
+!BOOKS WITH STORIES OF THEIR OWN.
+Ayane stopped.
+"Mrs. Takeda."
+The older woman looked up.
+"What?"
+"You're displaying it?"
+"Yes."
+"Why?"
+"Because people keep asking about it."
+"Who?"
+"People."
+Ayane narrowed her eyes.
+Mrs. Takeda smiled.
+Then Ayane noticed something beside the book.
+A small envelope.
+Kaito's handwriting was on the front.
+!For the book.
+She picked it up.
+Inside was a single sheet of paper.
+Two paragraphs.
+One in Yuzuna's handwriting.
+One in Saki's.
+They weren't arguing about the novel anymore.
+They were writing about themselves.
+Yuzuna had written:
+!I waited outside because I was scared to go in.
+Saki had written:
+!I stayed inside because I was scared to come out.
+Below that, in smaller letters, both had signed their names.
+Ayane held the paper carefully.
+"Did they write this together?"
+Mrs. Takeda nodded.
+"They came by yesterday."
+Ayane smiled.
+Then looked at the old book.
+"Should we put it inside?"
+"No," Mrs. Takeda said. "We'll keep it beside the book."
+"Why?"
+"So people can read it without opening the book."
+Ayane understood.
+The messages in the margins had been hidden for years.
+They had been meant for one person, or perhaps no one in particular.
+But the letter was different.
+It was direct.
+It had names.
+It belonged in the open.
+Ayane placed the envelope beside the paperback.
+Then stepped back.
+The display looked ordinary.
+A few old books.
+A handwritten sign.
+A small envelope.
+Nothing special.
+But for some reason, she felt proud.
+Not because she'd solved the mystery.
+She hadn't.
+There were still messages she couldn't identify. There were still dates that didn't make sense. There were still things about the past that belonged to other people.
+She was proud because she'd learned when to stop asking questions.
+And when to let someone answer in their own time.
+That evening, Kaito walked her to the station.
+It had rained earlier, and the pavement reflected the shop lights.
+Ayane carried her bag on one shoulder.
+Kaito carried the book's old receipt, which Yuzuna had given him after their meeting.
+Neither spoke for a while.
+Then he said, "Can I ask you something?"
+Ayane looked at him.
+"Depends."
+"Why did you get involved in this?"
+She thought about it.
+"I don't know."
+"That's your favorite answer lately."
+"It's an honest one."
+He nodded.
+She watched the lights change at the crossing.
+"Maybe I wanted to know whether the people who wrote those messages ever found each other."
+Kaito was quiet.
+"And now?"
+"Now I think they did."
+He smiled.
+They crossed the street.
+A few steps later, he stopped.
+Ayane turned.
+"What?"
+He rubbed the back of his neck.
+It was the first time she'd seen him look genuinely nervous.
+"I like spending time with you."
+She blinked.
+He stared at the pavement.
+"I know we spend a lot of time arguing, and you think my sandwiches are terrible, and I probably annoy you more than anyone else in your life."
+"That's true."
+He looked up.
+"Could you let me finish?"
+"Sorry."
+He took a breath.
+"I like you, Sato."
+The words were quiet.
+Not dramatic.
+Not rehearsed.
+He looked as if he'd been trying to say them for days and had only just realized there wasn't a better way.
+Ayane stared at him.
+Her mind went completely blank.
+Which was unfortunate, because she'd spent seventeen years preparing for conversations she never had.
+"You're supposed to say something," he muttered.
+"I know."
+"Anything would be good."
+"I'm thinking."
+"Please don't make a list."
+"I wasn't going to make a list."
+He gave her a look.
+She sighed.
+Then looked down.
+"I like you too."
+Kaito went still.
+She immediately panicked.
+"Not because of the mystery. I mean, you're annoying, and you make terrible food, and sometimes you say things that make no sense—"
+"You're doing great."
+"Shut up."
+He laughed.
+She looked at him.
+"I don't know what happens now."
+He considered that.
+"Neither do I."
+"That's not very reassuring."
+"Would you prefer a five-year plan?"
+"No."
+"Excellent. I don't have one."
+Ayane laughed.
+Then she took a breath.
+"We could go somewhere together. Not because we have to call it a date immediately. Just… somewhere."
+Kaito smiled.
+"That sounds good."
+"Saturday?"
+"Saturday."
+"And no tuna sandwiches."
+"You're ruining the romance."
+"There was romance?"
+He put a hand over his heart.
+"You're cruel."
+She smiled.
+Then, before she could change her mind, she reached for his hand.
+He looked down at their fingers.
+Then at her.
+Neither said anything.
+They crossed the next street holding hands.
+It wasn't the beginning of forever.
+It wasn't even a promise.
+It was just two seventeen-year-olds trying something new, with absolutely no idea what they were doing.
+Ayane thought that was probably enough.
+For now.`;
+
+var root=document.documentElement,btn=document.getElementById("theme"),RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function dark(){var t=root.dataset.theme;return t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches}
+function icon(){btn.textContent=dark()?"☀️ Light":"🌙 Dark"}
+btn.onclick=function(){var t=dark()?"light":"dark";root.dataset.theme=t;store("ttwnr-theme",t);icon()};
+var sv=load("ttwnr-theme");if(sv)root.dataset.theme=sv;icon();
+
+/* build the story */
+function sq(t){return t.replace(/(^|[\s(\[—])"/g,"$1“").replace(/"/g,"”").replace(/'/g,"’").replace(/_(.+?)_/g,"<em>$1</em>")}
+var lines=T.split("\n"),words=T.split(/\s+/).length,k=0;
+document.getElementById("mins").textContent=Math.round(words/200)+" min read";
+var host=document.getElementById("story");
+host.innerHTML=lines.map(function(l,i){
+  var c=l.charAt(0),cls="",t=l;
+  if(c==="!"){cls="note";t=l.slice(1)}
+  else if(c==="#"){cls="rec";t=l.slice(1)}
+  else if(c==="~"){cls="msg";t=l.slice(1)}
+  else if(c===">"){cls="msg out";t=l.slice(1)}
+  else if(c==="*"){cls="it";t=l.slice(1)}
+  else if(c==='"'){cls="d"}
+  if(i===0)cls+=" first";
+  var st=cls.indexOf("note")>-1?' style="--r:'+((k++%2)?1.3:-1.5)+'deg"':"";
+  return '<p class="'+cls+'"'+st+'>'+sq(t)+'</p>';
+}).join("");
+
+/* scroll reveal */
+var ps=host.querySelectorAll("p");
+if(RM||!("IntersectionObserver" in window)){ps.forEach(function(p){p.classList.add("v")})}
+else{var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("v");io.unobserve(e.target)}})},{threshold:.15,rootMargin:"0px 0px -30px 0px"});ps.forEach(function(p){io.observe(p)})}
+
+/* progress */
+var prog=document.getElementById("prog"),tick=false;
+function upd(){tick=false;var m=document.documentElement.scrollHeight-innerHeight;prog.style.transform="scaleX("+(m>0?Math.min(1,scrollY/m):0)+")"}
+addEventListener("scroll",function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});addEventListener("resize",upd);upd();
+
+/* evening bokeh lights */
+var cv=document.getElementById("fx"),cx=cv.getContext("2d"),W,H,m=[];
+function size(){W=cv.width=innerWidth;H=cv.height=innerHeight}size();addEventListener("resize",size);
+for(var q=0;q<28;q++)m.push({x:Math.random()*W,y:Math.random()*H,r:14+Math.random()*34,v:.1+Math.random()*.2,s:Math.random()*6.28});
+function frame(){var dk=dark(),L=dk?72:42,S=dk?62:48,A=dk?.5:.34,c=function(a){return"hsla(195,"+S+"%,"+L+"%,"+a+")"};
+  cx.clearRect(0,0,W,H);
+  m.forEach(function(d){d.s+=.01;d.y-=d.v;d.x+=Math.sin(d.s)*.2;if(d.y<-60){d.y=H+60;d.x=Math.random()*W}
+    var g=cx.createRadialGradient(d.x,d.y,0,d.x,d.y,d.r);g.addColorStop(0,c(A*(.55+.45*Math.sin(d.s*2))));g.addColorStop(1,c(0));
+    cx.fillStyle=g;cx.beginPath();cx.arc(d.x,d.y,d.r,0,6.28);cx.fill()});
+  requestAnimationFrame(frame)}
+if(!RM)frame();
+</script>
+</body>
+</html>

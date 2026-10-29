@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chapter 4 — Someone on the Other Side of the Window</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Literata:ital,wght@0,400;0,600;1,400&family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+@property --h{syntax:'<number>';inherits:true;initial-value:235}
+:root{--h:235;--sat:48%;--lit:38%;--ink:#232a38;--soft:#5d667c;--on:#fff;
+--bg:hsl(var(--h) 22% 94%);--card:hsl(var(--h) 30% 98%);--line:hsl(var(--h) 20% 82%);--accent:hsl(var(--h) var(--sat) var(--lit))}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
+--bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}}
+:root[data-theme="dark"]{--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
+--bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Literata,Georgia,serif;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:14px}
+::-webkit-scrollbar-track{background:transparent;border-left:1px solid var(--line)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--accent),hsl(calc(var(--h) + 45) var(--sat) var(--lit)));border:4px solid transparent;background-clip:padding-box;border-radius:99px;min-height:48px}
+#fx,.aurora{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.aurora{background:radial-gradient(42vmax 42vmax at 12% 8%,hsl(var(--h) var(--sat) var(--lit)/.2),transparent 62%),radial-gradient(46vmax 46vmax at 92% 85%,hsl(calc(var(--h) + 45) var(--sat) var(--lit)/.16),transparent 62%);animation:drift 16s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate3d(-3%,4%,0) scale(1.1)}}
+.prog{position:fixed;top:0;left:0;right:0;height:3px;z-index:9;transform-origin:left;transform:scaleX(0);pointer-events:none;background:linear-gradient(90deg,var(--accent),hsl(calc(var(--h) + 45) var(--sat) var(--lit)));box-shadow:0 0 12px var(--accent)}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line);backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 78%,transparent)}
+.back{color:var(--accent);text-decoration:none;font-size:.9rem;font-weight:600;transition:translate .2s}
+.back:hover{translate:-4px 0}
+.theme{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 14px;font:inherit;font-size:.85rem;cursor:pointer}
+.hero,.prose,.end{position:relative;z-index:1}
+.hero{text-align:center;padding:12vh 24px 7vh}
+.kicker{font:400 .78rem 'Space Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+h1{font:700 clamp(2.2rem,7vw,3.9rem)/1.08 'Space Grotesk',sans-serif;margin:0 0 16px;animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(.4em);filter:blur(8px)}}
+.chip{display:inline-block;border:1px solid var(--accent);color:var(--accent);border-radius:99px;padding:2px 12px;font-size:.78rem;margin:0 3px 6px}
+.prose{max-width:680px;margin:0 auto;padding:0 22px 8vh}
+.prose p{margin:0 0 .95em;font-size:clamp(1.04rem,1vw + .75rem,1.18rem);line-height:1.9;opacity:0;transform:translateY(12px);transition:opacity .6s,transform .6s}
+.prose p.v{opacity:1;transform:none}
+.prose p.d{padding-left:1em}
+.prose p.first::first-letter{float:left;font:700 3.6em/.85 'Space Grotesk',sans-serif;color:var(--accent);padding:.08em .1em 0 0}
+.prose p.it{font-style:italic;text-align:center;color:var(--accent)}
+.prose p.msg{width:fit-content;max-width:82%;padding:9px 16px;font-size:.98rem;line-height:1.5;background:var(--card);border:1px solid var(--line);border-radius:18px 18px 18px 4px}
+.prose p.msg.out{margin-left:auto;background:var(--accent);color:var(--on);border-color:transparent;border-radius:18px 18px 4px 18px}
+.prose p.rec{display:block;width:fit-content;font:400 .92rem 'Space Mono',monospace;background:var(--card);border:1px solid var(--line);border-radius:3px;padding:4px 12px;line-height:1.5}
+.prose p.note{position:relative;width:min(92%,430px);margin:1.9em auto;padding:22px 24px 30px;background:#f4ecd2;color:#8a2d1f;font:700 1.7rem/1.3 Caveat,cursive;text-align:center;box-shadow:0 12px 22px rgba(35,20,10,.2),0 2px 5px rgba(35,20,10,.14);transform:rotate(0) scale(.95)}
+.prose p.note.v{transform:rotate(var(--r,-1.4deg)) scale(1)}
+.prose p.note::before{content:"";position:absolute;top:-13px;left:50%;width:76px;height:24px;background:rgba(255,255,255,.6);transform:translateX(-50%) rotate(-3deg);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.end{text-align:center;padding:0 24px 12vh}
+.end .mark{display:block;width:9px;height:9px;margin:0 auto 14px;background:var(--accent);border-radius:2px;transform:rotate(45deg)}
+.end p{font:600 1.35rem Caveat,cursive;color:var(--soft);margin:0 0 26px}
+.nav{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:11px 22px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;font:inherit;font-size:.92rem;font-weight:600}
+.btn.lock{opacity:.55;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.prose p{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="prog" id="prog" aria-hidden="true"></div>
+<div class="aurora" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<header class="top"><a class="back" href="thwnr.html">← All chapters</a><button class="theme" id="theme" type="button">🌙 Dark</button></header>
+<section class="hero">
+  <p class="kicker">Chapter 4 · The Things We Never Returned</p>
+  <h1>Someone on the Other Side of the Window</h1>
+  <span class="chip">Windows · Waiting</span><span class="chip" id="mins"></span>
+</section>
+<main class="prose" id="story"></main>
+<footer class="end">
+  <span class="mark"></span>
+  <p>— end of chapter four —</p>
+ 
+<script>
+var T=`On Sunday, Ayane went to the bookstore near the station.
+She almost didn't.
+At 9:00 AM, she told herself she had homework.
+At 9:15, she decided the homework could wait.
+At 9:30, she changed clothes.
+At 9:45, she stood in front of the mirror wondering whether she'd dressed too nicely for a bookstore.
+At 9:47, she changed back into her usual clothes.
+At 10:05, Emi messaged her.
+~I'm here! I'm sitting outside because I got here early. Don't panic lol.
+Ayane stared at the message.
+Then typed:
+>I'm not panicking.
+Emi sent a sticker of a rabbit looking unconvinced.
+Ayane left the house.
+The bookstore near the station was larger than Tsubaki Books and considerably less chaotic. Its shelves were organized by genre, its floors were clean, and nobody appeared to have shelved anything upside down.
+Ayane found Emi sitting on a bench near the entrance.
+Emi waved.
+"Hey!"
+Ayane raised a hand.
+"Hi."
+"You came!"
+"You invited me."
+"Yeah, but you sometimes say you're coming and then—"
+Emi stopped herself.
+Ayane looked down.
+The silence stretched.
+Then Emi rubbed the back of her neck.
+"Sorry. That sounded mean."
+"No," Ayane said. "It's true."
+Emi blinked.
+Ayane hadn't expected the words to come out so easily.
+She took a breath.
+"I keep cancelling things. Or I say maybe, and then I don't reply until it's too late. I know it's annoying."
+Emi was quiet.
+Ayane stared at the pavement.
+"I'm not doing it because I don't want to see you. Sometimes I just… don't know what to say, and then I wait too long, and then it gets worse."
+She stopped.
+Her palms were sweating.
+This was terrible.
+She should have prepared a script.
+Emi scratched her cheek.
+"Honestly, I thought you were avoiding me because you didn't like me anymore."
+Ayane looked up.
+"What?"
+"You used to talk to me more. And then you started declining everything. I figured maybe I'd done something."
+"No."
+"Okay."
+"I mean it."
+Emi studied her.
+Then she sighed.
+"Ayane, I can't tell what you're thinking if you don't tell me."
+Ayane swallowed.
+"I know."
+"And I don't need you to come to everything. Just don't make me guess whether we're still friends."
+The words landed harder than Ayane expected.
+She nodded.
+"Okay."
+Emi looked away.
+"Good. Because I bought us both drinks, and if you'd cancelled, I would have had to drink two lemon sodas. That would've been horrible."
+Ayane stared at her.
+Then laughed.
+Emi grinned.
+"There she is."
+"Don't make it weird."
+"You're stealing my lines now."
+They spent the next two hours browsing books, arguing about a terrible movie adaptation, and sharing a packet of biscuits Emi had brought in her bag.
+It wasn't a dramatic afternoon.
+Nobody made a life-changing confession.
+They didn't suddenly become inseparable.
+But when Ayane returned home, she noticed something strange.
+She hadn't checked her phone once to see whether Emi had become annoyed with her.
+She hadn't spent the afternoon trying to predict the end of every conversation.
+She had simply been there.
+It was almost disappointing how ordinary it felt.
+And, somehow, that made it better.
+At Tsubaki Books the following evening, Mrs. Takeda was closing the register when Ayane approached her.
+"I want to ask you something."
+The old woman sighed.
+"I was afraid of that."
+"It's about the book."
+"Naturally."
+Ayane placed her notebook on the counter.
+"I've made a list of the handwriting styles. I think there were at least six people writing in it, perhaps more. The dates go back several years. Some messages appear to answer each other, but others don't."
+Mrs. Takeda listened.
+Ayane continued.
+"One of the possible writers is Kaito's older sister. Her name is Yuzuna Moriyama. She owned the same edition."
+The owner's expression changed.
+It was subtle.
+But Ayane noticed.
+"You know her."
+Mrs. Takeda sat down.
+"I know the name."
+"How?"
+"She used to come here sometimes."
+"Was she one of the writers?"
+"I don't know."
+Ayane leaned forward.
+"Do you remember June 22, 2021?"
+The older woman looked toward the window.
+For a while, she said nothing.
+Then she nodded.
+"I remember that day."
+Ayane waited.
+Mrs. Takeda folded her hands.
+"There were two girls who came here regularly. They were about your age. One used to sit near the window and read for hours. The other rarely stayed long. She would come in, browse the shelves, and leave with a book or a flower from the shop next door."
+"Do you remember their names?"
+"One of them was Yuzuna."
+Ayane's heart skipped.
+"And the other?"
+"I won't tell you."
+"Mrs. Takeda—"
+"I won't tell you because I don't know whether she wants to be found."
+Ayane looked down at her notebook.
+"Then what happened that day?"
+The owner was quiet for a long time.
+"I remember a girl sitting inside the shop until closing. I remember another standing outside in the rain. I remember thinking they were probably waiting for each other."
+Ayane went still.
+"Did you tell them?"
+"No."
+"Why not?"
+Mrs. Takeda's eyes lowered.
+"Because I assumed they'd work it out themselves."
+The words sounded ordinary.
+Almost harmless.
+But the old woman's expression suggested she'd spent five years remembering them.
+"I had deliveries to sort. The roof was leaking. Someone had complained about a missing book. It was a busy afternoon." She gave a tired laugh. "There was always a reason not to pay attention."
+Ayane looked at the window.
+Someone had stood outside in the rain.
+Someone else had waited inside.
+And neither had known the other was there.
+"Did they ever meet?"
+Mrs. Takeda shook her head.
+"Not that I saw."
+Ayane turned the page of her notebook.
+"Do you know who wrote the receipt?"
+"I don't."
+"Do you know who wrote the messages?"
+"Some of them."
+"Can you tell me?"
+Mrs. Takeda considered the question.
+Then she reached beneath the counter and produced a small envelope.
+Inside was a faded photograph.
+It showed the front of Tsubaki Books five years earlier, before the sign above the door had been replaced. A bicycle leaned against the wall. Two students stood near the window.
+Their faces were partly hidden by reflections in the glass.
+One wore a light-colored jacket.
+The other held a dark umbrella.
+Ayane stared at the photograph.
+"Who took this?"
+"I don't remember."
+"Can I keep it?"
+"No."
+"Can I photograph it?"
+Mrs. Takeda hesitated.
+Then nodded.
+Ayane took a picture.
+The image wasn't clear enough to identify either girl, but it confirmed something important.
+Both had been there.
+On the same day.
+At the same time.
+And yet something had gone wrong.
+"Why didn't you tell anyone?" Ayane asked quietly.
+Mrs. Takeda looked at her.
+"Because I thought it wasn't my story."
+Ayane didn't know what to say.
+Neither did Mrs. Takeda.
+They put the photograph away.
+Before leaving, Ayane looked at the book one last time.
+"Mrs. Takeda?"
+"Yes?"
+"What if they still think the other person didn't come?"
+The older woman looked at the faded blue cover.
+"Then I suppose they've been carrying the wrong answer for a very long time."
+Ayane walked home slowly.
+She passed the café.
+The flower shop.
+The vending machine outside the convenience store.
+Ordinary places.
+Ordinary people.
+A girl had once waited inside a bookstore while another stood outside.
+Five years later, the only thing left of their meeting was a receipt and a conversation neither had finished.
+Ayane thought about Emi.
+About the message she'd almost never sent.
+About how easily a silence could become an answer if you waited long enough.
+She took out her phone.
+Opened Kaito's conversation.
+Typed:
+>I found something.
+Then she added:
+>Can we talk tomorrow?
+This time, she didn't delete it.`;
+
+var root=document.documentElement,btn=document.getElementById("theme"),RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function dark(){var t=root.dataset.theme;return t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches}
+function icon(){btn.textContent=dark()?"☀️ Light":"🌙 Dark"}
+btn.onclick=function(){var t=dark()?"light":"dark";root.dataset.theme=t;store("ttwnr-theme",t);icon()};
+var sv=load("ttwnr-theme");if(sv)root.dataset.theme=sv;icon();
+
+/* build the story */
+function sq(t){return t.replace(/(^|[\s(\[—])"/g,"$1“").replace(/"/g,"”").replace(/'/g,"’").replace(/_(.+?)_/g,"<em>$1</em>")}
+var lines=T.split("\n"),words=T.split(/\s+/).length,k=0;
+document.getElementById("mins").textContent=Math.round(words/200)+" min read";
+var host=document.getElementById("story");
+host.innerHTML=lines.map(function(l,i){
+  var c=l.charAt(0),cls="",t=l;
+  if(c==="!"){cls="note";t=l.slice(1)}
+  else if(c==="#"){cls="rec";t=l.slice(1)}
+  else if(c==="~"){cls="msg";t=l.slice(1)}
+  else if(c===">"){cls="msg out";t=l.slice(1)}
+  else if(c==="*"){cls="it";t=l.slice(1)}
+  else if(c==='"'){cls="d"}
+  if(i===0)cls+=" first";
+  var st=cls.indexOf("note")>-1?' style="--r:'+((k++%2)?1.3:-1.5)+'deg"':"";
+  return '<p class="'+cls+'"'+st+'>'+sq(t)+'</p>';
+}).join("");
+
+/* scroll reveal */
+var ps=host.querySelectorAll("p");
+if(RM||!("IntersectionObserver" in window)){ps.forEach(function(p){p.classList.add("v")})}
+else{var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("v");io.unobserve(e.target)}})},{threshold:.15,rootMargin:"0px 0px -30px 0px"});ps.forEach(function(p){io.observe(p)})}
+
+/* progress */
+var prog=document.getElementById("prog"),tick=false;
+function upd(){tick=false;var m=document.documentElement.scrollHeight-innerHeight;prog.style.transform="scaleX("+(m>0?Math.min(1,scrollY/m):0)+")"}
+addEventListener("scroll",function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});addEventListener("resize",upd);upd();
+
+/* raindrops sliding down a window pane */
+var cv=document.getElementById("fx"),cx=cv.getContext("2d"),W,H,d=[];
+function size(){W=cv.width=innerWidth;H=cv.height=innerHeight}size();addEventListener("resize",size);
+function mk(){return{x:Math.random()*W,y:Math.random()*H,r:2+Math.random()*4,v:0,t:Math.random()*200}}
+for(var q=0;q<34;q++)d.push(mk());
+function frame(){var dk=dark(),L=dk?72:42,S=dk?62:48,A=dk?.5:.34,col=function(a){return"hsla(235,"+S+"%,"+L+"%,"+a+")"};
+  cx.clearRect(0,0,W,H);cx.lineCap="round";
+  d.forEach(function(p,i){p.t--;if(p.t<0){p.v=.8+Math.random()*2;p.t=40+Math.random()*180}
+    p.v*=.96;p.y+=p.v;p.x+=(Math.random()-.5)*.25;
+    if(p.y>H+10){d[i]=mk();d[i].y=-10;return}
+    cx.strokeStyle=col(A*.55);cx.lineWidth=p.r*.55;cx.beginPath();cx.moveTo(p.x,p.y-p.v*16);cx.lineTo(p.x,p.y);cx.stroke();
+    cx.fillStyle=col(A+.12);cx.beginPath();cx.arc(p.x,p.y,p.r,0,6.28);cx.fill()});
+  requestAnimationFrame(frame)}
+if(!RM)frame();
+</script>
+</body>
+</html>
