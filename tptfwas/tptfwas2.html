@@ -669,7 +669,7 @@
     <div class="chapter-end">— End of Chapter Two —</div>
     <div class="chapter-nav">
       <a href="tptfwas1.html" class="nav-btn nav-prev">← Previous</a>
-      <a href="../../index.html" class="nav-btn nav-home">🏠 Library</a>
+      <a href="../index.html" class="nav-btn nav-home">🏠 Library</a>
       <a href="tptfwas3.html" class="nav-btn nav-next">Next Chapter →</a>
     </div>
   </div>
@@ -699,6 +699,7 @@
     try { var r = JSON.parse(localStorage.getItem('tptfwasRead') || '[]'); if (!r.includes('ch2')) { r.push('ch2'); localStorage.setItem('tptfwasRead', JSON.stringify(r)); } } catch (e) { }
     window.addEventListener('load', () => { try { if (localStorage.getItem('darkMode') === 'on') { document.body.classList.add('dark'); document.getElementById('themeBtn').textContent = '☀️'; } var s = parseInt(localStorage.getItem('tptfwas3FontSize')); if (s && s >= 14 && s <= 26) { fontSize = s; document.getElementById('storyBody').style.fontSize = s + 'px'; document.getElementById('fontDisplay').textContent = s; } } catch (e) { } });
   </script>
-</body>
+  <script src="../reader-progress.js"></script>
+  </body>
 
 </html>

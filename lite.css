@@ -42,7 +42,7 @@ input[type=search],input[type=text]{width:100%;max-width:420px;padding:10px 14px
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 18px}
 .chips .btn{padding:5px 12px;font-weight:500}
 .ch{list-style:none;padding:0;display:grid;gap:6px}
-.ch button{width:100%;display:flex;gap:12px;align-items:center;text-align:left;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);color:var(--ink);font:inherit;cursor:pointer}
+.ch li{width:100%;display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);color:var(--ink);font:inherit}
 .ch .n{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:.75rem;flex:none}
 .ch .done .n{background:var(--sage);border-color:var(--sage);color:#fff}
 .detail{display:grid;grid-template-columns:minmax(0,260px) 1fr;gap:24px}

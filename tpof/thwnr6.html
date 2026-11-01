@@ -14,6 +14,7 @@
 :root[data-theme="dark"]{--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
 --bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}
 *{box-sizing:border-box}
+*{-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:Literata,Georgia,serif;line-height:1.6;overflow-x:hidden}
 ::-webkit-scrollbar{width:14px}
@@ -373,5 +374,6 @@ function frame(){var dk=dark(),L=dk?72:42,S=dk?62:48,A=dk?.5:.34;
   requestAnimationFrame(frame)}
 if(!RM)frame();
 </script>
+<script src="thwnr-progress.js"></script>
 </body>
 </html>

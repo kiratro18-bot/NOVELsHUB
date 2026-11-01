@@ -14,6 +14,7 @@
 :root[data-theme="dark"]{--sat:62%;--lit:72%;--ink:#ece9e2;--soft:#a2a9bb;--on:#12151c;
 --bg:hsl(var(--h) 20% 10%);--card:hsl(var(--h) 18% 15%);--line:hsl(var(--h) 14% 26%)}
 *{box-sizing:border-box}
+*{-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:Literata,Georgia,serif;line-height:1.6;overflow-x:hidden}
 #fx,.aurora{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
 .aurora{background:radial-gradient(42vmax 42vmax at 12% 8%,hsl(var(--h) var(--sat) var(--lit)/.2),transparent 62%),
@@ -126,7 +127,7 @@ background:linear-gradient(90deg,var(--accent),hsl(calc(var(--h) + 45) var(--sat
   </div>
 </main>
 <script>
-var BASE = "things-we-never-returned/"; // folder holding the chapter pages
+var BASE = ""; // chapter pages are beside this index in the tpof folder
 var CH = [
  {n:"01",label:"Chapter 1",title:"The Book with No Price",tag:"Rain · Receipts",h:210,file:"thwnr1.html",sum:"Rain, a bookshop and an upside-down book. A stranger brings back a paperback full of margin arguments."},
  {n:"02",label:"Chapter 2",title:"The First Rule of Investigating Nothing",tag:"Milk coffee · Handwriting",h:25,file:"thwnr2.html",sum:"Kaito returns with coffee, and the two compare handwriting while Mrs. Takeda refuses to name names."},
@@ -151,7 +152,7 @@ var PRE=[
  ["Saki replied the following evening.","Yuzuna was at Tsubaki Books when the message arrived.","She looked at the screen.","Then locked it.","Then unlocked it again."],
  ["Six months later, Tsubaki Books had a new sign above the entrance.","Mrs. Takeda insisted it was temporary.","Ayane thought it looked terrible.","Kaito thought it looked charming."]
 ];
-var UNLOCKED=["#"]; // add a chapter's file name here to unlock it
+var UNLOCKED=CH.map(function(c){return c.file}); // every published chapter and the epilogue are available
 CH.forEach(function(c,i){c.pre=PRE[i];c.locked=UNLOCKED.indexOf(c.file)<0});
 var NOTES=["The ending was unfair.","The ending was honest.","Honest doesn’t mean good.","I’m here. You can come out now.","You said you’d tell me before you left.","I should have."];
 var RM=matchMedia("(prefers-reduced-motion: reduce)").matches;

@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Dead Man’s Alibi — Evidence Board</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; media-src 'self'; worker-src 'self'; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Literata:ital,wght@0,400;0,600;1,400&family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+:root{--bg:#0b0c10;--paper:#efe7d2;--ink:#e8e4da;--red:#e5484d;--soft:#8b90a0;--fx:50%;--fy:30%}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--red) #0b0c10}
+body{margin:0;background:radial-gradient(120vmax 80vmax at 50% 0,#171a22,var(--bg));color:var(--ink);font-family:Literata,Georgia,serif;line-height:1.6;overflow-x:hidden;min-height:100vh}
+body.noscroll{overflow:hidden}
+::-webkit-scrollbar{width:12px}::-webkit-scrollbar-track{background:#0b0c10}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#e5484d,#8f2327);border:3px solid #0b0c10;border-radius:99px}
+.dark{position:fixed;inset:0;z-index:2;pointer-events:none;transition:opacity .6s;
+background:radial-gradient(circle 230px at var(--fx) var(--fy),transparent 0,rgba(0,0,0,.3) 50%,rgba(0,0,0,.9) 100%)}
+body.lights .dark{opacity:0}
+.grain{position:fixed;inset:-50%;z-index:3;pointer-events:none;opacity:.08;animation:grain .9s steps(6) infinite;
+background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+@keyframes grain{20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}}
+.top{position:relative;z-index:4;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid #20232d}
+.brand{font:500 .72rem 'Space Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--soft)}
+.tg{border:1px solid #2b2f3b;background:#12141b;color:var(--ink);border-radius:99px;padding:6px 14px;font:inherit;font-size:.85rem;cursor:pointer}
+.hero{position:relative;z-index:1;text-align:center;padding:9vh 24px 3vh}
+.kick{font:400 .78rem 'Space Mono',monospace;letter-spacing:.3em;text-transform:uppercase;color:var(--red);margin:0 0 16px}
+h1{font:700 clamp(2.2rem,8vw,5rem)/1 'Space Grotesk',sans-serif;letter-spacing:.04em;text-transform:uppercase;margin:0 0 16px;text-shadow:0 0 26px rgba(229,72,77,.55);animation:flk 7s infinite}
+@keyframes flk{0%,90%,100%{opacity:1}92%{opacity:.55}94%{opacity:1}96%{opacity:.7}}
+.sub{color:var(--soft);margin:0 0 6px}
+.note{font:italic 400 1.15rem Literata,serif;color:var(--red);min-height:1.9em;margin:10px 0 0;opacity:0;transition:opacity .5s}
+.note.show{opacity:1}
+.hint{font:.72rem 'Space Mono',monospace;color:var(--soft);margin:10px 0 0}
+.board{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:40px 22px 14vh;display:grid;grid-template-columns:repeat(4,1fr);gap:40px 28px}
+.string{position:absolute;left:0;top:0;pointer-events:none;z-index:0;overflow:visible}
+.string path{fill:none;stroke:var(--red);stroke-width:2.2;stroke-linecap:round;filter:drop-shadow(0 3px 3px rgba(0,0,0,.7));animation:draw 2.6s ease .5s backwards}
+@keyframes draw{from{stroke-dashoffset:var(--len)}}
+.card{position:relative;z-index:1;display:block;background:var(--paper);color:#1b1a17;padding:10px 10px 12px;border:0;border-radius:3px;text-align:left;font:inherit;cursor:pointer;
+box-shadow:0 16px 26px -8px rgba(0,0,0,.8);--h:215;
+transform:perspective(700px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) rotate(var(--r)) translateY(var(--dy));
+transition:transform .25s ease-out,box-shadow .25s;animation:drop .7s cubic-bezier(.3,1.4,.5,1) backwards;animation-delay:calc(var(--i)*90ms)}
+@keyframes drop{from{opacity:0;transform:translateY(-90px) rotate(calc(var(--r)*4))}}
+.card::before{content:"";position:absolute;top:-7px;left:50%;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff8a8e,#a3171c);box-shadow:0 3px 4px rgba(0,0,0,.6);z-index:2}
+.card:hover,.card:focus-visible{transform:perspective(700px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) rotate(0deg) translateY(-8px) scale(1.05);box-shadow:0 26px 34px -10px rgba(0,0,0,.9);outline:none;z-index:3}
+.ph{position:relative;display:grid;place-items:center;aspect-ratio:1/.85;overflow:hidden;background:linear-gradient(135deg,hsl(var(--h) 55% 38%),hsl(calc(var(--h) + 40) 50% 16%))}
+.ph::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px)}
+.ph b{font:700 3rem 'Space Grotesk',sans-serif;color:rgba(255,255,255,.92);text-shadow:0 2px 12px rgba(0,0,0,.5)}
+.cap{display:block;margin-top:10px;font:700 1.22rem/1.1 Caveat,cursive;min-height:2.3em}
+.card.locked .ph{filter:grayscale(1) brightness(.5)}
+.seal{position:absolute;left:-8%;right:-8%;top:38%;padding:4px 0;text-align:center;background:var(--red);color:#fff;font:700 .7rem 'Space Mono',monospace;letter-spacing:.34em;transform:rotate(-14deg);box-shadow:0 4px 10px rgba(0,0,0,.5);z-index:2}
+.otag{position:absolute;right:-6px;top:14px;background:#2fb67c;color:#06231a;font:700 .62rem 'Space Mono',monospace;letter-spacing:.16em;padding:3px 9px;transform:rotate(8deg);z-index:2}
+.modal{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:34px 16px 16px}
+.modal[hidden]{display:none}
+.backdrop{position:absolute;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(4px);opacity:0;transition:opacity .4s}
+.modal.show .backdrop{opacity:1}
+.folder{position:relative;width:min(94vw,580px);background:linear-gradient(#e6d6a6,#d8c48b);color:#2a2417;border-radius:6px 14px 10px 10px;box-shadow:0 40px 80px -20px #000;--a:hsl(var(--h) 60% 30%)}
+.modal.show .folder{animation:flip .75s cubic-bezier(.2,.8,.2,1)}
+@keyframes flip{from{opacity:0;transform:perspective(1300px) rotateY(-80deg) translateY(30px) scale(.85)}}
+.ftab{position:absolute;left:26px;top:-27px;background:#d8c48b;padding:5px 16px;border-radius:8px 8px 0 0;font:700 .75rem 'Space Mono',monospace;letter-spacing:.18em}
+.fin{position:relative;max-height:min(80vh,640px);overflow:auto;padding:28px 28px 24px}
+.x{position:absolute;right:12px;top:10px;z-index:3;border:0;background:none;font-size:1.2rem;cursor:pointer;color:inherit}
+.fstamp{position:absolute;right:46px;top:26px;font:700 .95rem 'Space Mono',monospace;letter-spacing:.18em;color:#b3202a;border:3px solid #b3202a;border-radius:6px;padding:2px 10px;transform:rotate(9deg);opacity:.9;animation:stamp .5s cubic-bezier(.2,1.4,.4,1) .45s backwards}
+.fstamp.open{color:#13734d;border-color:#13734d}
+@keyframes stamp{from{opacity:0;transform:rotate(9deg) scale(2.6)}}
+.flabel{font:400 .76rem 'Space Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#6b6244;margin:0 0 4px}
+.folder h2{font:700 1.7rem/1.15 'Space Grotesk',sans-serif;margin:0 90px 12px 0;color:var(--a)}
+.chip{display:inline-block;border:1px solid var(--a);color:var(--a);border-radius:99px;padding:1px 11px;font-size:.76rem;margin:0 4px 12px 0}
+.fsum{margin:0 0 16px;min-height:3.6em}
+.exh{font:700 .72rem 'Space Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#6b6244;margin:0 0 8px}
+.ex{position:relative;background:rgba(255,255,255,.45);border:1px dashed rgba(42,36,23,.35);border-radius:6px;padding:14px 16px 6px;margin-bottom:20px}
+.ex p{margin:0 0 .55em;font-size:.96rem;animation:up .5s both;animation-delay:calc(var(--k)*120ms + .4s)}
+@keyframes up{from{opacity:0;transform:translateY(10px)}}
+.ex p.bar{height:.95em;border-radius:3px;background:#15130e}
+.fact{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.read{background:var(--a);color:#fff;text-decoration:none;border:0;padding:11px 20px;border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+.read.locked{background:#c3b07b;color:#6b6244;cursor:not-allowed}
+.shake{animation:shake .45s}
+@keyframes shake{20%,60%{translate:-6px 0}40%,80%{translate:6px 0}}
+.gh{background:none;border:1px solid rgba(42,36,23,.35);color:inherit;border-radius:8px;padding:9px 13px;font:inherit;font-size:.9rem;cursor:pointer}
+.gh:disabled{opacity:.35;cursor:default}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+@media (max-width:900px){.board{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:600px){.board{grid-template-columns:repeat(2,1fr);gap:34px 18px}.fin{padding:24px 18px 20px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.note{opacity:1}}
+</style>
+</head>
+<body>
+<div class="dark" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<header class="top"><span class="brand">Case File · Northbridge set in The Day She Stayed </span><button class="tg" id="tg" type="button">💡 Lights on</button></header>
+<section class="hero">
+  <p class="kick">Evidence board</p>
+  <h1>The Dead Man’s Alibi</h1>
+  <p class="sub">Four cases. Four suspects. One dead man.</p>
+  <p class="note" id="note" aria-hidden="true"></p>
+  <p class="hint" id="count"></p>
+</section>
+<main class="board" id="board"></main>
+<div class="modal" id="modal" hidden><div class="backdrop" id="bd"></div><article class="folder" id="folder" role="dialog" aria-modal="true" aria-label="Chapter file"></article></div>
+<script>
+var BASE="the-dead-mans-alibi/"; // folder holding the chapter pages
+var CH=[
+ {n:"01",label:"Chapter 1",title:"The Man Who Wasn’t There",tag:"Cold open · A dead man",h:215,file:"chapter1.html",time:"October 30 — 8:16 AM",sum:"A detective asks Toma whether his father is really dead. Then a photograph says otherwise.",pre:["“Your father is dead, correct?”","Toma Kisaragi stared at the detective.","Then at the vending-machine coffee in his hand.","Then back at the detective.","“…That’s a weird way to start a conversation.”"]},
+ {n:"02",label:"Chapter 2",title:"The Girl at the Door",tag:"Midnight · A key",h:345,file:"chapter2.html",sum:"A late-night visitor, a missing woman and a key with a number on it.",pre:["Toma didn’t immediately open the door.","He looked through the peephole.","Mio.","Of course."]},
+ {n:"03",label:"Chapter 3",title:"Four Men, One Dead Man",tag:"Case files · Alibis",h:35,file:"chapter3.html",sum:"Four cases, four witnesses, and the same name in every statement.",pre:["Shun was not supposed to access police records outside his training.","He knew that.","He also knew Toma would probably do something stupid without him."]},
+ {n:"04",label:"Chapter 4",title:"The Girl Who Knew Too Much",tag:"Secrets · Trust",h:275,file:"chapter4.html",sum:"An old envelope, a handwritten note and a confession about what Mio knew.",pre:["They didn’t speak on the way back.","Toma sat in the passenger seat while Shun drove.","His phone kept vibrating."]},
+ {n:"05",label:"Chapter 5",title:"People We Meet Along the Way",tag:"Station · Locker 317",h:160,file:"chapter5.html",time:"November 1 — 2:17 PM",sum:"A crowded railway station, a locker and a tape recording nobody expected.",pre:["The railway station was crowded.","Schoolchildren ran between platforms.","Office workers hurried towards the ticket gates."]},
+ {n:"06",label:"Chapter 6",title:"The Locker Under Platform Nine",tag:"Warrant · A park bench",h:200,file:"chapter6.html",sum:"A warrant, a secret meeting and a photograph of someone who should not exist.",pre:["The next morning, Shun brought bad news.","“The police have issued a warrant.”","“For what?”"]},
+ {n:"07",label:"Chapter 7",title:"The Names Nobody Remembered",tag:"Names · A bakery",h:320,file:"chapter7.html",sum:"Old school records, a changed name and a small bakery on the edge of the city.",pre:["Natsumi refused to go back to the apartment.","She spent the entire evening searching through old documents.","At midnight, she found something."]},
+ {n:"08",label:"Chapter 8",title:"A Man Who Died Twice",tag:"Coast road · Reunion",h:0,file:"chapter8.html",time:"November 2 — 6:30 AM",sum:"The place where the city ends, and someone who is not supposed to be there.",pre:["The place where the city ended was an old coastal road.","There were no buildings nearby."]},
+ {n:"09",label:"Chapter 9",title:"The Dead Man’s Alibi",tag:"Ledger · The terminal",h:45,file:"chapter9.html",time:"November 3 — 8:15 AM",sum:"Six people, one ledger and less than ninety minutes before the demolition.",pre:["The group gathered at Shun’s apartment.","There were now six people."]},
+ {n:"10",label:"Chapter 10",title:"The Last Person to Leave",tag:"Archive · Homecoming",h:130,file:"chapter10.html",sum:"The archive under the terminal, and the person still missing.",pre:["The eastern archive was beneath the old terminal.","The original documents were still there."]},
+ {n:"11",label:"Chapter 11",title:"A Better Kind of Tomorrow",tag:"Festival · Letters",h:20,file:"chapter11.html",time:"May 18 — Five months later",sum:"A cultural festival, an exhibition of ordinary things and a letter from a father.",pre:["The university courtyard was crowded.","Students were preparing for the annual cultural festival."]},
+ {n:"Ep",label:"Epilogue",title:"Nobody’s Alibi",tag:"One year later",h:250,file:"epilogue.html",time:"One year later",sum:"A quiet year, and one message that arrives after dark.",pre:["The old Northbridge Terminal was still standing.","Its ownership had changed."]}
+];
+var UNLOCKED=["#"]; // add a chapter's file name here to unlock it
+CH.forEach(function(c){c.locked=UNLOCKED.indexOf(c.file)<0});
+var NOTES=["“Your father is dead, correct?”","“Don’t trust the police.”","“Don’t let them find the girl.”","“The number you are trying to reach is—”","“I don’t joke at work.”"];
+
+var RM=matchMedia("(prefers-reduced-motion: reduce)").matches,body=document.body,root=document.documentElement;
+function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
+
+/* flashlight */
+addEventListener("pointermove",function(e){root.style.setProperty("--fx",e.clientX+"px");root.style.setProperty("--fy",e.clientY+"px")});
+var tg=document.getElementById("tg");
+function tgl(){tg.textContent=body.classList.contains("lights")?"🔦 Flashlight":"💡 Lights on"}
+if(load("tdma-lights")==="1")body.classList.add("lights");tgl();
+tg.onclick=function(){body.classList.toggle("lights");store("tdma-lights",body.classList.contains("lights")?"1":"0");tgl()};
+
+/* rotating line from the story */
+var ni=0,nel=document.getElementById("note");
+function note(){nel.classList.remove("show");setTimeout(function(){nel.textContent=NOTES[ni++%NOTES.length];nel.classList.add("show")},RM?0:500)}
+note();setInterval(note,3800);
+document.getElementById("count").textContent=CH.length+" files · "+CH.filter(function(c){return!c.locked}).length+" declassified · move the flashlight, click a file";
+
+/* the board */
+var board=document.getElementById("board");
+function R(i){return(((i*37)%9)-4)*.8}function D(i){return(((i*53)%5)-2)*7}
+board.innerHTML='<svg class="string" id="str"><path id="sp"/></svg>'+CH.map(function(c,i){
+  return '<button class="card'+(c.locked?' locked':'')+'" type="button" data-i="'+i+'" style="--h:'+c.h+';--r:'+R(i)+'deg;--dy:'+D(i)+'px;--i:'+i+'"><span class="ph"><b>'+c.n+'</b></span><span class="cap">'+c.title+'</span>'+(c.locked?'<span class="seal">SEALED</span>':'<span class="otag">OPEN</span>')+'</button>';
+}).join("");
+var sp=document.getElementById("sp"),svg=document.getElementById("str");
+function str(){var cs=board.querySelectorAll(".card"),p=[];
+  cs.forEach(function(c){p.push([c.offsetLeft+c.offsetWidth/2,c.offsetTop+2])});
+  svg.setAttribute("width",board.offsetWidth);svg.setAttribute("height",board.offsetHeight);
+  var d="M"+p[0][0]+","+p[0][1];
+  for(var i=1;i<p.length;i++){var a=p[i-1],b=p[i];d+=" Q"+((a[0]+b[0])/2)+","+(Math.max(a[1],b[1])+54)+" "+b[0]+","+b[1]}
+  sp.setAttribute("d",d);var L=sp.getTotalLength();sp.style.setProperty("--len",L);sp.style.strokeDasharray=L}
+str();addEventListener("load",str);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(str);
+var rt;addEventListener("resize",function(){clearTimeout(rt);rt=setTimeout(function(){sp.style.animation="none";str()},150)});
+board.addEventListener("pointermove",function(e){var c=e.target.closest(".card");if(!c)return;var r=c.getBoundingClientRect();
+  c.style.setProperty("--ry",((e.clientX-r.left)/r.width-.5)*14+"deg");c.style.setProperty("--rx",(-((e.clientY-r.top)/r.height-.5))*14+"deg")});
+board.addEventListener("pointerout",function(e){var c=e.target.closest(".card");if(c){c.style.removeProperty("--rx");c.style.removeProperty("--ry")}});
+
+/* the dossier */
+var modal=document.getElementById("modal"),folder=document.getElementById("folder"),cur=0,tw,last=null;
+function type(el,txt){clearInterval(tw);if(RM){el.textContent=txt;return}el.textContent="";var i=0;tw=setInterval(function(){el.textContent=txt.slice(0,++i);if(i>=txt.length)clearInterval(tw)},16)}
+function openFile(i){
+  cur=i;var c=CH[i];if(!modal.classList.contains("show"))last=document.activeElement;
+  folder.style.setProperty("--h",c.h);
+  folder.innerHTML='<span class="ftab">FILE '+c.n+'</span><div class="fin"><button class="x" id="x" type="button" aria-label="Close">✕</button>'+
+   '<span class="fstamp'+(c.locked?'':' open')+'">'+(c.locked?'LOCKED':'DECLASSIFIED')+'</span>'+
+   '<p class="flabel">'+c.label+'</p><h2>'+c.title+'</h2>'+
+   (c.locked?'':'<span class="chip">'+c.tag+'</span>'+(c.time?'<span class="chip">'+c.time+'</span>':''))+
+   '<p class="fsum"></p><h3 class="exh">Excerpt</h3><div class="ex">'+
+   (c.locked?[82,96,70,90]:c.pre).map(function(t,n){return c.locked?'<p class="bar" style="--k:'+n+';width:'+t+'%"></p>':'<p style="--k:'+n+'">'+t+'</p>'}).join("")+'</div>'+
+   '<div class="fact">'+(c.locked?'<button class="read locked" type="button" id="rd">🔒 Locked</button>':'<a class="read" href="'+BASE+c.file+'">Read '+c.label.toLowerCase()+' →</a>')+
+   '<button class="gh" type="button" id="pv"'+(i===0?" disabled":"")+'>← Previous</button><button class="gh" type="button" id="nx"'+(i===CH.length-1?" disabled":"")+'>Next →</button></div></div>';
+  modal.hidden=false;modal.classList.remove("show");void modal.offsetWidth;modal.classList.add("show");body.classList.add("noscroll");
+  type(folder.querySelector(".fsum"),c.locked?"This file is sealed. Its contents stay hidden until it’s unlocked.":c.sum);
+  document.getElementById("x").onclick=closeFile;
+  document.getElementById("pv").onclick=function(){openFile(cur-1)};
+  document.getElementById("nx").onclick=function(){openFile(cur+1)};
+  var rd=document.getElementById("rd");
+  if(rd)rd.onclick=function(){rd.classList.remove("shake");void rd.offsetWidth;rd.classList.add("shake");rd.textContent="🔒 Not unlocked yet";setTimeout(function(){rd.textContent="🔒 Locked"},1600)};
+  document.getElementById("x").focus();
+}
+function closeFile(){modal.classList.remove("show");modal.hidden=true;body.classList.remove("noscroll");if(last&&last.focus)last.focus()}
+document.getElementById("bd").onclick=closeFile;
+board.onclick=function(e){var c=e.target.closest(".card");if(c)openFile(+c.dataset.i)};
+addEventListener("keydown",function(e){if(modal.hidden)return;
+  if(e.key==="Escape")closeFile();
+  else if(e.key==="ArrowRight"&&cur<CH.length-1)openFile(cur+1);
+  else if(e.key==="ArrowLeft"&&cur>0)openFile(cur-1)});
+</script>
+</body>
+</html>

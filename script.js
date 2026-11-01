@@ -22,7 +22,7 @@ var store = {
    wipe their own locally-stored data on request (see confirmClearLocalData
    below) — nothing here is ever transmitted anywhere. */
 var APP_STORAGE_KEYS = [
-    'readProgress', 'bookmarks', 'currentlyReading', 'readingLog', 'readingQueue',
+    'readProgress', 'chapterReadIds', 'hahv2Read', 'bookmarks', 'currentlyReading', 'readingLog', 'readingQueue',
     'privateReaderNotes', 'novelComments', 'recentSearches', 'lightMode', 'theme', 'morphismStyle',
     'tiltEnabled', 'motionEnabled', 'readerFontScale', 'readerAchUnlocks',
     'goldenPetalCaught', 'nightOwlRead', 'oneDayRead', 'searchedOnce', 'sharedOnce',
@@ -77,7 +77,8 @@ function fmtNum(n) {
 var storyWorlds = [
     { title: 'Him and Her', type: 'Three-volume series', note: 'Follow the relationship from the original story through Volumes 2 and 3.', order: [5, 10, 14] },
     { title: 'The Petal That Falls With a Smile', type: 'Prequel + four volumes', note: 'Begin with the Sora and Ren prequel, then continue through Volumes 1–4.', order: [18, 3, 8, 11, 19] },
-    { title: 'The Rain Pact', type: 'Main story + companion', note: 'Read The Rain Pact first, then visit The Other Side of Rain for its companion journey.', order: [1, 7] }
+    { title: 'The Rain Pact', type: 'Main story + companion', note: 'Read The Rain Pact first, then visit The Other Side of Rain for its companion journey.', order: [1, 7] },
+    { title: 'Ten Percent of Forever', type: 'Shared universe · Main story + companion', note: 'Read Ten Percent of Forever, then continue in the same universe with The Things We Never Returned.', order: [2, 21] }
 ];
 var storySamples = [
     { id: 'rain', label: 'The Rain Pact', mood: 'Romance · Chapter One', title: 'Drizzle and Blue Umbrellas', excerpt: 'The first time Aoi met him, she didn’t even know his name. It was raining—of course it was. The kind of drizzle that crept in slowly, catching everyone off guard.', link: './rp/rpc1.html' },
@@ -111,27 +112,6 @@ var readerProfile = store.get('readerProfile', {});
 if (!readerProfile || typeof readerProfile !== 'object' || Array.isArray(readerProfile)) readerProfile = {};
 
 function getRead(n) { var v = readProgress[n.order]; return typeof v === 'number' ? Math.max(0, Math.min(v, n.ch)) : 0; }
-function logReadingActivity(delta) {
-    if (delta <= 0) return;
-    var key = new Date().toISOString().slice(0, 10);
-    readingLog[key] = (readingLog[key] || 0) + delta;
-    store.set('readingLog', readingLog);
-}
-function adjustProgress(order, delta) {
-    var n = novels.find(function (x) { return x.order === order; });
-    if (!n) return;
-    var cur = getRead(n), next = Math.max(0, Math.min(cur + delta, n.ch));
-    if (next === cur) return;
-    readProgress[order] = next;
-    store.set('readProgress', readProgress);
-    if (delta > 0) {
-        logReadingActivity(delta);
-        var hr = new Date().getHours();
-        if (hr >= 23 || hr < 5) markFlag('nightOwlRead');
-    }
-    if (next === n.ch && cur !== n.ch) showToast(n.title + ' — all caught up! ✦');
-    refreshReadingUI();
-}
 
 /* ============================================================
    AURORA / MOOD
@@ -709,6 +689,13 @@ function refreshReadingUI() {
     renderStoryWorlds();
     renderForYouPicks();
 }
+window.addEventListener('storage', function (event) {
+    if (event.key !== 'readProgress' && event.key !== 'currentlyReading' && event.key !== 'readingLog' && event.key !== 'nightOwlRead') return;
+    readProgress = store.get('readProgress', {});
+    currentlyReadingOrder = store.get('currentlyReading', null);
+    readingLog = store.get('readingLog', {});
+    refreshReadingUI();
+});
 function updateQueueButton(order) {
     var button = document.getElementById('spQueueBtn');
     if (!button) return;
@@ -770,7 +757,7 @@ function renderPersonalShelf() {
 function renderContinueReading() {
     var body = document.getElementById('crBody');
     var n = currentlyReadingOrder && novels.find(function (x) { return x.order === currentlyReadingOrder; });
-    if (!n) { body.innerHTML = '<div class="cr-empty">You have not started a story yet. Pick one from The Shelf and it will show up here, like a bookmark that remembers you.</div>'; return; }
+    if (!n) { body.innerHTML = '<div class="cr-empty"><strong>Your next story starts here.</strong><span>Choose something that fits the moment.</span><button class="cr-btn" type="button" onclick="scrollToId(\'catalog\')">Explore the library →</button></div>'; return; }
     var read = getRead(n), pct = n.ch ? Math.round(read / n.ch * 100) : 0;
     body.innerHTML =
         '<div class="cr-thumb-row"><div class="cr-thumb">' + coverHtml(n, '').replace('<div class=""', '<div style="width:100%;height:100%"') + '</div>' +
@@ -1060,15 +1047,14 @@ function openSpotlight(order) {
     var read = getRead(n), pct = n.ch ? Math.round(read / n.ch * 100) : 0;
     document.getElementById('spFill').style.width = pct + '%';
     document.getElementById('spChRead').textContent = read + ' / ' + n.ch + ' chapters read';
-    document.getElementById('spMinus').disabled = read === 0;
-    document.getElementById('spPlus').disabled = read >= n.ch;
     var chList = document.getElementById('spChapterList');
     var html = '';
     var isSingleChapter = n.ch === 1;
     for (var i = 1; i <= Math.min(n.ch, 10); i++) {
         var isRead = i <= read;
-        var cName = isSingleChapter ? 'One Shot' : 'Chapter ' + i;
-        html += '<a class="sp-ch-item" href="' + (n.link || '#') + '"><div class="sp-ch-num' + (isRead ? ' read' : '') + '">' + (isRead ? '✓' : i) + '</div><span style="flex:1">' + cName + '</span>' +
+        var cName = n.chapterLabels && n.chapterLabels[i - 1] ? n.chapterLabels[i - 1] : (isSingleChapter ? 'One Shot' : 'Chapter ' + i);
+        var cLink = n.chapterLinks && n.chapterLinks[i - 1] ? n.chapterLinks[i - 1] : (n.link || '#');
+        html += '<a class="sp-ch-item" href="' + esc(cLink) + '"><div class="sp-ch-num' + (isRead ? ' read' : '') + '">' + (isRead ? '✓' : i) + '</div><span style="flex:1">' + esc(cName) + '</span>' +
             (isRead ? '<span style="font-size:10px;color:var(--sage)">Read</span>' : '<span style="font-size:10px;color:var(--muted)">→</span>') + '</a>';
     }
     if (n.ch > 10) html += '<div style="text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--muted);padding:6px">+ ' + (n.ch - 10) + ' more chapters</div>';
@@ -1087,7 +1073,6 @@ function closeSpotlight() {
     document.getElementById('spotlightPanel').classList.remove('open');
     spotlightOrder = null;
 }
-function spAdjust(delta) { if (spotlightOrder === null) return; adjustProgress(spotlightOrder, delta); openSpotlight(spotlightOrder); }
 function goToNovel() {
     var n = novels.find(function (x) { return x.order === spotlightOrder; });
     if (n) openReaderMode(n.order);
@@ -1115,12 +1100,12 @@ function updateReaderMode() {
     document.getElementById('readerModeProgressLabel').textContent = 'Chapter ' + readerModeChapter + ' of ' + total;
     document.getElementById('readerModeProgressPct').textContent = pct + '%';
     document.getElementById('readerModeProgressFill').style.width = pct + '%';
-    document.getElementById('readerModeChapterText').textContent = n.ch ? ('Chapter ' + readerModeChapter) : 'Coming on release day';
-    document.getElementById('readerModeBody').textContent = n.ch ? ('You are in the focus space for chapter ' + readerModeChapter + '. Mark it as read when you finish, or open the full chapter when you are ready to continue.') : 'This story is part of the upcoming shelf. Keep it bookmarked and return when the chapter lands.';
-    document.getElementById('readerModeMarkBtn').textContent = n.ch && read >= readerModeChapter ? '✓ Chapter marked as read' : 'Mark chapter as read';
-    document.getElementById('readerModeMarkBtn').disabled = !n.ch || read >= readerModeChapter;
-    document.getElementById('readerModeOpenBtn').textContent = n.link && n.link !== '#' ? 'Open full chapter →' : 'Story link coming soon';
-    document.getElementById('readerModeOpenBtn').disabled = !n.link || n.link === '#';
+    var readerChapterLabel = n.chapterLabels && n.chapterLabels[readerModeChapter - 1] ? n.chapterLabels[readerModeChapter - 1] : 'Chapter ' + readerModeChapter;
+    document.getElementById('readerModeChapterText').textContent = n.ch ? readerChapterLabel : 'Coming on release day';
+    document.getElementById('readerModeBody').textContent = n.ch ? ('You are in the focus space for chapter ' + readerModeChapter + '. Open the full chapter when you are ready; progress updates automatically as you read.') : 'This story is part of the upcoming shelf. Keep it bookmarked and return when the chapter lands.';
+    var activeChapterLink = n.chapterLinks && n.chapterLinks[readerModeChapter - 1] ? n.chapterLinks[readerModeChapter - 1] : n.link;
+    document.getElementById('readerModeOpenBtn').textContent = activeChapterLink && activeChapterLink !== '#' ? 'Open ' + readerChapterLabel.toLowerCase() + ' →' : 'Story link coming soon';
+    document.getElementById('readerModeOpenBtn').disabled = !activeChapterLink || activeChapterLink === '#';
     var bbtn = document.getElementById('readerModeBookmarkBtn');
     bbtn.textContent = currentlyReadingOrder === n.order ? '✓ Currently Reading' : '🔖 Set as Currently Reading';
     bbtn.classList.toggle('active', currentlyReadingOrder === n.order);
@@ -1152,18 +1137,11 @@ function readerModeBookmark() {
     updateReaderMode();
     showToast(currentlyReadingOrder === n.order ? 'Added to Currently Reading 🔖' : 'Bookmark removed.');
 }
-function readerModeMarkComplete() {
-    var n = novels.find(function (x) { return x.order === readerModeOrder; });
-    if (!n || !n.ch) return;
-    var delta = readerModeChapter - getRead(n);
-    if (delta > 0) adjustProgress(n.order, delta);
-    if (readerModeChapter < n.ch) readerModeChapter++;
-    updateReaderMode();
-}
 function readerModeOpenStory() {
     var n = novels.find(function (x) { return x.order === readerModeOrder; });
-    if (!n || !n.link || n.link === '#') { showToast('The full chapter link is coming soon ✦'); return; }
-    window.location.href = n.link;
+    var chapterLink = n && n.chapterLinks && n.chapterLinks[readerModeChapter - 1] ? n.chapterLinks[readerModeChapter - 1] : (n && n.link);
+    if (!chapterLink || chapterLink === '#') { showToast('The full chapter link is coming soon ✦'); return; }
+    window.location.href = chapterLink;
 }
 function toggleBookmark() {
     if (!spotlightOrder) return;
@@ -1311,7 +1289,7 @@ var readerAchievementDefs = [
     { id: 'private-note', icon: '✍️', title: 'A Thought to Keep', hint: 'Write a private note about a story.', category: 'Personal', target: 1, metric: function (s) { return s.notes; } },
     { id: 'search', icon: '🔎', title: 'Found It', hint: 'Use search to find a story.', category: 'Personal', target: 1, metric: function (s) { return s.searched; } },
     { id: 'share', icon: '🕊️', title: 'Pass It Along', hint: 'Share a story link with someone.', category: 'Personal', target: 1, metric: function (s) { return s.shared; } },
-    { id: 'library-secrets', icon: '🗝️', title: 'Behind the Bookcase', hint: 'Find all three hidden Library secrets.', category: 'Secrets', target: 3, metric: function (s) { return s.secrets; } }
+    { id: 'library-secrets', icon: '🗝️', title: 'Behind the Bookcase', hint: 'Find all three hidden Library secrets.', category: 'Secrets', target: 2, metric: function (s) { return s.secrets; } }
 ];
 function getReaderAchievementStats() {
     var weekdays = Object.keys(readingLog).filter(function (key) {
@@ -1519,8 +1497,7 @@ function renderHeatmap() {
    ============================================================ */
 var upcomingReleases = [
     { date: '2026-11-02', title: "The Other Day - Chapter 10" },
-    { date: '2026-11-01', title: 'Petal Vol. 4 — chpater 3 ' },
-    { date: '2026-11-01', title: 'THE THINGS WE NEVER RETURNED'},
+    { date: '2026-11-08', title: 'Petal Vol. 4 — chpater 4 ' },
 ];
 var calSorted = [];
 var releaseReminders = store.get('releaseReminders', []);

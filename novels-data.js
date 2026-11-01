@@ -61,7 +61,7 @@ var novels = [
         blurb: "ONE SHOT.", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["hidden-gems"]
     },
     {
-        order: 16, title: "The Other Day", img: "./img/sub2/tod.jpg", link: "./tod/tod.html", genres: ["drama", "slice"], status: "ongoing", ch: 9, rating: 4.7, views: 20000, releaseOffsetDays: 0,
+        order: 16, title: "The Other Day", img: "./img/sub2/tod.jpg", link: "./tod/tod.html", genres: ["drama", "slice"], status: "ongoing", ch: 10, rating: 4.7, views: 20000, releaseOffsetDays: 0,
         blurb: "normal days?", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
     },
     {
@@ -73,7 +73,7 @@ var novels = [
         blurb: "TRY IT!", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
     },
     {
-        order: 19, title: "The Petal That Falls With A Smile vol 4", img: "./img/sub2/tpv4.jpg", link: "./tptfwas/tptfwasv4.html", genres: ["drama", "slice"], status: "ongoing", ch: 2, rating: 4.6, views: 6000, releaseOffsetDays: 0,
+        order: 19, title: "The Petal That Falls With A Smile vol 4", img: "./img/sub2/tpv4.jpg", link: "./tptfwas/tptfwasv4.html", genres: ["drama", "slice"], status: "ongoing", ch: 3, rating: 4.8, views: 17000, releaseOffsetDays: 0,
         blurb: "Volume 4 — University → Adulthood Arc", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
     },
     {
@@ -81,7 +81,12 @@ var novels = [
         blurb: "Psychological Thriller · Murder Mystery · One-Shot", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
     },
      {
-        order: 21, title: "THE THINGS WE NEVER RETURNED", img: "./img/sub2/thwnr.jpg", link: "./tpof/thwnr.html", genres: ["drama", "mystery","slice"], status: "upcoming", ch: 0, rating: null, views: null, releaseOffsetDays: 0,
-        blurb: "A story set in the universe of Ten Percent of Forever", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
+        order: 21, title: "THE THINGS WE NEVER RETURNED", img: "./img/sub2/thwnr.jpg", link: "./tpof/thwnr.html", genres: ["drama", "mystery","slice"], status: "completed", ch: 10, rating: 4.2, views: 19000, releaseOffsetDays: 0,
+        blurb: "A complete ten-part story set in the universe of Ten Percent of Forever.", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["completed", "newest"],
+    
+    },
+    {
+        order: 22, title: "The Dead Man’s Alibi", img: "./img/sub2/tdma.jpg", link: "./tdss/tdma.html", genres: ["mystery", "drama", "action"], status: "upcoming", ch: 0, rating: 0, views: 0, releaseOffsetDays: 0,
+        blurb: "Four cases. Four suspects. One dead man. Follow Toma Kisaragi as a missing woman, a buried archive, and a name that keeps resurfacing pull the evidence together.", grad: "135deg,#171a22,#6f252c", collections: ["newest"]
     },
 ];

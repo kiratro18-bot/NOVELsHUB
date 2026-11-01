@@ -15,12 +15,6 @@ var avail = novels.filter(function (n) { return n.status !== 'upcoming' && n.ch 
 var main = document.getElementById('main'), live = document.getElementById('live');
 
 function getRead(n) { var v = obj('readProgress')[n.order]; return typeof v === 'number' ? Math.max(0, Math.min(v, n.ch)) : 0; }
-function setRead(n, next) {
-  var rp = obj('readProgress'), cur = getRead(n);
-  next = Math.max(0, Math.min(next, n.ch)); if (next === cur) return;
-  rp[n.order] = next; store.set('readProgress', rp);
-  if (next > cur) { var log = obj('readingLog'), d = new Date().toISOString().slice(0, 10); log[d] = (log[d] || 0) + (next - cur); store.set('readingLog', log); }
-}
 function isFav(n) { return !!obj('bookmarks')[n.order]; }
 function toggleFav(n) { var b = obj('bookmarks'); b[n.order] = !b[n.order]; store.set('bookmarks', b); return b[n.order]; }
 function curOrder() { var c = store.get('currentlyReading', null); return typeof c === 'number' ? c : null; }
@@ -74,7 +68,7 @@ function novel(order) {
   var n = novels.filter(function (x) { return x.order === order; })[0];
   if (!n || n.status === 'upcoming') return '<h1>Story not found</h1><p><a href="#/shelf">Back to the shelf</a></p>';
   var r = getRead(n), pct = Math.round(r / n.ch * 100), chs = '';
-  for (var i = 1; i <= n.ch; i++) chs += '<li><button data-ch="' + i + '" class="' + (i <= r ? 'done' : '') + '" aria-pressed="' + (i <= r) + '"><span class="n">' + (i <= r ? '✓' : i) + '</span>' + (n.ch === 1 ? 'One shot' : 'Chapter ' + i) + '<span class="mut" style="margin-left:auto">' + (i <= r ? 'Read' : 'Mark as read') + '</span></button></li>';
+  for (var i = 1; i <= n.ch; i++) chs += '<li class="' + (i <= r ? 'done' : '') + '"><span class="n">' + (i <= r ? '✓' : i) + '</span>' + (n.ch === 1 ? 'One shot' : 'Chapter ' + i) + '<span class="mut" style="margin-left:auto">' + (i <= r ? 'Read' : 'Unread') + '</span></li>';
   return '<p><a href="#/shelf">← Shelf</a></p><div class="detail"><div class="cover" style="border-radius:var(--r);overflow:hidden"><img src="' + esc(n.img) + '" alt="Cover of ' + esc(n.title) + '"></div><div>' +
     '<h1>' + esc(n.title) + '</h1><p class="mut">' + esc(n.genres.join(' · ')) + ' · ' + esc(n.status) + ' · ⭐ ' + (n.rating || '—') + '</p><p class="prose" style="margin:12px 0">' + esc(n.blurb) + '</p>' +
     '<div class="bar" role="img" aria-label="' + pct + '% read"><i style="width:' + pct + '%"></i></div><p class="mut" style="margin:6px 0 12px">' + r + ' / ' + n.ch + ' chapters read</p>' +
@@ -116,7 +110,6 @@ main.addEventListener('click', function (e) {
   var b = e.target.closest('button'); if (!b) return;
   var p = location.hash.split('/'), n = novels.filter(function (x) { return x.order === +p[2]; })[0];
   if (b.dataset.g) { g = b.dataset.g; render(); }
-  else if (b.dataset.ch && n) { var i = +b.dataset.ch, r = getRead(n); setRead(n, i <= r ? i - 1 : i); render(); announce('Progress ' + getRead(n) + ' of ' + n.ch + ' chapters'); var nb = main.querySelector('[data-ch="' + i + '"]'); if (nb) nb.focus(); }
   else if (b.id === 'fav' && n) { announce(toggleFav(n) ? 'Bookmarked' : 'Bookmark removed'); render(); document.getElementById('fav').focus(); }
   else if (b.id === 'cur' && n) { setCur(n); render(); document.getElementById('cur').focus(); }
   else if (b.id === 'savenm') { var nm = sanitize(document.getElementById('nm').value).slice(0, 32) || 'Reader'; var pr = obj('readerProfile'); pr.name = nm; store.set('readerProfile', pr); render(); announce('Name saved'); }

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" role="img" aria-labelledby="title desc">
+  <title id="title">The Dead Man’s Alibi</title>
+  <desc id="desc">A noir red-and-black evidence board with a pinned case file and connecting clues.</desc>
+  <defs>
+    <linearGradient id="bg" x2="0.9" y2="1"><stop stop-color="#252832"/><stop offset=".52" stop-color="#11131a"/><stop offset="1" stop-color="#08090d"/></linearGradient>
+    <linearGradient id="paper" x2="0" y2="1"><stop stop-color="#f3ead5"/><stop offset="1" stop-color="#c8b993"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#e5484d" stop-opacity=".32"/><stop offset="1" stop-color="#e5484d" stop-opacity="0"/></radialGradient>
+    <filter id="shadow" x="-.3" y="-.3" width="1.6" height="1.7"><feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#000" flood-opacity=".65"/></filter>
+  </defs>
+  <rect width="600" height="900" fill="url(#bg)"/>
+  <rect width="600" height="900" fill="url(#glow)"/>
+  <path d="M65 250 510 515M105 570 470 305M122 270 405 640" fill="none" stroke="#b62f38" stroke-width="3" opacity=".65"/>
+  <g fill="#d8caa6" stroke="#897d63" stroke-width="2" opacity=".82">
+    <rect x="64" y="227" width="105" height="70" rx="2" transform="rotate(-8 64 227)"/>
+    <rect x="412" y="264" width="104" height="76" rx="2" transform="rotate(7 412 264)"/>
+    <rect x="75" y="555" width="116" height="82" rx="2" transform="rotate(6 75 555)"/>
+    <rect x="403" y="560" width="112" height="74" rx="2" transform="rotate(-9 403 560)"/>
+  </g>
+  <g fill="#981e28"><circle cx="118" cy="229" r="7"/><circle cx="502" cy="274" r="7"/><circle cx="86" cy="557" r="7"/><circle cx="498" cy="565" r="7"/></g>
+  <g transform="rotate(-4 300 438)" filter="url(#shadow)">
+    <rect x="102" y="286" width="396" height="308" rx="5" fill="url(#paper)"/>
+    <rect x="120" y="304" width="360" height="272" fill="none" stroke="#877b62" stroke-width="1.5" stroke-dasharray="5 7"/>
+    <circle cx="300" cy="286" r="13" fill="#e5484d"/>
+    <text x="300" y="350" text-anchor="middle" fill="#8e2028" font-family="monospace" font-size="17" letter-spacing="5">NORTHBRIDGE · CASE 01</text>
+    <path d="M150 367h300" stroke="#9d8c6a"/>
+    <text x="300" y="426" text-anchor="middle" fill="#17171a" font-family="Arial,sans-serif" font-size="38" font-weight="800" letter-spacing="2">THE DEAD</text>
+    <text x="300" y="472" text-anchor="middle" fill="#17171a" font-family="Arial,sans-serif" font-size="38" font-weight="800" letter-spacing="2">MAN’S ALIBI</text>
+    <path d="M170 492h260" stroke="#b62f38" stroke-width="4"/>
+    <text x="300" y="535" text-anchor="middle" fill="#5c5548" font-family="Georgia,serif" font-size="17" font-style="italic">Four cases. Four suspects. One dead man.</text>
+  </g>
+  <text x="300" y="812" text-anchor="middle" fill="#d6cdb8" font-family="monospace" font-size="13" letter-spacing="5" opacity=".75">THE EVIDENCE NEVER LIES</text>
+  <rect x="16" y="16" width="568" height="868" rx="12" fill="none" stroke="#e5484d" stroke-opacity=".28" stroke-width="2"/>
+</svg>
