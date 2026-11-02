@@ -1496,7 +1496,7 @@ function renderHeatmap() {
    CALENDAR
    ============================================================ */
 var upcomingReleases = [
-    { date: '2026-11-02', title: "The Other Day - Chapter 10" },
+    { date: '2026-11-09', title: "The Other Day - Chapter 11 & 12" },
     { date: '2026-11-08', title: 'Petal Vol. 4 — chpater 4 ' },
 ];
 var calSorted = [];
