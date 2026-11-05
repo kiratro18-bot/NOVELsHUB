@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 12 — We Did</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&family=Space+Grotesk:wght@500;700&family=Caveat:wght@600;700&family=Space+Mono:wght@400;700&display=swap');
+
+        :root {
+            --paper: #EDEAE0;
+            --paper-2: #E1DECE;
+            --ink: #232A38;
+            --ink-soft: #59617a;
+            --rule: rgba(35, 42, 56, 0.075);
+            --margin: #c1442e;
+            --margin-soft: rgba(193, 68, 46, 0.38);
+            --entry-paper: #f4ecd2;
+            --entry-ink: #8a2d1f;
+            --highlight: #e7d089;
+            --tape: rgba(255, 255, 255, 0.6);
+
+            --font-body: 'Literata', serif;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-hand: 'Caveat', cursive;
+            --font-mono: 'Space Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--paper);
+            background-image: repeating-linear-gradient(var(--paper) 0px, var(--paper) 40px, var(--rule) 41px);
+            color: var(--ink);
+            font-family: var(--font-body);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .sheet {
+            position: relative;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 8vh 40px 14vh 100px;
+        }
+
+        .sheet::before {
+            content: "";
+            position: absolute;
+            left: 58px;
+            top: 0;
+            bottom: 0;
+            width: 1.5px;
+            background: var(--margin-soft);
+        }
+
+        .holes {
+            position: absolute;
+            left: 22px;
+            top: 70px;
+            bottom: 70px;
+            width: 16px;
+            background-repeat: repeat-y;
+            background-size: 16px 92px;
+            background-image:
+                radial-gradient(circle at 8px 7px, rgba(35, 42, 56, 0.14) 6px, transparent 6.6px),
+                radial-gradient(circle at 8px 9px, rgba(255, 255, 255, 0.55) 5.5px, transparent 6px);
+        }
+
+        header.cover {
+            margin-bottom: 7vh;
+        }
+
+        .stamp {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--margin);
+            border: 1.5px solid var(--margin);
+            border-radius: 2px;
+            padding: 4px 11px;
+            transform: rotate(-3deg);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: clamp(2rem, 6vw, 3.1rem);
+            line-height: 1.08;
+            color: var(--ink);
+            margin: 0 0 14px;
+        }
+
+        .sub {
+            font-family: var(--font-hand);
+            font-weight: 600;
+            font-size: 1.35rem;
+            color: var(--ink-soft);
+            margin: 0;
+        }
+
+        .story p {
+            font-size: clamp(1.02rem, 1.1vw + 0.7rem, 1.14rem);
+            line-height: 1.85;
+            color: var(--ink);
+            margin: 0 0 0.85em;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .story p.visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        .story p.speech {
+            position: relative;
+            padding-left: 1.3em;
+            color: #1b2130;
+        }
+
+        .story p.speech::before {
+            content: "\201C";
+            position: absolute;
+            left: 0;
+            top: -0.12em;
+            font-family: var(--font-display);
+            font-size: 1.35em;
+            color: var(--margin-soft);
+        }
+
+        .scene-break {
+            text-align: center;
+            margin: 2.2em 0 2em;
+            font-family: var(--font-hand);
+            font-weight: 700;
+            font-size: 1.6rem;
+            letter-spacing: 0.6em;
+            padding-left: 0.6em;
+            color: var(--margin-soft);
+        }
+
+        .story p.the-end {
+            text-align: center;
+            margin-top: 2.2em;
+            font-family: var(--font-hand);
+            font-weight: 700;
+            font-size: 1.7rem;
+            line-height: 1.3;
+            color: var(--margin);
+        }
+
+        .entry-page {
+            position: relative;
+            background: var(--entry-paper);
+            color: var(--entry-ink);
+            width: min(88%, 380px);
+            margin: 2.4em auto;
+            padding: 28px 26px 40px;
+            opacity: 0;
+            transform: rotate(0deg) scale(0.96);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+            box-shadow: 0 12px 22px rgba(35, 20, 10, 0.2), 0 2px 5px rgba(35, 20, 10, 0.14);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 91%, 96% 95%, 92% 90%, 88% 96%, 84% 91%, 80% 97%, 76% 91%, 72% 96%, 68% 90%, 64% 97%, 60% 91%, 56% 96%, 52% 90%, 48% 97%, 44% 91%, 40% 96%, 36% 90%, 32% 97%, 28% 91%, 24% 96%, 20% 90%, 16% 97%, 12% 91%, 8% 96%, 4% 90%, 0% 96%);
+        }
+
+        .entry-page.visible {
+            opacity: 1;
+            transform: rotate(-1.6deg) scale(1);
+        }
+
+        .entry-page .tape {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            width: 78px;
+            height: 24px;
+            background: var(--tape);
+            transform: translateX(-50%) rotate(-3deg);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+        }
+
+        .entry-text {
+            font-family: var(--font-hand);
+            font-weight: 700;
+            font-size: 1.65rem;
+            line-height: 1.3;
+            margin: 0;
+        }
+
+        .hl {
+            background-image: linear-gradient(100deg, var(--highlight) 0%, var(--highlight) 100%);
+            background-repeat: no-repeat;
+            background-size: 0% 55%;
+            background-position: 0 68%;
+            transition: background-size 0.9s ease 0.2s;
+            padding: 0 0.04em;
+        }
+
+        .entry-page.visible .hl {
+            background-size: 100% 55%;
+        }
+
+        .record-line {
+            margin: 0.5em 0 0.5em 0.1em;
+        }
+
+        .record-mark {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            letter-spacing: 0.02em;
+            color: var(--ink);
+            background: rgba(35, 42, 56, 0.06);
+            border: 1px solid rgba(35, 42, 56, 0.22);
+            border-radius: 2px;
+            padding: 3px 10px;
+        }
+
+        .faint-note {
+            font-family: var(--font-hand);
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: rgba(138, 45, 31, 0.5);
+            padding-left: 2em;
+            letter-spacing: 0.01em;
+        }
+
+        .faint-note.gone {
+            color: rgba(89, 97, 122, 0.45);
+            text-decoration: line-through;
+        }
+
+        .entry-page.write .entry-text {
+            clip-path: inset(-4px 100% -4px 0);
+            transition: clip-path 2.2s steps(30, end) 0.5s;
+        }
+
+        .entry-page.write.visible .entry-text {
+            clip-path: inset(-4px 0 -4px 0);
+        }
+
+        .entry-page.pen .entry-text::after {
+            content: "";
+            display: inline-block;
+            width: 2px;
+            height: 1.05em;
+            margin-left: 4px;
+            vertical-align: -0.15em;
+            background: currentColor;
+            animation: penblink 1s steps(1) infinite;
+        }
+
+        @keyframes penblink {
+            50% { opacity: 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .entry-page.write .entry-text { clip-path: none !important; transition: none !important; }
+            .entry-page.pen .entry-text::after { animation: none; }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 8vh;
+            font-family: var(--font-hand);
+            font-size: 1.2rem;
+            color: var(--ink-soft);
+        }
+
+        @media (max-width:560px) {
+            .sheet {
+                padding: 6vh 24px 12vh 46px;
+            }
+
+            .sheet::before {
+                left: 26px;
+            }
+
+            .holes {
+                display: none;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .story p,
+            .entry-page {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+            }
+
+            .hl {
+                background-size: 100% 55% !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sheet">
+        <div class="holes" aria-hidden="true"></div>
+
+        <header class="cover">
+            <span class="stamp">Ch. 12</span>
+            <h1>We Did</h1>
+        </header>
+
+        <main class="story">
+
+            <p>For a few seconds, I forgot how to speak.</p>
+            <p>My father was standing in front of me.</p>
+            <p>Not in a photograph. Not in some half-remembered dream.</p>
+            <p>Actually standing there.</p>
+            <p>He looked different.</p>
+            <p>His hair had gotten shorter, there were a few gray strands near his temples, and he looked considerably thinner than I remembered.</p>
+            <p>He was also wearing the ugliest jacket I'd ever seen.</p>
+            <p>Seriously. Where did he get that?</p>
+            <p>I had imagined meeting him again countless times.</p>
+            <p>Sometimes I imagined shouting at him.</p>
+            <p>Sometimes I imagined asking why he left.</p>
+            <p>Once, when I was younger, I even imagined running up and hugging him.</p>
+            <p>That was embarrassing to remember.</p>
+            <p>Now that he was actually here, I couldn't think of anything.</p>
+            <p>He looked at me.</p>
+            <p class="speech">"Hi, Aki."</p>
+            <p>...</p>
+            <p class="speech">"You're alive."</p>
+            <p>He nodded.</p>
+            <p class="speech">"Yeah."</p>
+            <p class="speech">"That's it?"</p>
+            <p>He tilted his head.</p>
+            <p class="speech">"What?"</p>
+            <p class="speech">"Nothing. Just... that's all you have to say?"</p>
+            <p>He looked slightly uncomfortable.</p>
+            <p class="speech">"Would you prefer a speech?"</p>
+            <p>I almost laughed.</p>
+            <p>Almost.</p>
+            <p class="speech">"You're an idiot."</p>
+            <p class="speech">"Your mother says that too."</p>
+            <p>I looked away.</p>
+            <p>That sounded like something he'd say.</p>
+            <p>And somehow, that made everything worse.</p>
+            <p>I pulled a chair away from the desk and sat down.</p>
+            <p>He remained standing for a moment before taking the seat opposite me.</p>
+            <p>Yui quietly moved toward the windows.</p>
+            <p>She seemed to understand that this conversation wasn't really hers.</p>
+            <p>I looked at my father.</p>
+            <p class="speech">"Why did you leave?"</p>
+            <p>He folded his hands.</p>
+            <p class="speech">"That's a long story."</p>
+            <p class="speech">"I have time."</p>
+            <p>He looked at the clock.</p>
+            <p class="speech">"So do I, apparently."</p>
+            <p>I stared at him.</p>
+            <p>He sighed.</p>
+            <p class="speech">"Sorry."</p>
+            <p>A few seconds passed.</p>
+            <p>Then he spoke.</p>
+            <p class="speech">"Do you remember anything about April 17?"</p>
+            <p class="speech">"Bits and pieces."</p>
+            <p class="speech">"Good."</p>
+            <p class="speech">"Good?"</p>
+            <p class="speech">"Well, not good. I mean..."</p>
+            <p>He rubbed his forehead.</p>
+            <p class="speech">"Forget it."</p>
+            <p>I leaned forward.</p>
+            <p class="speech">"Can you stop doing that?"</p>
+            <p class="speech">"Doing what?"</p>
+            <p class="speech">"Starting an explanation and then abandoning it."</p>
+            <p>He gave a small laugh.</p>
+            <p class="speech">"Fair enough."</p>
+            <p>He reached for the second notebook.</p>
+            <p>Ren's notebook.</p>
+            <p>Its cover looked almost identical to mine. Same black colour, same worn edges, even the same little scratch near the spine.</p>
+            <p class="speech">"Ren found this one in the old storage room," he said.</p>
+            <p class="speech">"I know."</p>
+            <p class="speech">"Of course you do."</p>
+            <p class="speech">"He brought it to school?"</p>
+            <p class="speech">"Yes."</p>
+            <p class="speech">"And started writing in it?"</p>
+            <p>My father nodded.</p>
+            <p class="speech">"At first, he thought it was some kind of joke. The notebook contained things that had already happened. Small things. Nothing particularly interesting."</p>
+            <p class="speech">"Like someone dropping their phone?"</p>
+            <p>He looked at me.</p>
+            <p class="speech">"Exactly."</p>
+            <p>I frowned.</p>
+            <p class="speech">"That's weird."</p>
+            <p class="speech">"It got weirder."</p>
+            <p>He opened the notebook.</p>
+            <p class="speech">"Eventually, Ren found entries written in his own handwriting. Things he didn't remember writing."</p>
+            <p class="speech">"Maybe he forgot."</p>
+            <p class="speech">"That's what he thought too."</p>
+            <p class="speech">"And?"</p>
+            <p>My father turned another page.</p>
+            <p class="speech">"Some of those entries described things that hadn't happened yet."</p>
+            <p>I looked at the notebook.</p>
+            <p class="speech">"So it predicts the future?"</p>
+            <p class="speech">"No."</p>
+            <p>He closed it.</p>
+            <p class="speech">"That's what we thought initially."</p>
+            <p>I waited.</p>
+            <p class="speech">"The notebook doesn't predict things, Aki. It records memories."</p>
+            <p class="speech">"Then why were things written before they happened?"</p>
+            <p>He didn't answer immediately.</p>
+            <p>Instead, he looked toward Yui.</p>
+            <p>She was watching us.</p>
+            <p class="speech">"That's something we never figured out."</p>
+            <p>I leaned back.</p>
+            <p class="speech">"Great. So we're still clueless."</p>
+            <p class="speech">"Pretty much."</p>
+            <p>For some reason, I laughed.</p>
+            <p>My father smiled.</p>
+            <p>It was a strange conversation to have with someone I'd thought I'd never see again.</p>
+            <p>I wanted to ask him a hundred things.</p>
+            <p>What had he been doing?</p>
+            <p>Where had he lived?</p>
+            <p>Why hadn't he called?</p>
+            <p>Did he know how old I was now?</p>
+            <p>But one question kept bothering me.</p>
+            <p class="speech">"What happened to Ren?"</p>
+            <p>My father stopped smiling.</p>
+            <p class="speech">"He's alive."</p>
+            <p>I sat straighter.</p>
+            <p class="speech">"Where?"</p>
+            <p class="speech">"I don't know."</p>
+            <p class="speech">"How can you know he's alive but not know where he is?"</p>
+            <p class="speech">"Because the last time I saw him, he was alive."</p>
+            <p class="speech">"When?"</p>
+            <p>He looked down at the notebook.</p>
+            <p class="speech">"April 17."</p>
+            <p>I swallowed.</p>
+            <p class="speech">"Then what happened?"</p>
+            <p>He didn't answer.</p>
+            <p>I glanced at Yui.</p>
+            <p>She looked away.</p>
+            <p>Something was wrong.</p>
+            <p>I could tell.</p>
+            <p>But I didn't know what.</p>
+            <p class="speech">"Can we talk about the notebook again?" I asked.</p>
+            <p>My father nodded.</p>
+            <p>He opened it to a page filled with handwriting.</p>
+            <p class="speech">"There's something you need to understand. The notebook doesn't create memories. It changes how people remember them."</p>
+            <p class="speech">"Changes?"</p>
+            <p class="speech">"Think about it. You remember something happening, but another person remembers it differently. Sometimes one person remembers something that another person has completely forgotten."</p>
+            <p>I frowned.</p>
+            <p class="speech">"That happens normally."</p>
+            <p class="speech">"Yes. But not like this."</p>
+            <p>He pointed at the pages.</p>
+            <p class="speech">"Every time we used the notebook, something changed. People forgot things. Sometimes they remembered things that weren't theirs."</p>
+            <p>I looked at Yui.</p>
+            <p class="speech">"That's why you couldn't remember April 17?"</p>
+            <p>She nodded.</p>
+            <p class="speech">"Partly."</p>
+            <p class="speech">"Partly?"</p>
+            <p>She looked uncomfortable.</p>
+            <p class="speech">"I don't remember everything, Aki."</p>
+            <p>I sighed.</p>
+            <p class="speech">"Nobody does."</p>
+            <p class="speech">"Sorry."</p>
+            <p class="speech">"No, it's fine."</p>
+            <p>I looked back at my father.</p>
+            <p class="speech">"What about me?"</p>
+            <p>He didn't answer.</p>
+            <p class="speech">"What happened to my memories?"</p>
+            <p>He took a breath.</p>
+            <p class="speech">"You were losing them faster than anyone else."</p>
+            <p class="speech">"Why?"</p>
+            <p class="speech">"Because you kept trying to remember."</p>
+            <p>I didn't understand.</p>
+            <p>He continued.</p>
+            <p class="speech">"You were obsessed with finding out what the notebook was doing. Every time something disappeared from your memory, you'd try to recover it."</p>
+            <p class="speech">"That's not a bad thing."</p>
+            <p class="speech">"No. But you weren't taking care of yourself either."</p>
+            <p>He paused.</p>
+            <p class="speech">"One day, you forgot your mother's face."</p>
+            <p>I looked at him.</p>
+            <p class="speech">"What?"</p>
+            <p class="speech">"You came to me crying. You couldn't remember what she looked like."</p>
+            <p>I didn't say anything.</p>
+            <p>My father looked at the floor.</p>
+            <p class="speech">"That was when I realised we had to stop."</p>
+            <p>I rubbed my forehead.</p>
+            <p>There was something there.</p>
+            <p>A memory.</p>
+            <p>A little boy sitting on the floor.</p>
+            <p>A woman standing in the kitchen.</p>
+            <p>A man kneeling beside him.</p>
+            <p>I couldn't see their faces clearly.</p>
+            <p>But I knew them.</p>
+            <p>My mother.</p>
+            <p>My father.</p>
+            <p>Me.</p>
+            <p>And then another memory appeared.</p>
+            <p>The classroom.</p>
+            <p>Ren sitting beside the window.</p>
+            <p>Kenta laughing at something.</p>
+            <p>Mina throwing an eraser.</p>
+            <p>Haru pretending not to listen.</p>
+            <p>Yui drawing in her notebook.</p>
+            <p>It was so ordinary.</p>
+            <p>Nobody was discussing mysteries.</p>
+            <p>Nobody was scared.</p>
+            <p>We were just students.</p>
+            <p>I suddenly missed something I couldn't properly remember.</p>
+            <p>I looked at Yui.</p>
+            <p class="speech">"Did we really spend that much time together?"</p>
+            <p>She smiled.</p>
+            <p class="speech">"Unfortunately."</p>
+            <p class="speech">"Unfortunately?"</p>
+            <p class="speech">"You were annoying."</p>
+            <p>I stared at her.</p>
+            <p class="speech">"Excuse me?"</p>
+            <p class="speech">"You kept asking what I was drawing."</p>
+            <p class="speech">"What's wrong with that?"</p>
+            <p class="speech">"You never understood my drawings."</p>
+            <p class="speech">"Maybe your drawings were bad."</p>
+            <p>She picked up a nearby eraser and threw it at me.</p>
+            <p>I caught it.</p>
+            <p>My father looked between us.</p>
+            <p class="speech">"Okay. So you two haven't changed."</p>
+            <p>For a moment, we all laughed.</p>
+            <p>It wasn't a big moment.</p>
+            <p>Nobody said anything meaningful.</p>
+            <p>But I liked it.</p>
+            <p>Then my father reached for the notebook again.</p>
+            <p class="speech">"There's something else."</p>
+            <p>I looked at him.</p>
+            <p class="speech">"What?"</p>
+            <p class="speech">"On April 17, we made a decision."</p>
+            <p class="speech">"To forget?"</p>
+            <p>He nodded.</p>
+            <p class="speech">"All of us agreed that we couldn't continue."</p>
+            <p class="speech">"Why?"</p>
+            <p class="speech">"Because we were losing too much."</p>
+            <p>He turned to the final pages.</p>
+            <p class="speech">"Ren found something here. I never got to read it properly."</p>
+            <p class="speech">"What was it?"</p>
+            <p class="speech">"I don't know."</p>
+            <p class="speech">"You're telling me you never read the last page?"</p>
+            <p class="speech">"I tried."</p>
+            <p class="speech">"And?"</p>
+            <p>He shook his head.</p>
+            <p class="speech">"Ren wouldn't let me."</p>
+            <p>I stared at him.</p>
+            <p class="speech">"Why?"</p>
+            <p class="speech">"He said it wasn't meant for me."</p>
+            <p>I looked at the notebook.</p>
+            <p class="speech">"Who was it meant for?"</p>
+            <p>My father didn't answer.</p>
+            <p>Yui stepped forward.</p>
+            <p class="speech">"Ren read it."</p>
+            <p class="speech">"Yes," my father said.</p>
+            <p class="speech">"What happened?"</p>
+            <p>He looked at her.</p>
+            <p class="speech">"He started crying."</p>
+            <p>I turned toward her.</p>
+            <p class="speech">"Why?"</p>
+            <p>She shook her head.</p>
+            <p class="speech">"I don't know."</p>
+            <p>My father continued.</p>
+            <p class="speech">"After that, he told us we had to leave. He said none of us were supposed to remember what was written there."</p>
+            <p>I looked down.</p>
+            <p>Something was bothering me.</p>
+            <p class="speech">"Then why did you write that final memory?"</p>
+            <p>My father looked at me.</p>
+            <p class="speech">"Because you asked me to."</p>
+            <p>I frowned.</p>
+            <p class="speech">"Me?"</p>
+            <p class="speech">"You wanted to remember everything. But you were forgetting people who mattered to you."</p>
+            <p>He looked toward the window.</p>
+            <p class="speech">"So I wrote that none of it had happened."</p>
+            <p>I stared at him.</p>
+            <p class="speech">"And everyone forgot?"</p>
+            <p class="speech">"More or less."</p>
+            <p class="speech">"Even you?"</p>
+            <p>He nodded.</p>
+            <p class="speech">"Even me."</p>
+            <p>I looked at the notebook.</p>
+            <p class="speech">"So why do I remember now?"</p>
+            <p>My father smiled faintly.</p>
+            <p class="speech">"I don't know."</p>
+            <p class="speech">"Seriously?"</p>
+            <p class="speech">"Seriously."</p>
+            <p class="speech">"You're supposed to be the adult here."</p>
+            <p class="speech">"Unfortunately, yes."</p>
+            <p>I shook my head.</p>
+            <p>For a moment, I thought about all the questions I still had.</p>
+            <p>The notebook.</p>
+            <p>Ren.</p>
+            <p>The old photographs.</p>
+            <p>The person who originally found it.</p>
+            <p>None of it made sense.</p>
+            <p>But there was something I wanted to know more than all of that.</p>
+            <p class="speech">"Why didn't you come home?"</p>
+            <p>My father stopped.</p>
+            <p>I looked at him.</p>
+            <p class="speech">"You knew where we lived, right?"</p>
+            <p>He nodded.</p>
+            <p class="speech">"Yes."</p>
+            <p class="speech">"Then why?"</p>
+            <p>He looked down at his hands.</p>
+            <p class="speech">"I thought staying away was the safest thing."</p>
+            <p class="speech">"For whom?"</p>
+            <p class="speech">"For you."</p>
+            <p>I laughed quietly.</p>
+            <p class="speech">"Everyone keeps saying that."</p>
+            <p class="speech">"I know."</p>
+            <p class="speech">"You know how many birthdays I had without you?"</p>
+            <p>His expression changed.</p>
+            <p>I regretted saying it.</p>
+            <p>Not because it wasn't true.</p>
+            <p>But because I hadn't planned to say it.</p>
+            <p>He looked at me for a while.</p>
+            <p class="speech">"I'm sorry."</p>
+            <p>I looked away.</p>
+            <p>There wasn't much else to say.</p>
+            <p>I wanted to be angry.</p>
+            <p>I was angry.</p>
+            <p>But I was also happy he was sitting there.</p>
+            <p>Those two feelings didn't seem to cancel each other out.</p>
+            <p>My father reached into his jacket pocket.</p>
+            <p>He took out something small.</p>
+            <p>A photograph.</p>
+            <p>He placed it on the desk.</p>
+            <p>I picked it up.</p>
+            <p>It showed our family.</p>
+            <p>My mother.</p>
+            <p>My father.</p>
+            <p>Me.</p>
+            <p>I was probably five or six.</p>
+            <p>I was holding a toy car and making a ridiculous face.</p>
+            <p class="speech">"Look at your hair," he said.</p>
+            <p>I frowned.</p>
+            <p class="speech">"What about it?"</p>
+            <p class="speech">"Terrible."</p>
+            <p class="speech">"You had that haircut."</p>
+            <p class="speech">"Mine was fashionable."</p>
+            <p class="speech">"It really wasn't."</p>
+            <p>He laughed.</p>
+            <p>I looked at the photograph again.</p>
+            <p>Then I noticed something.</p>
+            <p>On the back, there was a date.</p>
+            <p>April 17.</p>
+            <p>I turned it around.</p>
+            <p class="speech">"Why is this dated April 17?"</p>
+            <p>My father looked at it.</p>
+            <p>His smile disappeared.</p>
+            <p class="speech">"Where did you get that?"</p>
+            <p class="speech">"You just gave it to me."</p>
+            <p>He took the photograph.</p>
+            <p>For a few seconds, he studied it.</p>
+            <p>Then he shook his head.</p>
+            <p class="speech">"That's strange."</p>
+            <p class="speech">"What?"</p>
+            <p class="speech">"I don't remember writing that date."</p>
+            <p>He turned the photograph over.</p>
+            <p>There was something else written beneath it.</p>
+            <p>A short sentence.</p>
+            <p class="record-line"><span class="record-mark">Seven people. One promise.</span></p>
+            <p>I looked at him.</p>
+            <p class="speech">"What promise?"</p>
+            <p>He didn't answer.</p>
+            <p>Instead, he put the photograph back on the desk.</p>
+            <p class="speech">"Maybe we'll figure that out later."</p>
+            <p>I nodded.</p>
+            <p>I wasn't sure I wanted to.</p>
+            <div class="scene-break" aria-hidden="true">· · ·</div>
+            <p>We left the classroom a little after eight.</p>
+            <p>The rain had stopped.</p>
+            <p>The school courtyard was wet, and the lights near the entrance were flickering.</p>
+            <p>My father locked the classroom door.</p>
+            <p>Yui was waiting near the stairs.</p>
+            <p class="speech">"Are you coming?" she asked.</p>
+            <p class="speech">"Yeah."</p>
+            <p>My father looked at her.</p>
+            <p class="speech">"Do your parents know you're out?"</p>
+            <p>She blinked.</p>
+            <p class="speech">"Yes."</p>
+            <p class="speech">"Good."</p>
+            <p>A few steps later, he asked,</p>
+            <p class="speech">"Do you two want something to eat?"</p>
+            <p>I looked at him.</p>
+            <p class="speech">"Now?"</p>
+            <p class="speech">"Yes."</p>
+            <p class="speech">"It's eight-thirty."</p>
+            <p class="speech">"People eat at eight-thirty."</p>
+            <p class="speech">"Where have you been living? Under a rock?"</p>
+            <p>He shrugged.</p>
+            <p class="speech">"Sometimes."</p>
+            <p>Yui laughed.</p>
+            <p>We walked toward the main road.</p>
+            <p>It was strangely awkward.</p>
+            <p>I didn't know what to talk about with my father.</p>
+            <p>He didn't know either.</p>
+            <p>After a while, he asked,</p>
+            <p class="speech">"How's school?"</p>
+            <p class="speech">"Fine."</p>
+            <p class="speech">"Grades?"</p>
+            <p class="speech">"Fine."</p>
+            <p class="speech">"Friends?"</p>
+            <p class="speech">"Fine."</p>
+            <p>He looked at me.</p>
+            <p class="speech">"You're not giving me much to work with."</p>
+            <p class="speech">"What do you want me to say?"</p>
+            <p class="speech">"Anything."</p>
+            <p>I thought about it.</p>
+            <p class="speech">"Kenta is an idiot."</p>
+            <p>My father nodded.</p>
+            <p class="speech">"Good. That's something."</p>
+            <p class="speech">"He's also terrible at mathematics."</p>
+            <p class="speech">"Sounds familiar."</p>
+            <p class="speech">"Hey."</p>
+            <p>He smiled.</p>
+            <p>We stopped at a small convenience store.</p>
+            <p>My father bought three sandwiches and some drinks.</p>
+            <p>Yui picked chocolate milk.</p>
+            <p>I got strawberry milk.</p>
+            <p>My father stared at the carton.</p>
+            <p class="speech">"You're still drinking that?"</p>
+            <p class="speech">"What's wrong with it?"</p>
+            <p class="speech">"Nothing."</p>
+            <p class="speech">"You were drinking it too when I was little."</p>
+            <p class="speech">"That was different."</p>
+            <p class="speech">"How?"</p>
+            <p>He opened his sandwich.</p>
+            <p class="speech">"I was young."</p>
+            <p>Yui started laughing.</p>
+            <p>I hadn't realised how much I'd missed conversations like this.</p>
+            <p>Not the dramatic ones.</p>
+            <p>Not the important ones.</p>
+            <p>Just stupid conversations about sandwiches and terrible haircuts.</p>
+            <p>For a while, I forgot about the notebook.</p>
+            <p>Then my phone vibrated.</p>
+            <p>I checked it.</p>
+            <p>No notification.</p>
+            <p>Just the screen lighting up.</p>
+            <p>I opened my notes app.</p>
+            <p>The note I'd written earlier was still there.</p>
+            <p class="record-line"><span class="record-mark">My father is alive.</span></p>
+            <p class="record-line"><span class="record-mark">Ren is alive.</span></p>
+            <p class="record-line"><span class="record-mark">Yui remembers.</span></p>
+            <p class="record-line"><span class="record-mark">The notebook doesn't predict the future.</span></p>
+            <p>And the last line:</p>
+            <p class="record-line"><span class="record-mark">I don't know what happens tomorrow.</span></p>
+            <p>I stared at it.</p>
+            <p>Then I added something.</p>
+            <p class="record-line"><span class="record-mark">Today, I met my father again.</span></p>
+            <p>I saved the note.</p>
+            <p>My father looked over.</p>
+            <p class="speech">"What are you writing?"</p>
+            <p class="speech">"Nothing."</p>
+            <p>He smiled.</p>
+            <p class="speech">"That word again."</p>
+            <p>I put my phone away.</p>
+            <p class="speech">"Shut up."</p>
+            <p>He laughed.</p>
+            <div class="scene-break" aria-hidden="true">· · ·</div>
+            <p>We reached the bus stop.</p>
+            <p>Yui's bus arrived first.</p>
+            <p>She stood up.</p>
+            <p class="speech">"See you tomorrow."</p>
+            <p>I nodded.</p>
+            <p class="speech">"Yeah."</p>
+            <p>She hesitated.</p>
+            <p>Then looked at me.</p>
+            <p class="speech">"Aki?"</p>
+            <p class="speech">"Hm?"</p>
+            <p class="speech">"Don't force yourself to remember everything."</p>
+            <p>I didn't know what to say.</p>
+            <p>She smiled.</p>
+            <p class="speech">"Goodnight."</p>
+            <p>The bus doors closed.</p>
+            <p>I watched her disappear behind the window.</p>
+            <p>My father sat beside me.</p>
+            <p>For a while, we just waited.</p>
+            <p>Then he spoke.</p>
+            <p class="speech">"She's a good girl."</p>
+            <p class="speech">"Yeah."</p>
+            <p class="speech">"You two were close."</p>
+            <p>I looked at him.</p>
+            <p class="speech">"Really?"</p>
+            <p>He nodded.</p>
+            <p class="speech">"Very."</p>
+            <p>I looked toward the road.</p>
+            <p class="speech">"Why don't I remember that?"</p>
+            <p>He didn't answer.</p>
+            <p>A bus approached.</p>
+            <p>Not ours.</p>
+            <p>It passed.</p>
+            <p>My father leaned back.</p>
+            <p class="speech">"Do you think your mother will be angry?"</p>
+            <p>I looked at him.</p>
+            <p class="speech">"Angry?"</p>
+            <p class="speech">"About me coming back."</p>
+            <p>I thought about it.</p>
+            <p class="speech">"Probably."</p>
+            <p>He sighed.</p>
+            <p class="speech">"Great."</p>
+            <p class="speech">"She might throw something at you."</p>
+            <p class="speech">"That sounds about right."</p>
+            <p>I laughed.</p>
+            <p>Then I stopped.</p>
+            <p class="speech">"Are you coming home?"</p>
+            <p>He looked at me.</p>
+            <p>I hadn't planned to ask.</p>
+            <p>The words just came out.</p>
+            <p>He took a moment before answering.</p>
+            <p class="speech">"If she'll let me."</p>
+            <p>I nodded.</p>
+            <p class="speech">"She will."</p>
+            <p class="speech">"How do you know?"</p>
+            <p class="speech">"Because she still keeps your old coffee mug."</p>
+            <p>He looked surprised.</p>
+            <p class="speech">"She does?"</p>
+            <p class="speech">"Yeah."</p>
+            <p>He smiled.</p>
+            <p>A small one.</p>
+            <p class="speech">"That's good."</p>
+            <p>Our bus finally arrived.</p>
+            <p>We got on.</p>
+            <p>I took the window seat.</p>
+            <p>My father sat beside me.</p>
+            <p>Outside, the streets passed slowly.</p>
+            <p>People were closing shops.</p>
+            <p>A couple was arguing near a vending machine.</p>
+            <p>Some kid was running after a dog.</p>
+            <p>Ordinary things.</p>
+            <p>I rested my head against the window.</p>
+            <p>I still had questions.</p>
+            <p>A lot of them.</p>
+            <p>But I was tired.</p>
+            <p>For the first time in a long while, I didn't feel like I needed to solve everything tonight.</p>
+            <div class="scene-break" aria-hidden="true">· · ·</div>
+            <p>When I reached home, Mom was standing in the kitchen.</p>
+            <p>She looked at me.</p>
+            <p>Then at the man behind me.</p>
+            <p>Her hand stopped moving.</p>
+            <p>Nobody spoke.</p>
+            <p>My father awkwardly raised one hand.</p>
+            <p class="speech">"Hi."</p>
+            <p>Mom stared at him.</p>
+            <p>Then she put down the cup she was holding.</p>
+            <p class="speech">"You're late."</p>
+            <p>He looked at the clock.</p>
+            <p class="speech">"Yeah."</p>
+            <p class="speech">"Food's cold."</p>
+            <p class="speech">"I ate something."</p>
+            <p class="speech">"Of course you did."</p>
+            <p>I stood between them.</p>
+            <p>Not sure whether I should leave or stay.</p>
+            <p>Then Mom looked at me.</p>
+            <p class="speech">"Go upstairs."</p>
+            <p class="speech">"Mom—"</p>
+            <p class="speech">"Please."</p>
+            <p>I nodded.</p>
+            <p>Before leaving, I looked at my father.</p>
+            <p>He gave me a small nod.</p>
+            <p>I went upstairs.</p>
+            <p>I could hear them talking.</p>
+            <p>At first, quietly.</p>
+            <p>Then louder.</p>
+            <p>I couldn't make out the words.</p>
+            <p>I sat on my bed and looked at the black notebook.</p>
+            <p>It was still inside my bag.</p>
+            <p>I took it out.</p>
+            <p>Opened it.</p>
+            <p>The pages were unchanged.</p>
+            <p>No new predictions.</p>
+            <p>No strange messages.</p>
+            <p>Just handwriting.</p>
+            <p>Mine.</p>
+            <p>Ren's.</p>
+            <p>And several others I couldn't identify.</p>
+            <p>I turned to the last page.</p>
+            <p>Blank.</p>
+            <p>I closed the notebook.</p>
+            <p>Then something slipped out.</p>
+            <p>A small photograph.</p>
+            <p>I picked it up.</p>
+            <p>It was the photograph from April 17.</p>
+            <p>The one taken in our classroom.</p>
+            <p>Seven people.</p>
+            <p>Me.</p>
+            <p>Haru.</p>
+            <p>Kenta.</p>
+            <p>Mina.</p>
+            <p>Yui.</p>
+            <p>Ren.</p>
+            <p>And my father.</p>
+            <p>I looked at the photograph for a while.</p>
+            <p>Then I noticed something.</p>
+            <p>On the back, someone had written a sentence.</p>
+            <p>I turned it over.</p>
+            <p class="record-line"><span class="record-mark">We promised to meet again.</span></p>
+            <p>I smiled faintly.</p>
+            <p>At least that sounded nice.</p>
+            <p>Then I noticed the handwriting.</p>
+            <p>It wasn't mine.</p>
+            <p>It wasn't Ren's.</p>
+            <p>It wasn't my father's.</p>
+            <p>I couldn't recognise it.</p>
+            <p>There was another line beneath it.</p>
+            <p class="record-line"><span class="record-mark">But one of us never came back.</span></p>
+            <p>I stopped smiling.</p>
+            <p>I looked at the photograph again.</p>
+            <p>Seven people.</p>
+            <p>I counted them.</p>
+            <p>Once.</p>
+            <p>Twice.</p>
+            <p>Then a third time.</p>
+            <p>There were seven.</p>
+            <p>I turned the photograph over again.</p>
+            <p>The handwriting hadn't changed.</p>
+            <p>I heard Mom calling from downstairs.</p>
+            <p>Dinner was ready.</p>
+            <p>I put the photograph inside the notebook.</p>
+            <p>Closed it.</p>
+            <p>And left it on my desk.</p>
+            <p>Tomorrow, I'd probably have more questions.</p>
+            <p>Maybe I'd ask Haru.</p>
+            <p>Maybe Kenta would remember something.</p>
+            <p>Maybe Yui would tell me what she hadn't told me yet.</p>
+            <p>And maybe, somewhere, Ren was waiting.</p>
+            <p>I switched off the light.</p>
+            <p>For now, I was home.</p>
+            <p>My father was home.</p>
+            <p>And that was enough.</p>
+            <p>At least for tonight.</p>
+            <p class="the-end">The End — Volume 1.</p>
+
+        </main>
+
+        <footer>— end of chapter twelve —</footer>
+    </div>
+
+    <script>
+        (function () {
+            var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var targets = document.querySelectorAll('.story p, .entry-page');
+
+            if (reduceMotion || !('IntersectionObserver' in window)) {
+                targets.forEach(function (el) { el.classList.add('visible'); });
+                return;
+            }
+
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        io.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
+
+            targets.forEach(function (el) { io.observe(el); });
+        })();
+    </script>
+
+  <script src="../reader-progress.js"></script>
+  </body>
+
+</html>

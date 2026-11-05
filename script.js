@@ -26,7 +26,8 @@ var APP_STORAGE_KEYS = [
     'privateReaderNotes', 'novelComments', 'recentSearches', 'lightMode', 'theme', 'morphismStyle',
     'tiltEnabled', 'motionEnabled', 'readerFontScale', 'readerAchUnlocks',
     'goldenPetalCaught', 'nightOwlRead', 'oneDayRead', 'searchedOnce', 'sharedOnce',
-    'themeChanged', 'lastCommentAt', 'readerLevel', 'achievementsCollapsed', 'readerProfile', 'releaseReminders', 'midnightMemoryWon', 'midnightMemoryBest', 'hiddenDiscoveries'
+    'themeChanged', 'lastCommentAt', 'readerLevel', 'achievementsCollapsed', 'readerProfile', 'releaseReminders',
+    'midnightMemoryWon', 'midnightMemoryBest', 'hiddenDiscoveries'
 ];
 function confirmClearLocalData() {
     var ok = window.confirm('This permanently erases reading progress, bookmarks, your reading queue, private notes, and saved preferences in this browser. This can\'t be undone. Continue?');
@@ -36,7 +37,6 @@ function confirmClearLocalData() {
     setTimeout(function () { window.location.reload(); }, 700);
 }
 var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-var tiltEnabled = document.body.classList.contains('editorial') ? store.get('tiltEnabled', false) : false;
 var motionEnabled = store.get('motionEnabled', !prefersReducedMotion);
 
 var toastTimer;
@@ -116,10 +116,7 @@ function getRead(n) { var v = readProgress[n.order]; return typeof v === 'number
 /* ============================================================
    AURORA / MOOD
    ============================================================ */
-var moodColors = {
-    all: ['#ff7d9c', '#a78bfa'], romance: ['#ff7d9c', '#ffc46b'], sad: ['#7fa8d6', '#a78bfa'],
-    mystery: ['#a78bfa', '#ff7272'], slice: ['#68d8c4', '#74d3a4']
-};
+var moodColors = { all: ['#ff7d9c', '#a78bfa'] };
 var auroraActive = 1;
 function paintAurora(colors) {
     var next = auroraActive === 1 ? 2 : 1;
@@ -147,7 +144,6 @@ var themeAccents = {
     emerald: ['#3ddc97', '#a78bfa'],
     cyan: ['#22d3ee', '#818cf8'],
 };
-var caseClosedMoodPalette = ['#f2bd64', '#8aa3c8'];
 function setTheme(theme) {
     if (!themeAccents[theme]) theme = 'rose';
     if (theme === 'rose') document.body.removeAttribute('data-theme');
@@ -158,10 +154,8 @@ function setTheme(theme) {
         s.classList.toggle('active', active);
         s.setAttribute('aria-checked', String(active));
     });
-    moodColors.all = document.body.classList.contains('case-closed-event') ? caseClosedMoodPalette : themeAccents[theme];
-    var activeMoodCard = document.querySelector('.mood-card.active');
-    var moodKey = activeMoodCard ? activeMoodCard.dataset.mood : 'all';
-    if (moodKey === 'all') paintAurora(themeAccents[theme]);
+    moodColors.all = themeAccents[theme];
+    paintAurora(themeAccents[theme]);
     showToast('Theme set to ' + theme.charAt(0).toUpperCase() + theme.slice(1) + ' ✦');
     markFlag('themeChanged');
 }
@@ -194,192 +188,6 @@ function initMorphismStyle() {
     setMorphismStyle(store.get('morphismStyle', 'neumorphism'), false);
 }
 
-function isCaseClosedOccasionActive(now) {
-    now = now || new Date();
-    var starts = new Date(2026, 9, 3, 0, 0, 0);
-    var ends = new Date(2026, 9, 17, 0, 0, 0);
-    return now >= starts && now < ends;
-}
-function isMidnightArchiveEventActive(now) {
-    now = now || new Date();
-    var starts = new Date(2026, 9, 21, 0, 0, 0);
-    var ends = new Date(2026, 10, 4, 0, 0, 0);
-    return now >= starts && now < ends;
-}
-function syncCaseClosedOccasion() {
-    var banner = document.getElementById('caseClosedBanner');
-    if (!banner) return;
-    var now = new Date();
-    var ends = new Date(2026, 9, 17, 0, 0, 0);
-    var active = isCaseClosedOccasionActive(now);
-    var wasActive = document.body.classList.contains('case-closed-event');
-    document.body.classList.toggle('case-closed-event', active);
-    banner.hidden = !active;
-    if (active) {
-        var remaining = Math.max(1, Math.ceil((ends.getTime() - now.getTime()) / 86400000));
-        var remainingLabel = document.getElementById('caseClosedRemaining');
-        if (remainingLabel) remainingLabel.textContent = remaining === 1 ? 'last day' : remaining + ' days left';
-        moodColors.all = caseClosedMoodPalette;
-        window.setTimeout(syncCaseClosedOccasion, ends.getTime() - now.getTime() + 100);
-    } else if (wasActive) {
-        renderReaderLevel();
-    }
-}
-
-function syncMidnightArchiveEvent() {
-    var banner = document.getElementById('midnightArchiveEvent');
-    if (!banner) return;
-    var ends = new Date(2026, 10, 4, 0, 0, 0);
-    var now = new Date();
-    var active = isMidnightArchiveEventActive(now);
-    banner.hidden = !active;
-    if (active) {
-        var remaining = Math.max(1, Math.ceil((ends.getTime() - now.getTime()) / 86400000));
-        var label = document.getElementById('midnightArchiveRemaining');
-        if (label) label.textContent = remaining === 1 ? 'last day' : remaining + ' days left';
-        var status = document.getElementById('midnightArchiveStatus');
-        if (status) {
-            var best = Number(store.get('midnightMemoryBest', 0)) || 0;
-            status.textContent = best ? 'Personal best: ' + best + ' moves.' : 'Find all six pairs to set your best.';
-        }
-        window.setTimeout(syncMidnightArchiveEvent, Math.min(60000, ends.getTime() - now.getTime() + 100));
-    }
-}
-
-var midnightMemorySymbols = ['🔎', '🌙', '📚', '🌧️', '🌸', '🕯️'];
-var midnightMemoryDeck = [], midnightMemoryOpen = [], midnightMemoryMatches = 0, midnightMemoryMoves = 0, midnightMemoryLocked = false, midnightMemoryHideTimer = null;
-var midnightMemoryReturnFocus = null;
-function openMidnightMemory() {
-    if (!isMidnightArchiveEventActive()) { showToast('The Midnight Memory event has ended.'); return; }
-    var overlay = document.getElementById('midnightGameOverlay');
-    if (!overlay) return;
-    midnightMemoryReturnFocus = document.activeElement;
-    overlay.hidden = false;
-    requestAnimationFrame(function () { overlay.classList.add('open'); });
-    startMidnightMemory();
-    var firstCard = overlay.querySelector('.memory-card');
-    if (firstCard) firstCard.focus();
-}
-function closeMidnightMemory() {
-    var overlay = document.getElementById('midnightGameOverlay');
-    if (!overlay) return;
-    overlay.classList.remove('open');
-    window.setTimeout(function () { overlay.hidden = true; }, 180);
-    if (midnightMemoryReturnFocus && midnightMemoryReturnFocus.focus) midnightMemoryReturnFocus.focus();
-}
-function startMidnightMemory() {
-    if (!isMidnightArchiveEventActive()) return;
-    if (midnightMemoryHideTimer) clearTimeout(midnightMemoryHideTimer);
-    midnightMemoryDeck = midnightMemorySymbols.concat(midnightMemorySymbols)
-        .map(function (symbol, index) { return { symbol: symbol, key: index % midnightMemorySymbols.length, matched: false }; });
-    for (var i = midnightMemoryDeck.length - 1; i > 0; i--) {
-        var swap = Math.floor(Math.random() * (i + 1));
-        var temp = midnightMemoryDeck[i];
-        midnightMemoryDeck[i] = midnightMemoryDeck[swap];
-        midnightMemoryDeck[swap] = temp;
-    }
-    midnightMemoryOpen = [];
-    midnightMemoryMatches = 0;
-    midnightMemoryMoves = 0;
-    midnightMemoryLocked = false;
-    renderMidnightMemoryCards();
-    updateMidnightMemoryStats();
-    var status = document.getElementById('midnightGameStatus');
-    if (status) status.textContent = 'The archive is shuffled. Find the matching symbols.';
-}
-function renderMidnightMemoryCards() {
-    var grid = document.getElementById('midnightMemoryGrid');
-    if (!grid) return;
-    grid.innerHTML = midnightMemoryDeck.map(function (card, index) {
-        return '<button type="button" class="memory-card" data-card-index="' + index + '" aria-label="Card ' + (index + 1) + ', face down" onclick="flipMidnightMemoryCard(' + index + ')"><span class="memory-card-back" aria-hidden="true">✦</span><span class="memory-card-front" aria-hidden="true">' + card.symbol + '</span></button>';
-    }).join('');
-}
-function flipMidnightMemoryCard(index) {
-    if (midnightMemoryLocked || !midnightMemoryDeck[index]) return;
-    var card = midnightMemoryDeck[index];
-    var button = document.querySelector('.memory-card[data-card-index="' + index + '"]');
-    if (!button || card.matched || midnightMemoryOpen.indexOf(index) > -1) return;
-    button.classList.add('flipped');
-    button.setAttribute('aria-label', 'Card ' + (index + 1) + ': ' + card.symbol);
-    midnightMemoryOpen.push(index);
-    if (midnightMemoryOpen.length < 2) return;
-    midnightMemoryMoves++;
-    midnightMemoryLocked = true;
-    updateMidnightMemoryStats();
-    var firstIndex = midnightMemoryOpen[0], secondIndex = midnightMemoryOpen[1];
-    var first = midnightMemoryDeck[firstIndex], second = midnightMemoryDeck[secondIndex];
-    var status = document.getElementById('midnightGameStatus');
-    if (first.key === second.key) {
-        first.matched = second.matched = true;
-        [firstIndex, secondIndex].forEach(function (cardIndex) {
-            var matchedButton = document.querySelector('.memory-card[data-card-index="' + cardIndex + '"]');
-            if (matchedButton) { matchedButton.classList.add('matched'); matchedButton.disabled = true; matchedButton.setAttribute('aria-label', 'Matched pair: ' + midnightMemoryDeck[cardIndex].symbol); }
-        });
-        midnightMemoryMatches++;
-        midnightMemoryOpen = [];
-        midnightMemoryLocked = false;
-        updateMidnightMemoryStats();
-        if (midnightMemoryMatches === midnightMemorySymbols.length) {
-            var best = Number(store.get('midnightMemoryBest', 0)) || 0;
-            if (!best || midnightMemoryMoves < best) store.set('midnightMemoryBest', midnightMemoryMoves);
-            store.set('midnightMemoryWon', true);
-            if (status) status.textContent = 'All six pairs found in ' + midnightMemoryMoves + ' moves. The archive is yours!';
-            syncMidnightArchiveEvent();
-        } else if (status) status.textContent = 'A match. Keep going.';
-    } else {
-        if (status) status.textContent = 'No match. Try to remember where each symbol was.';
-        midnightMemoryHideTimer = window.setTimeout(function () {
-            [firstIndex, secondIndex].forEach(function (cardIndex) {
-                var openButton = document.querySelector('.memory-card[data-card-index="' + cardIndex + '"]');
-                if (openButton) {
-                    openButton.classList.remove('flipped');
-                    openButton.setAttribute('aria-label', 'Card ' + (cardIndex + 1) + ', face down');
-                }
-            });
-            midnightMemoryOpen = [];
-            midnightMemoryLocked = false;
-            midnightMemoryHideTimer = null;
-        }, 700);
-    }
-}
-function updateMidnightMemoryStats() {
-    var moves = document.getElementById('midnightGameMoves');
-    var pairs = document.getElementById('midnightGamePairs');
-    if (moves) moves.innerHTML = 'Moves <strong>' + midnightMemoryMoves + '</strong>';
-    if (pairs) pairs.innerHTML = 'Pairs <strong>' + midnightMemoryMatches + ' / ' + midnightMemorySymbols.length + '</strong>';
-}
-
-/* ============================================================
-   3D TILT
-   ============================================================ */
-function attachTilt(el) {
-    if (!tiltEnabled || window.matchMedia('(hover: none)').matches) return;
-
-    var raf = 0, px = 0, py = 0;
-
-    function paintTilt() {
-        raf = 0;
-        if (!tiltEnabled) return;
-        el.style.transform =
-            'perspective(700px) rotateY(' + (px * 8) + 'deg) rotateX(' + (-py * 8) + 'deg) translateY(-4px)';
-    }
-
-    el.addEventListener('mousemove', function (e) {
-        if (!tiltEnabled) return;
-
-        var r = el.getBoundingClientRect();
-        px = (e.clientX - r.left) / r.width - 0.5;
-        py = (e.clientY - r.top) / r.height - 0.5;
-
-        if (!raf) raf = requestAnimationFrame(paintTilt);
-    }, { passive: true });
-
-    el.addEventListener('mouseleave', function () {
-        if (raf) cancelAnimationFrame(raf);
-        raf = 0;
-        el.style.transform = '';
-    });
-}
 var catalogHoverGrid = document.getElementById("catalogGrid");
 var supportsCardHover = window.matchMedia("(hover: hover)").matches;
 if (catalogHoverGrid && supportsCardHover) {
@@ -460,7 +268,7 @@ function paintHeroFeature(i, animate) {
     var vol = (n.title.match(/Vol\.?\s*(\d+)/i) || [])[1];
     var textEl = document.getElementById('heroFeatureText');
     textEl.innerHTML =
-        '<span class="trend-badge">🔥 Trending Now' + (vol ? ' · Vol. ' + vol : '') + '</span>' +
+        '<span class="trend-badge">✿ Featured story' + (vol ? ' · Vol. ' + vol : '') + '</span>' +
         '<h1 class="hero-feature-title">' + esc(n.title.trim()) + '</h1>' +
         '<p class="hero-feature-desc">' + esc(n.blurb) + '</p>' +
         '<div class="hero-meta-row"><span>' + (n.rating ? ('⭐ ' + n.rating + ' rating') : '⭐ New') + '</span>' +
@@ -611,6 +419,7 @@ function renderStoryWorlds() {
         var nextLabel = next.status.toLowerCase() === 'upcoming' ? 'View upcoming volume' : 'Continue this story world';
         return '<article class="story-world-card"><div class="world-card-head"><div><span class="reader-tool-kicker">' + esc(world.type) + '</span><h3>' + esc(world.title) + '</h3></div><span class="world-progress-ring" aria-label="' + progress + ' percent complete">' + progress + '%</span></div><p class="world-card-note">' + esc(world.note) + '</p><div class="world-overall-track" role="progressbar" aria-label="' + esc(world.title) + ' series progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + progress + '"><i style="width:' + progress + '%"></i></div><p class="world-progress-label">' + readChapters + ' of ' + totalChapters + ' released chapters logged</p><div class="world-story-list">' + storyRows + '</div><button class="sketch-btn sketch-btn-primary world-next-button" type="button" onclick="openSpotlight(' + next.order + ')">' + nextLabel + ' →</button></article>';
     }).join('');
+    hideSkeleton('storyWorldSkeleton');
 }
 function selectStorySample(id) {
     var sample = storySamples.find(function (entry) { return entry.id === id; }) || storySamples[0];
@@ -729,6 +538,7 @@ function renderReadingQueue() {
     if (count) count.textContent = queued.length + ' saved';
     if (!queued.length) {
         list.innerHTML = '<div class="queue-empty glass"><span aria-hidden="true">↗</span><strong>Your next read, saved</strong><p>Open any story and add it to your queue for later.</p><button type="button" class="pill-btn" onclick="scrollToId(\'catalog\')">Browse the shelf →</button></div>';
+        hideSkeleton('readingQueueSkeleton');
         return;
     }
     list.innerHTML = queued.map(function (n) {
@@ -736,6 +546,7 @@ function renderReadingQueue() {
         var meta = n.status === 'upcoming' ? 'Coming soon' : (n.ch - read) + ' chapters left';
         return '<article class="queue-card glass"><button class="queue-story" type="button" onclick="openSpotlight(' + n.order + ')"><span class="queue-cover" style="background:linear-gradient(' + n.grad + ')"><img src="' + esc(n.img) + '" alt="" loading="lazy" onerror="imgFail(this)"></span><span class="queue-story-copy"><strong>' + esc(n.title) + '</strong><span>' + meta + '</span>' + (n.ch ? '<span class="queue-progress"><i style="width:' + pct + '%"></i></span>' : '') + '</span><span class="queue-open-mark" aria-hidden="true">→</span></button><button type="button" class="queue-remove" onclick="toggleReadingQueue(' + n.order + ')" aria-label="Remove ' + esc(n.title) + ' from reading queue">×</button></article>';
     }).join('');
+    hideSkeleton('readingQueueSkeleton');
 }
 function personalMiniCard(n, label, actionText) {
     if (!n) return '<div class="personal-empty"><span class="personal-empty-icon">✦</span><strong>Nothing here yet</strong><span>Choose a story from the Shelf to start building this space.</span></div>';
@@ -753,6 +564,7 @@ function renderPersonalShelf() {
     currentEl.innerHTML = personalMiniCard(current, 'Currently reading', current ? 'Continue' : 'Choose a story');
     favoriteEl.innerHTML = personalMiniCard(favorites, 'A favorite from your shelf', favorites ? 'Open favorite' : 'Add a favorite');
     finishedEl.innerHTML = personalMiniCard(finished, 'Recently finished', finished ? 'Revisit' : 'Finish your first story');
+    // Skeletons are replaced by innerHTML above
 }
 function renderContinueReading() {
     var body = document.getElementById('crBody');
@@ -806,6 +618,7 @@ function renderStats() {
         return '<div class="glass stat-tile" data-target="' + t.val + '" data-suffix="' + t.suffix + '" data-float="' + (!!t.isFloat) + '">' +
             '<div class="stat-num" id="statNum' + i + '">0</div><div class="stat-label">' + esc(t.label) + '</div></div>';
     }).join('');
+    hideSkeleton('statsSkeleton');
     var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (en) {
             if (en.isIntersecting) {
@@ -817,24 +630,6 @@ function renderStats() {
         });
     }, { threshold: .4 });
     Array.prototype.forEach.call(grid.children, function (c) { io.observe(c); });
-}
-
-/* ============================================================
-   MOOD PICKER
-   ============================================================ */
-var activeMoodGenres = null;
-function pickMood(el, genreStr) {
-    document.querySelectorAll('.mood-card').forEach(function (c) { c.classList.remove('active'); });
-    el.classList.add('active');
-    var key = el.dataset.mood;
-    paintAurora(moodColors[key] || moodColors.all);
-    activeMoodGenres = genreStr === 'all' ? null : genreStr.split(' ');
-    document.querySelectorAll('#genrePills .pill-btn').forEach(function (p) { p.classList.remove('active'); });
-    document.querySelector('#genrePills .pill-btn[data-genre="all"]').classList.add('active');
-    activeGenre = 'all';
-    scheduleCatalogRender();
-    scrollToId('catalog');
-    showToast('Showing ' + el.querySelector('.mood-label').textContent + ' reads ✦');
 }
 
 /* ============================================================
@@ -901,6 +696,7 @@ function renderForYouPicks() {
     }).sort(function (a, b) { return b.score - a.score || a.novel.order - b.novel.order; }).slice(0, 3);
     if (!scored.length) {
         grid.innerHTML = '<p class="for-you-empty">You have finished every available story. New releases will show up here when they arrive.</p>';
+        hideSkeleton('forYouSkeleton');
         return;
     }
     grid.innerHTML = scored.map(function (pick, index) {
@@ -909,6 +705,7 @@ function renderForYouPicks() {
         var progress = n.ch ? Math.round(read / n.ch * 100) : 0;
         return '<article class="for-you-card"><span class="for-you-rank">0' + (index + 1) + '</span><div class="for-you-cover" style="background:linear-gradient(' + esc(n.grad) + ')"><img src="' + esc(n.img) + '" alt="" loading="lazy" onerror="imgFail(this)"></div><div class="for-you-copy"><span class="for-you-reason">' + esc(pick.reason) + '</span><strong>' + esc(n.title.trim()) + '</strong><span class="for-you-meta">' + (read ? read + ' of ' + n.ch + ' chapters · ' + progress + '% complete' : esc(n.genres.join(' · '))) + '</span><button class="pill-btn" type="button" onclick="openSpotlight(' + n.order + ')">' + (read ? 'Continue reading' : 'Explore story') + ' →</button></div></article>';
     }).join('');
+    hideSkeleton('forYouSkeleton');
 }
 
 /* ============================================================
@@ -922,10 +719,11 @@ function scheduleCatalogRender() {
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('genrePills').addEventListener('click', function (e) {
         var btn = e.target.closest('.pill-btn'); if (!btn) return;
-        this.querySelectorAll('.pill-btn').forEach(function (b) { b.classList.remove('active'); });
-        btn.classList.add('active'); activeGenre = btn.dataset.genre || 'all'; activeMoodGenres = null;
-        document.querySelectorAll('.mood-card').forEach(function (c) { c.classList.remove('active'); });
-        document.querySelector('.mood-card[data-mood="all"]').classList.add('active');
+        this.querySelectorAll('.pill-btn').forEach(function (b) {
+            b.classList.toggle('active', b === btn);
+            b.setAttribute('aria-pressed', String(b === btn));
+        });
+        activeGenre = btn.dataset.genre || 'all';
         renderCatalog();
     });
     document.getElementById('statusPills').addEventListener('click', function (e) {
@@ -934,80 +732,69 @@ document.addEventListener('DOMContentLoaded', function () {
             b.classList.toggle('active', b === btn);
             b.setAttribute('aria-pressed', String(b === btn));
         });
-        btn.classList.add('active'); activeStatus = btn.dataset.status || 'all'; renderCatalog();
-    });
-    document.getElementById('lbTabs').addEventListener('click', function (e) {
-        var btn = e.target.closest('.pill-btn'); if (!btn) return;
-        this.querySelectorAll('.pill-btn').forEach(function (b) { b.classList.remove('active'); });
-        btn.classList.add('active'); renderLeaderboard(btn.dataset.lb);
+        activeStatus = btn.dataset.status || 'all'; renderCatalog();
     });
 });
 function clearShelfFilters() {
     activeGenre = 'all';
     activeStatus = 'all';
-    activeMoodGenres = null;
-    var search = document.getElementById('shelfSearch');
-    if (search) search.value = '';
-    document.querySelectorAll('#genrePills .pill-btn').forEach(function (p) { p.classList.toggle('active', p.dataset.genre === 'all'); });
+    document.querySelectorAll('#genrePills .pill-btn').forEach(function (p) {
+        var active = p.dataset.genre === 'all';
+        p.classList.toggle('active', active);
+        p.setAttribute('aria-pressed', String(active));
+    });
     document.querySelectorAll('#statusPills .pill-btn').forEach(function (p) {
         var active = p.dataset.status === 'all';
         p.classList.toggle('active', active);
         p.setAttribute('aria-pressed', String(active));
     });
-    document.querySelectorAll('.mood-card').forEach(function (c) { c.classList.toggle('active', c.dataset.mood === 'all'); });
     scheduleCatalogRender();
     showToast('Shelf filters cleared ✦');
 }
+function hideSkeleton(id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+}
+
 function renderCatalog() {
     var grid = document.getElementById('catalogGrid');
-    var searchEl = document.getElementById('shelfSearch');
-    var q = sanitize(searchEl ? searchEl.value : '').toLowerCase();
     var filtered = novels.filter(function (n) {
-        var matchesMood = !activeMoodGenres || activeMoodGenres.some(function (g) { return n.genres.indexOf(g) > -1; });
-        var matchesQ = !q || n.title.toLowerCase().indexOf(q) > -1 || n.genres.join(' ').indexOf(q) > -1;
         var matchesGenre = activeGenre === 'all' || n.genres.indexOf(activeGenre) > -1;
         var matchesStatus = activeStatus === 'all' || (activeStatus === 'unread'
             ? n.status !== 'upcoming' && getRead(n) === 0
             : n.status === activeStatus);
-        return matchesMood && matchesQ && matchesGenre && matchesStatus;
+        return matchesGenre && matchesStatus;
     }).sort(function (a, b) { return b.order - a.order; });
     document.getElementById('shelfCount').textContent = filtered.length + ' stor' + (filtered.length === 1 ? 'y' : 'ies') + ', filed and ready to open.';
-    updateShelfSearchUI(filtered.length);
     var summaryEl = document.getElementById('catalogFilterSummary');
     if (summaryEl) {
         var summary = [];
-        if (q) summary.push('Search: ' + q);
         if (activeGenre !== 'all') summary.push(badgeLabel[activeGenre] || activeGenre);
         if (activeStatus !== 'all') summary.push(activeStatus === 'unread' ? 'Unread' : activeStatus);
-        if (activeMoodGenres) summary.push('mood');
         summaryEl.textContent = summary.length ? summary.join(' · ') : 'Showing everything';
     }
     var clearBtn = document.getElementById('clearShelfBtn');
-    if (clearBtn) clearBtn.disabled = !q && activeGenre === 'all' && activeStatus === 'all' && !activeMoodGenres;
+    if (clearBtn) clearBtn.disabled = activeGenre === 'all' && activeStatus === 'all';
     grid.innerHTML = filtered.map(function (n, i) {
         var read = getRead(n), pct = n.ch ? Math.round(read / n.ch * 100) : 0;
         var statusCls = n.status === 'ongoing' ? 'status-ongoing' : n.status === 'upcoming' ? 'status-upcoming' : 'status-completed';
         var isLiked = !!bookmarks[n.order];
-        return '<div class="novel-card" style="animation-delay:' + (i * 0.03) + 's" onclick="openSpotlight(' + n.order + ')">' +
+        return '<article class="novel-card" style="animation-delay:' + (i * 0.03) + 's">' +
+            '<button type="button" class="novel-card-open" onclick="openSpotlight(' + n.order + ')" aria-label="View details for ' + esc(n.title) + '"></button>' +
             '<div class="nc-cover">' + coverHtml(n, '').replace('<div class=""', '<div style="width:100%;height:100%"') +
             '<div class="nc-grad"></div>' +
             '<span class="nc-status ' + statusCls + '">' + n.status + '</span>' +
             '<div class="nc-quickrow">' +
-            '<button class="nc-qbtn' + (isLiked ? ' liked' : '') + '" onclick="event.stopPropagation();toggleLikeNovel(' + n.order + ')" aria-label="Like">' + (isLiked ? '♥' : '♡') + '</button>' +
-            '<button class="nc-qbtn" onclick="event.stopPropagation();shareNovelQuick(' + n.order + ')" aria-label="Share">↗</button>' +
+            '<button type="button" class="nc-qbtn' + (isLiked ? ' liked' : '') + '" onclick="toggleLikeNovel(' + n.order + ')" aria-label="' + (isLiked ? 'Remove from favorites' : 'Add to favorites') + '" aria-pressed="' + isLiked + '">' + (isLiked ? '♥' : '♡') + '</button>' +
+            '<button type="button" class="nc-qbtn" onclick="shareNovelQuick(' + n.order + ')" aria-label="Share ' + esc(n.title) + '">↗</button>' +
             '</div>' +
             '<div class="nc-body"><div class="nc-genres">' + n.genres.slice(0, 3).map(function (g) { return '<span class="nc-tag">' + badgeLabel[g] + '</span>'; }).join('') + '</div>' +
             '<div class="nc-title">' + esc(n.title) + '</div>' +
             '<div class="nc-meta"><span>' + (n.rating ? ('⭐ ' + n.rating) : '—') + '</span><span>👁 ' + fmtNum(n.views) + '</span><span>📖 ' + (n.ch || '0') + ' ch</span></div>' +
             (n.ch ? '<div class="nc-progress"><div class="nc-progress-fill" style="width:' + pct + '%"></div></div><div class="nc-progress-label">' + read + ' / ' + n.ch + ' read</div>' : '<div class="nc-progress-label">Releasing soon</div>') +
-            '</div></div></div>';
+            '</div></div></article>';
     }).join('');
-    if (tiltEnabled) {
-        Array.prototype.forEach.call(grid.querySelectorAll('.novel-card'), function (card) {
-            attachTilt(card);
-        });
-    }
-   
+    hideSkeleton('catalogSkeleton');
 }
 function toggleLikeNovel(order) {
     bookmarks[order] = !bookmarks[order];
@@ -1385,6 +1172,7 @@ function renderReaderAchievements() {
             '<div class="achievement-card-bottom">' + (entry.earned ? '<span class="achievement-earned-date">' + (date ? 'Collected ' + esc(date) : 'Collected') + '</span><span class="achievement-earned-mark" aria-hidden="true">✦</span>' : '<div class="achievement-card-progress"><div><span>' + esc(a.category === 'Secrets' ? 'Secrets found' : 'Progress') + '</span><span>' + fmtNum(entry.current) + ' / ' + fmtNum(a.target) + '</span></div><span class="achievement-card-track"><i style="width:' + pct + '%"></i></span></div>') + '</div>' +
             '</article>';
     }).join('');
+    hideSkeleton('achievementSkeleton');
     if (newlyEarned.length === 1) showToast('✦ Milestone earned: ' + newlyEarned[0]);
     else if (newlyEarned.length > 1) showToast('✦ ' + newlyEarned.length + ' reading milestones added to your collection.');
 }
@@ -1455,25 +1243,6 @@ function surpriseMe() {
 
     showToast('🎲 How about "' + pick.title + '"?');
     openSpotlight(pick.order);
-}
-
-/* ============================================================
-   LEADERBOARD
-   ============================================================ */
-function renderLeaderboard(mode) {
-    mode = mode || 'views';
-    var sorted = novels.filter(function (n) { return n.status !== 'upcoming'; }).slice();
-    if (mode === 'views') sorted.sort(function (a, b) { return b.views - a.views; });
-    else if (mode === 'rating') sorted.sort(function (a, b) { return b.rating - a.rating; });
-    else if (mode === 'chapters') sorted.sort(function (a, b) { return b.ch - a.ch; });
-    else if (mode === 'newest') sorted.sort(function (a, b) { return a.releaseOffsetDays - b.releaseOffsetDays; });
-    sorted = sorted.slice(0, 10);
-    document.getElementById('lbList').innerHTML = sorted.map(function (n, i) {
-        var val = mode === 'views' ? fmtNum(n.views) : mode === 'rating' ? ('⭐' + n.rating) : mode === 'chapters' ? (n.ch + ' ch') : releaseDate(n).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-        return '<div class="lb-row" onclick="openSpotlight(' + n.order + ')"><span class="lb-rank' + (i < 3 ? ' top' : '') + '">' + (i + 1) + '</span>' +
-            '<div class="lb-cover">' + coverHtml(n, '').replace('<div class=""', '<div style="width:100%;height:100%"') + '</div>' +
-            '<div class="lb-info"><div class="lb-title">' + esc(n.title) + '</div><div class="lb-sub">' + val + '</div></div></div>';
-    }).join('');
 }
 
 /* ============================================================
@@ -1673,7 +1442,7 @@ function cmdkOpen(order) {
 }
 document.addEventListener('keydown', function (e) {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openCmdk(); return; }
-    if (e.key === 'Escape') { closeCmdk(); closeSettings(); closeSpotlight(); closeReaderMode(); closeMidnightMemory(); return; }
+    if (e.key === 'Escape') { closeCmdk(); closeSettings(); closeSpotlight(); closeReaderMode(); return; }
     if (document.getElementById('cmdkPanel').classList.contains('open')) {
         var rows = document.querySelectorAll('.cmdk-row');
         if (!rows.length) return;
@@ -1733,29 +1502,269 @@ function toggleLight() {
     store.set('lightMode', on ? 'on' : 'off');
     var t = document.getElementById('lightToggle'); if (t) { t.classList.toggle('on', on); t.setAttribute('aria-checked', String(on)); }
 }
-function toggleGrain() {
-    var btn = document.getElementById('grainToggle'); btn.classList.toggle('on');
-    var on = btn.classList.contains('on');
-    document.getElementById('grain').style.opacity = on ? '.22' : '0';
-    btn.setAttribute('aria-checked', String(on));
-}
 function toggleMotionPref() {
     var btn = document.getElementById('motionToggle'); btn.classList.toggle('on');
     motionEnabled = btn.classList.contains('on'); store.set('motionEnabled', motionEnabled);
     btn.setAttribute('aria-checked', String(motionEnabled));
     startHeroRotate();
 }
-function toggleTilt() {
-    var btn = document.getElementById('tiltToggle'); btn.classList.toggle('on');
-    tiltEnabled = btn.classList.contains('on'); store.set('tiltEnabled', tiltEnabled);
-    btn.setAttribute('aria-checked', String(tiltEnabled));
+function toggleReducedMotion() {
+    var btn = document.getElementById('reducedMotionToggle');
+    var enabled = !btn.classList.contains('on');
+    btn.classList.toggle('on', enabled);
+    btn.setAttribute('aria-checked', String(enabled));
+    store.set('reducedMotion', enabled);
+    document.body.classList.toggle('reduce-motion', enabled);
+    if (enabled) {
+        prefersReducedMotion = true;
+        // Pause all animations
+        document.querySelectorAll('.aurora-layer, .blob, .novel-card, .glass').forEach(function (el) {
+            el.style.animationPlayState = 'paused';
+            el.style.transitionDuration = '0.001ms';
+        });
+        clearInterval(heroRotateTimer);
+    } else {
+        prefersReducedMotion = false;
+        document.querySelectorAll('.aurora-layer, .blob, .novel-card, .glass').forEach(function (el) {
+            el.style.animationPlayState = '';
+            el.style.transitionDuration = '';
+        });
+        startHeroRotate();
+    }
+    showToast(enabled ? 'Reduced motion enabled' : 'Reduced motion disabled');
+}
+function toggleAutoHideNav() {
+    var btn = document.getElementById('autoHideNavToggle');
+    var enabled = !btn.classList.contains('on');
+    btn.classList.toggle('on', enabled);
+    btn.setAttribute('aria-checked', String(enabled));
+    store.set('autoHideNav', enabled);
+    document.body.classList.toggle('auto-hide-nav', enabled);
+    showToast(enabled ? 'Auto-hide nav enabled' : 'Auto-hide nav disabled');
 }
 /* ============================================================
    SCROLL / MISC
    ============================================================ */
+var lastScrollY = 0;
+var scrollDir = 'down';
 window.addEventListener('scroll', function () {
-    document.getElementById('scrollBtn').classList.toggle('vis', window.scrollY > 320);
+    var scrollY = window.scrollY;
+    var dock = document.querySelector('.browser-dock');
+
+    document.getElementById('scrollBtn').classList.toggle('vis', scrollY > 320);
+
+    // Auto-hide nav logic
+    if (document.body.classList.contains('auto-hide-nav') && dock) {
+        if (scrollY > lastScrollY && scrollY > 200) {
+            // Scrolling down - hide nav
+            dock.classList.remove('nav-visible');
+        } else if (scrollY < lastScrollY) {
+            // Scrolling up - show nav
+            dock.classList.add('nav-visible');
+        }
+    }
+
+    lastScrollY = scrollY;
 }, { passive: true });
+
+/* ============================================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================================ */
+
+// IntersectionObserver for triggering animations only when visible
+function initScrollAnimations() {
+    if (!('IntersectionObserver' in window)) return;
+    if (prefersReducedMotion) return;
+
+    var animatedElements = document.querySelectorAll('.novel-card, .glass, .hero-feature, .stat-tile, .milestone-tile, .mood-card, .side-card');
+
+    var animationObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                animationObserver.unobserve(entry.target);
+            }
+        });
+    }, { rootMargin: '50px', threshold: 0.1 });
+
+    animatedElements.forEach(function (el) { animationObserver.observe(el); });
+}
+
+// Lazy load images with IntersectionObserver
+function initLazyImages() {
+    if (!('IntersectionObserver' in window)) return;
+
+    var lazyImages = document.querySelectorAll('img[loading="lazy"]');
+
+    var imageObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+                var img = entry.target;
+                if (img.dataset.src) {
+                    img.src = img.dataset.src;
+                }
+                img.removeAttribute('loading');
+                imageObserver.unobserve(img);
+            }
+        });
+    }, { rootMargin: '100px', threshold: 0.01 });
+
+    lazyImages.forEach(function (img) { imageObserver.observe(img); });
+}
+
+// Reduce paint cost: disable complex animations when tab is hidden
+function initVisibilityOptimization() {
+    document.addEventListener('visibilitychange', function () {
+        var isHidden = document.hidden;
+        var auroraLayers = document.querySelectorAll('.aurora-layer');
+        var blobs = document.querySelectorAll('.blob');
+
+        auroraLayers.forEach(function (layer) {
+            layer.style.animationPlayState = isHidden ? 'paused' : 'running';
+        });
+        blobs.forEach(function (blob) {
+            blob.style.animationPlayState = isHidden ? 'paused' : 'running';
+        });
+
+        // Pause hero rotation when hidden
+        if (isHidden) {
+            clearInterval(heroRotateTimer);
+        } else {
+            startHeroRotate();
+        }
+    });
+}
+
+/* ============================================================
+   ACCESSIBILITY IMPROVEMENTS
+   ============================================================ */
+
+// Focus trap for modal panels
+function trapFocus(element) {
+    var focusableElements = element.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    var firstElement = focusableElements[0];
+    var lastElement = focusableElements[focusableElements.length - 1];
+
+    element.addEventListener('keydown', function (e) {
+        if (e.key !== 'Tab') return;
+
+        if (e.shiftKey) {
+            if (document.activeElement === firstElement) {
+                e.preventDefault();
+                lastElement.focus();
+            }
+        } else {
+            if (document.activeElement === lastElement) {
+                e.preventDefault();
+                firstElement.focus();
+            }
+        }
+    });
+
+    // Focus first element when panel opens
+    if (firstElement) firstElement.focus();
+}
+
+// Apply focus trap to all panels
+function initFocusTraps() {
+    var panels = [
+        document.getElementById('spotlightPanel'),
+        document.getElementById('settingsPanel'),
+        document.getElementById('cmdkPanel'),
+        document.getElementById('readerModePanel')
+    ];
+
+    panels.forEach(function (panel) {
+        if (panel) {
+            var observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        if (panel.classList.contains('open')) {
+                            trapFocus(panel);
+                        }
+                    }
+                });
+            });
+            observer.observe(panel, { attributes: true, attributeFilter: ['class'] });
+        }
+    });
+}
+
+// Keyboard navigation for catalog grid
+function initCatalogKeyboardNav() {
+    var grid = document.getElementById('catalogGrid');
+    if (!grid) return;
+
+    grid.addEventListener('keydown', function (e) {
+        var cards = grid.querySelectorAll('.novel-card');
+        if (!cards.length) return;
+
+        var currentIndex = Array.from(cards).findIndex(function (card) {
+            return card === document.activeElement || card.contains(document.activeElement);
+        });
+
+        if (currentIndex === -1) return;
+
+        var cols = 3;
+        if (window.innerWidth < 1080) cols = 2;
+        if (window.innerWidth < 760) cols = 2;
+        if (window.innerWidth < 500) cols = 2;
+        if (window.innerWidth < 380) cols = 1;
+
+        var newIndex = currentIndex;
+
+        switch (e.key) {
+            case 'ArrowRight':
+                e.preventDefault();
+                newIndex = Math.min(currentIndex + 1, cards.length - 1);
+                break;
+            case 'ArrowLeft':
+                e.preventDefault();
+                newIndex = Math.max(currentIndex - 1, 0);
+                break;
+            case 'ArrowDown':
+                e.preventDefault();
+                newIndex = Math.min(currentIndex + cols, cards.length - 1);
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                newIndex = Math.max(currentIndex - cols, 0);
+                break;
+            case 'Home':
+                e.preventDefault();
+                newIndex = 0;
+                break;
+            case 'End':
+                e.preventDefault();
+                newIndex = cards.length - 1;
+                break;
+        }
+
+        if (newIndex !== currentIndex) {
+            var focusTarget = cards[newIndex].querySelector('.novel-card-open') || cards[newIndex];
+            focusTarget.focus();
+        }
+    });
+}
+
+// Announce dynamic content changes to screen readers
+function announceToScreenReader(message, priority) {
+    var liveRegion = document.getElementById('a11y-live-region');
+    if (!liveRegion) {
+        liveRegion = document.createElement('div');
+        liveRegion.id = 'a11y-live-region';
+        liveRegion.setAttribute('aria-live', priority || 'polite');
+        liveRegion.setAttribute('aria-atomic', 'true');
+        liveRegion.className = 'sr-only';
+        document.body.appendChild(liveRegion);
+    }
+    liveRegion.textContent = '';
+    // Force reflow
+    liveRegion.offsetHeight;
+    liveRegion.textContent = message;
+}
 
 /* ============================================================
    INIT
@@ -1771,7 +1780,6 @@ window.addEventListener('load', function () {
     renderReaderAchievements();
     restoreSectionContent('storySamplerContent', 'storySamplerToggle', 'storySamplerCollapsed', 'story sampler');
     restoreSectionContent('storyWorldGrid', 'storyWorldsToggle', 'storyWorldsCollapsed', 'connected stories');
-    restoreSectionContent('leaderboardContent', 'leaderboardToggle', 'leaderboardCollapsed', 'leaderboard');
     restoreAchievementContent();
     var defaultLightMode = 'on';
     var wantLight = store.get('lightMode', defaultLightMode) === 'on';
@@ -1780,18 +1788,39 @@ window.addEventListener('load', function () {
     if (t) { t.classList.toggle('on', wantLight); t.setAttribute('aria-checked', String(wantLight)); }
     document.getElementById('motionToggle').classList.toggle('on', motionEnabled);
     document.getElementById('motionToggle').setAttribute('aria-checked', String(motionEnabled));
+
+    // Restore reduced motion preference
+    var reducedMotion = store.get('reducedMotion', false);
+    if (reducedMotion) {
+        prefersReducedMotion = true;
+        document.body.classList.add('reduce-motion');
+        var rmBtn = document.getElementById('reducedMotionToggle');
+        if (rmBtn) { rmBtn.classList.add('on'); rmBtn.setAttribute('aria-checked', 'true'); }
+    }
+
+    // Restore auto-hide nav preference
+    var autoHideNav = store.get('autoHideNav', false);
+    if (autoHideNav) {
+        document.body.classList.add('auto-hide-nav');
+        var anBtn = document.getElementById('autoHideNavToggle');
+        if (anBtn) { anBtn.classList.add('on'); anBtn.setAttribute('aria-checked', 'true'); }
+    }
+
     initTheme();
     initMorphismStyle();
-    syncCaseClosedOccasion();
-    syncMidnightArchiveEvent();
-
     paintAurora(moodColors.all);
     renderHero();
     renderStats();
-    renderLeaderboard('views');
     renderReadingQueue();
     renderHeatmap();
     renderCalendar();
+
+    // Performance & accessibility init
+    initScrollAnimations();
+    initLazyImages();
+    initVisibilityOptimization();
+    initFocusTraps();
+    initCatalogKeyboardNav();
 
     document.addEventListener('visibilitychange', startHeroRotate);
     document.addEventListener('visibilitychange', notifyDueReleaseReminders);
@@ -1830,65 +1859,6 @@ if ('IntersectionObserver' in window) {
 }
 
 
-/* ============================================================
-   SHELF SEARCH UX
-   ============================================================ */
-
-function updateShelfSearchUI(resultCount) {
-    var input = document.getElementById('shelfSearch');
-    var searchBox = document.querySelector('.shelf-search');
-    var info = document.getElementById('searchResultInfo');
-
-    if (!input || !searchBox) return;
-
-    var value = input.value.trim();
-    searchBox.classList.toggle('has-value', value.length > 0);
-
-    if (info) {
-        if (!value) {
-            info.textContent = 'Search titles, genres, and stories';
-        } else if (typeof resultCount === 'number') {
-            info.textContent = resultCount + (resultCount === 1 ? ' story' : ' stories') +
-                ' found for "' + value + '"';
-        } else {
-            info.textContent = 'Searching the archive for "' + value + '"';
-        }
-    }
-}
-
-function handleShelfSearchInput() {
-    updateShelfSearchUI();
-    scheduleCatalogRender();
-}
-
-function clearShelfSearch() {
-    var input = document.getElementById('shelfSearch');
-    if (!input) return;
-
-    input.value = '';
-    updateShelfSearchUI();
-    scheduleCatalogRender();
-    input.focus();
-}
-
-document.addEventListener('keydown', function (event) {
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
-        var input = document.getElementById('shelfSearch');
-        if (!input) return;
-
-        event.preventDefault();
-        input.focus();
-        input.select();
-    }
-
-    if (
-        event.key === 'Escape' &&
-        document.activeElement &&
-        document.activeElement.id === 'shelfSearch'
-    ) {
-        clearShelfSearch();
-    }
-});
 /* ============================================================
    THE EYE AWAKENS
 ============================================================ */
@@ -1964,7 +1934,6 @@ function revealWatcherSecret() {
     revealLibrarySecret('watcher', '👁 The Watcher has seen you.');
 }
 document.addEventListener('DOMContentLoaded', function () {
-    updateShelfSearchUI();
     setTimeout(() => {
 
     if(shouldWakeEye()){

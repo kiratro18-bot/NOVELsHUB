@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Whispers in the Static — Chapters</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    :root {
+      --ink: #1a1620;
+      --paper: #f5f0ea;
+      --cream: #ebe3d7;
+      --mist: #d4c9b8;
+      --midnight: #2d1f3d;
+      --violet: #7b5fa0;
+      --deep-violet: #5a3d7a;
+      --ash: #8b7d98;
+      --silver: #c8c0cc;
+      --fog: rgba(245, 240, 234, 0.92);
+      --glow: rgba(123, 95, 160, 0.4);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 300;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.4s, color 0.4s;
+    }
+
+    /* GRAIN */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    /* STATIC NOISE OVERLAY */
+    #staticCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.03;
+    }
+
+    /* DARK MODE */
+    body.dark {
+      --ink: #ebe5f0;
+      --paper: #16101c;
+      --cream: #1d1624;
+      --mist: #2a2038;
+      --fog: rgba(22, 16, 28, 0.92);
+      --glow: rgba(180, 150, 220, 0.3);
+    }
+
+    body.dark .chapter-card {
+      background: #1d1624;
+      border-color: rgba(123, 95, 160, 0.12);
+    }
+
+    body.dark .chapter-card:hover {
+      background: #251d30;
+      border-color: rgba(123, 95, 160, 0.25);
+    }
+
+    body.dark .nav-bar {
+      background: rgba(22, 16, 28, 0.95);
+      border-color: rgba(123, 95, 160, 0.1);
+    }
+
+    body.dark .font-panel {
+      background: #1d1624;
+      border-color: rgba(123, 95, 160, 0.15);
+    }
+
+    body.dark .font-btn {
+      background: #2a2038;
+      color: var(--ink);
+      border-color: rgba(123, 95, 160, 0.15);
+    }
+
+    body.dark .hero-card {
+      background: rgba(29, 22, 36, 0.9);
+      border-color: rgba(123, 95, 160, 0.15);
+    }
+
+    body.dark .chapter-num {
+      color: rgba(123, 95, 160, 0.35);
+    }
+
+    body.dark .chapter-title {
+      color: var(--ink);
+    }
+
+    body.dark .read-arrow {
+      color: rgba(123, 95, 160, 0.5);
+    }
+
+    body.dark .chapter-card:hover .read-arrow {
+      color: var(--violet);
+    }
+
+    body.dark .progress-fill {
+      background: var(--violet);
+    }
+
+    body.dark .divider-line {
+      border-color: rgba(123, 95, 160, 0.08);
+    }
+
+    body.dark .the-end-title {
+      color: var(--violet);
+    }
+
+    /* NAV */
+    .nav-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 60px;
+      background: var(--fog);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(45, 31, 61, 0.08);
+      transition: background 0.4s, border-color 0.4s;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--deep-violet);
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      transition: gap 0.2s, color 0.2s;
+    }
+
+    .back-link:hover {
+      gap: 12px;
+      color: var(--midnight);
+    }
+
+    .back-arrow {
+      font-size: 16px;
+      transition: transform 0.2s;
+    }
+
+    .back-link:hover .back-arrow {
+      transform: translateX(-3px);
+    }
+
+    .nav-title {
+      font-family: 'Cinzel', serif;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--deep-violet);
+      letter-spacing: 0.15em;
+      text-transform: lowercase;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      background: none;
+      border: 1px solid rgba(45, 31, 61, 0.12);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      color: var(--ink);
+      position: relative;
+    }
+
+    .icon-btn:hover {
+      background: var(--cream);
+      transform: scale(1.05);
+      border-color: var(--violet);
+    }
+
+    /* FONT PANEL */
+    .font-panel {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: white;
+      border: 1px solid rgba(45, 31, 61, 0.1);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 12px 40px rgba(45, 31, 61, 0.1);
+      z-index: 200;
+      min-width: 180px;
+    }
+
+    .font-panel.open {
+      display: flex;
+    }
+
+    .font-panel-label {
+      font-size: 9px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(45, 31, 61, 0.35);
+    }
+
+    .font-controls-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .font-btn {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid rgba(45, 31, 61, 0.1);
+      border-radius: 8px;
+      background: var(--cream);
+      cursor: pointer;
+      font-family: 'Cinzel', serif;
+      color: var(--ink);
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .font-btn:hover {
+      background: var(--deep-violet);
+      color: white;
+      border-color: var(--deep-violet);
+    }
+
+    .font-size-display {
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      color: var(--deep-violet);
+      min-width: 30px;
+      text-align: center;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 60px 40px 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(123, 95, 160, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-card {
+      position: relative;
+      background: rgba(245, 240, 234, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(123, 95, 160, 0.2);
+      border-radius: 24px;
+      padding: 48px 60px;
+      max-width: 580px;
+      width: 100%;
+    }
+
+    .hero-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--violet);
+      margin-bottom: 16px;
+    }
+
+    .hero-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(34px, 5.6vw, 54px);
+      font-weight: 400;
+      color: var(--midnight);
+      line-height: 1.08;
+      margin-bottom: 10px;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      font-weight: 600;
+      color: var(--violet);
+    }
+
+    .hero-subtitle {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--violet);
+      margin-bottom: 24px;
+      letter-spacing: 0.08em;
+      max-width: 420px;
+    }
+
+    .hero-divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--silver), transparent);
+      margin: 0 auto 20px;
+    }
+
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 24px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(45, 31, 61, 0.4);
+    }
+
+    .hero-meta span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* CHAPTER LIST */
+    .chapter-section {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(45, 31, 61, 0.08);
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: 20px;
+      color: var(--midnight);
+    }
+
+    .chapter-count-badge {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: rgba(45, 31, 61, 0.35);
+    }
+
+    /* READING PROGRESS */
+    .progress-bar {
+      height: 2px;
+      background: rgba(45, 31, 61, 0.06);
+      border-radius: 1px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--violet);
+      border-radius: 1px;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    /* CHAPTER CARDS */
+    .chapter-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .chapter-card {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 20px 24px;
+      background: #faf7f2;
+      border: 1px solid rgba(45, 31, 61, 0.07);
+      border-radius: 14px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chapter-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--violet), var(--ash));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .chapter-card:hover {
+      border-color: rgba(123, 95, 160, 0.25);
+      box-shadow: 0 8px 32px rgba(90, 61, 122, 0.1);
+      transform: translateY(-3px);
+    }
+
+    .chapter-card:hover::before {
+      opacity: 1;
+    }
+
+    .chapter-card.epilogue {
+      background: linear-gradient(135deg, rgba(123, 95, 160, 0.06), rgba(139, 125, 152, 0.06));
+      border-color: rgba(123, 95, 160, 0.2);
+    }
+
+    .chapter-card.epilogue::before {
+      background: linear-gradient(180deg, var(--silver), var(--violet));
+    }
+
+    .chapter-num {
+      font-family: 'Cinzel', serif;
+      font-size: 28px;
+      font-weight: 400;
+      color: rgba(45, 31, 61, 0.15);
+      min-width: 36px;
+      line-height: 1;
+      transition: color 0.3s;
+      flex-shrink: 0;
+    }
+
+    .chapter-card:hover .chapter-num {
+      color: var(--violet);
+    }
+
+    .chapter-card.epilogue .chapter-num {
+      color: rgba(123, 95, 160, 0.3);
+    }
+
+    .chapter-card.epilogue:hover .chapter-num {
+      color: var(--silver);
+    }
+
+    .chapter-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chapter-label {
+      font-size: 9px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--violet);
+      margin-bottom: 3px;
+    }
+
+    .chapter-card.epilogue .chapter-label {
+      color: var(--silver);
+    }
+
+    .chapter-title {
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--midnight);
+      line-height: 1.25;
+      transition: color 0.2s;
+    }
+
+    .chapter-card:hover .chapter-title {
+      color: var(--deep-violet);
+    }
+
+    .chapter-card.epilogue .chapter-title {
+      color: var(--ink);
+    }
+
+    .read-arrow {
+      font-size: 18px;
+      color: rgba(45, 31, 61, 0.15);
+      transition: all 0.25s;
+      flex-shrink: 0;
+      transform: translateX(-6px);
+    }
+
+    .chapter-card:hover .read-arrow {
+      color: var(--violet);
+      transform: translateX(0);
+    }
+
+    .chapter-card.epilogue:hover .read-arrow {
+      color: var(--silver);
+    }
+
+    .chapter-card.locked {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .chapter-card.locked:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: rgba(45, 31, 61, 0.07);
+    }
+
+    .chapter-card.locked::before {
+      opacity: 0;
+    }
+
+    .chapter-card.locked .read-arrow {
+      content: '🔒';
+      font-size: 16px;
+    }
+
+    /* DIVIDER */
+    .divider-line {
+      border: none;
+      border-top: 1px solid rgba(45, 31, 61, 0.06);
+      margin: 16px 0;
+    }
+
+    /* THE END */
+    .the-end {
+      text-align: center;
+      padding: 40px 0 20px;
+    }
+
+    .the-end-title {
+      font-family: 'Cinzel', serif;
+      font-size: 28px;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--violet);
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+
+    .the-end-sub {
+      font-size: 11px;
+      color: rgba(45, 31, 61, 0.3);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    /* FOOTER */
+    .page-footer {
+      text-align: center;
+      padding: 20px 40px 40px;
+      font-size: 11px;
+      color: rgba(45, 31, 61, 0.3);
+      letter-spacing: 0.08em;
+      line-height: 1.8;
+    }
+
+    /* SCROLL BTN */
+    #scrollBtn {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--deep-violet);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(90, 61, 122, 0.3);
+      transition: all 0.2s;
+      z-index: 50;
+    }
+
+    #scrollBtn:hover {
+      background: var(--midnight);
+      transform: translateY(-2px);
+    }
+
+    /* ANIMATIONS */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(18px);
+      animation: fadeUp 0.55s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .chapter-card {
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .chapter-card:nth-child(1) { animation-delay: 0.08s; }
+    .chapter-card:nth-child(2) { animation-delay: 0.15s; }
+    .chapter-card:nth-child(3) { animation-delay: 0.22s; }
+    .chapter-card:nth-child(4) { animation-delay: 0.29s; }
+    .chapter-card:nth-child(5) { animation-delay: 0.36s; }
+    .chapter-card:nth-child(6) { animation-delay: 0.43s; }
+    .chapter-card:nth-child(7) { animation-delay: 0.50s; }
+    .chapter-card:nth-child(8) { animation-delay: 0.57s; }
+    .chapter-card:nth-child(9) { animation-delay: 0.64s; }
+    .chapter-card:nth-child(10) { animation-delay: 0.71s; }
+    .chapter-card:nth-child(11) { animation-delay: 0.78s; }
+    .chapter-card:nth-child(12) { animation-delay: 0.85s; }
+
+    /* MOBILE */
+    @media (max-width: 600px) {
+      .nav-bar {
+        padding: 0 16px;
+      }
+
+      .nav-title {
+        display: none;
+      }
+
+      .hero {
+        padding: 36px 16px 36px;
+      }
+
+      .hero-card {
+        padding: 32px 24px;
+      }
+
+      .chapter-section {
+        padding: 0 16px 60px;
+      }
+
+      .chapter-card {
+        padding: 16px 18px;
+        gap: 14px;
+      }
+
+      .chapter-num {
+        font-size: 22px;
+        min-width: 28px;
+      }
+
+      .chapter-title {
+        font-size: 16px;
+      }
+
+      #scrollBtn {
+        bottom: 16px;
+        right: 16px;
+        width: 36px;
+        height: 36px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+      .fade-up { opacity: 1; transform: none; }
+      .chapter-card { animation: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Static noise canvas -->
+  <canvas id="staticCanvas"></canvas>
+
+  <!-- NAV -->
+  <nav class="nav-bar">
+    <a href="../index.html" class="back-link">
+      <span class="back-arrow">←</span>
+      <span>Back to Library</span>
+    </a>
+    <div class="nav-title">Whispers in the Static</div>
+    <div class="nav-right">
+      <div style="position:relative">
+        <button class="icon-btn" id="fontToggle" onclick="toggleFontPanel()" title="Font size">Aa</button>
+        <div class="font-panel" id="fontPanel">
+          <span class="font-panel-label">Text Size</span>
+          <div class="font-controls-row">
+            <button class="font-btn" onclick="changeFont(-1)" style="font-size:13px">A−</button>
+            <span class="font-size-display" id="fontDisplay">16</span>
+            <button class="font-btn" onclick="changeFont(1)" style="font-size:19px">A+</button>
+          </div>
+          <button class="font-btn" onclick="changeFont(0)" style="font-size:13px; letter-spacing:0.1em;">Reset</button>
+        </div>
+      </div>
+      <button class="icon-btn" id="themeBtn" onclick="toggleDark()">🌙</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero fade-up">
+    <div class="hero-bg"></div>
+    <div class="hero-card">
+      <div class="hero-eyebrow">A Novel by AKA</div>
+      <h1 class="hero-title">Whispers <em>in the Static</em></h1>
+      <p class="hero-subtitle">Every frequency hides a secret. Every silence speaks.</p>
+      <div class="hero-divider"></div>
+      <div class="hero-meta">
+        <span>📻 12 Frequencies</span>
+        <span>✦ Ongoing</span>
+        <span>🌑 mystery · supernatural</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTERS -->
+  <div class="chapter-section">
+
+    <div class="section-header fade-up" style="animation-delay:0.05s">
+      <h2 class="section-title">Signal Log</h2>
+      <span class="chapter-count-badge">12 frequencies detected</span>
+    </div>
+
+    <div class="progress-bar fade-up" style="animation-delay:0.08s">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="chapter-list">
+
+      <a class="chapter-card" href="frequency1.html">
+        <div class="chapter-num">01</div>
+        <div class="chapter-info">
+          <div class="chapter-label">Frequency One</div>
+          <div class="chapter-title">The Station That Shouldn't Exist</div>
+        </div>
+        <span class="read-arrow">→</span>
+      </a>
+
+      <a class="chapter-card" href="frequency2.html">
+        <div class="chapter-num">02</div>
+        <div class="chapter-info">
+          <div class="chapter-label">Frequency Two</div>
+          <div class="chapter-title">Voice from the Void</div>
+        </div>
+        <span class="read-arrow">→</span>
+      </a>
+
+      <a class="chapter-card" href="frequency3.html">
+        <div class="chapter-num">03</div>
+        <div class="chapter-info">
+          <div class="chapter-label">Frequency Three</div>
+          <div class="chapter-title">The Numbers Station</div>
+        </div>
+        <span class="read-arrow">→</span>
+      </a>
+
+      <a class="chapter-card" href="frequency4.html">
+        <div class="chapter-num">04</div>
+        <div class="chapter-info">
+          <div class="chapter-label">Frequency Four</div>
+          <div class="chapter-title">Static Between Songs</div>
+        </div>
+        <span class="read-arrow">→</span>
+      </a>
+
+      <a class="chapter-card" href="frequency5.html">
+        <div class="chapter-num">05</div>
+        <div class="chapter-info">
+          <div class="chapter-label">Frequency Five</div>
+          <div class="chapter-title">The Caller at Midnight</div>
+        </div>
+        <span class="read-arrow">→</span>
+      </a>
+
+      <a class="chapter-card" href="frequency6.html">
+        <div class="chapter-num">06</div>
+        <div class="chapter-info">
+          <div class="chapter-label">Frequency Six</div>
+          <div class="chapter-title">Tape Loop</div>
+        </div>
+        <span class="read-arrow">→</span>
+      </a>
+
+      <a class="chapter-card" href="frequency7.html">
+        <div class="chapter-num">07</div>
+        <div class="chapter-info">
+          <div class="chapter-label">Frequency Seven</div>
+          <div class="chapter-title">The Frequency of Memory</div>
+        </div>
+        <span class="read-arrow">→</span>
+      </a>
+
+      <a class="chapter-card" href="frequency8.html">
+        <div class="chapter-num">08</div>
+        <div class="chapter-info">
+          <div class="chapter-label">Frequency Eight</div>
+          <div class="chapter-title">Carrier Wave</div>
+        </div>
+        <span class="read-arrow">→</span>
+      </a>
+
+      <a class="chapter-card" href="frequency9.html">
+        <div class="chapter-num">09</div>
+        <div class="chapter-info">
+          <div class="chapter-label">Frequency Nine</div>
+          <div class="chapter-title">The Broadcast Tower</div>
+        </div>
+        <span class="read-arrow">→</span>
+      </a>
+
+      <a class="chapter-card" href="frequency10.html">
+        <div class="chapter-num">10</div>
+        <div class="chapter-info">
+          <div class="chapter-label">Frequency Ten</div>
+          <div class="chapter-title">White Noise Confession</div>
+        </div>
+        <span class="read-arrow">→</span>
+      </a>
+
+      <a class="chapter-card locked" href="#">
+        <div class="chapter-num">11</div>
+        <div class="chapter-info">
+          <div class="chapter-label">Frequency Eleven</div>
+          <div class="chapter-title">Signal Lost</div>
+        </div>
+        <span class="read-arrow">🔒</span>
+      </a>
+
+      <a class="chapter-card locked epilogue" href="#">
+        <div class="chapter-num">12</div>
+        <div class="chapter-info">
+          <div class="chapter-label">Final Frequency</div>
+          <div class="chapter-title">The Last Transmission</div>
+        </div>
+        <span class="read-arrow">🔒</span>
+      </a>
+
+      <div class="the-end">
+        <div class="the-end-title">~ Tuning In Weekly ~</div>
+        <div class="the-end-sub">The signal persists. Do you hear it?</div>
+      </div>
+
+    </div>
+
+    <footer class="page-footer">
+      Please do not repost, copy, or reupload without permission from the author.<br>
+      Sharing links is always appreciated.
+    </footer>
+
+    <button id="scrollBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+    <script>
+      /* ── STATIC NOISE CANVAS (TV static effect) ── */
+      var canvas = document.getElementById('staticCanvas');
+      var ctx = canvas.getContext('2d');
+      var noiseData = null;
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        // Pre-generate noise pattern
+        var imageData = ctx.createImageData(canvas.width, canvas.height);
+        var data = imageData.data;
+        for (var i = 0; i < data.length; i += 4) {
+          var val = Math.random() * 255;
+          data[i] = val;     // R
+          data[i+1] = val;   // G
+          data[i+2] = val;   // B
+          data[i+3] = 255;   // A
+        }
+        noiseData = imageData;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      var frame = 0;
+      function drawStatic() {
+        if (!noiseData) return;
+        // Shift the noise pattern slightly each frame for animated static
+        var tempData = ctx.createImageData(canvas.width, canvas.height);
+        var src = noiseData.data;
+        var dst = tempData.data;
+        var offset = (frame * 7) % src.length;
+
+        for (var i = 0; i < src.length; i++) {
+          dst[i] = src[(i + offset) % src.length];
+        }
+
+        ctx.putImageData(tempData, 0, 0);
+        frame++;
+        requestAnimationFrame(drawStatic);
+      }
+
+      drawStatic();
+
+      /* ── FONT SIZE ── */
+      var fontSize = 16;
+
+      function changeFont(action) {
+        if (action === 1 && fontSize < 24) fontSize += 2;
+        else if (action === -1 && fontSize > 12) fontSize -= 2;
+        else if (action === 0) fontSize = 16;
+        document.getElementById('fontDisplay').textContent = fontSize;
+        try { localStorage.setItem('whispersFontSize', fontSize); } catch (e) { }
+      }
+
+      function toggleFontPanel() {
+        document.getElementById('fontPanel').classList.toggle('open');
+      }
+
+      document.addEventListener('click', e => {
+        var btn = document.getElementById('fontToggle');
+        var panel = document.getElementById('fontPanel');
+        if (!btn.contains(e.target) && !panel.contains(e.target)) {
+          panel.classList.remove('open');
+        }
+      });
+
+      /* ── DARK MODE ── */
+      function toggleDark() {
+        document.body.classList.toggle('dark');
+        var on = document.body.classList.contains('dark');
+        document.getElementById('themeBtn').textContent = on ? '☀️' : '🌙';
+        try { localStorage.setItem('whispersDarkMode', on ? 'on' : 'off'); } catch (e) { }
+      }
+
+      /* ── SCROLL BTN ── */
+      window.addEventListener('scroll', () => {
+        var btn = document.getElementById('scrollBtn');
+        btn.style.display = window.scrollY > 200 ? 'flex' : 'none';
+      });
+
+      /* ── READING PROGRESS ── */
+      var totalChapters = 10; // Only count unlocked chapters
+      var read = 0;
+      try {
+        var stored = JSON.parse(localStorage.getItem('whispersRead') || '[]');
+        read = stored.length;
+      } catch (e) { }
+      document.getElementById('progressFill').style.width = (read / totalChapters * 100) + '%';
+
+      /* ── INIT ── */
+      window.addEventListener('load', () => {
+        try {
+          if (localStorage.getItem('whispersDarkMode') === 'on') {
+            document.body.classList.add('dark');
+            document.getElementById('themeBtn').textContent = '☀️';
+          }
+          var saved = parseInt(localStorage.getItem('whispersFontSize'));
+          if (saved && saved >= 12 && saved <= 24) {
+            fontSize = saved;
+            document.getElementById('fontDisplay').textContent = fontSize;
+          }
+        } catch (e) { }
+      });
+    </script>
+
+</body>
+
+</html>

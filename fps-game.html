@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>AKA FPS — Raycasting Shooter</title>
+    <link rel="stylesheet" href="fps-game.css">
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="ui">
+        <div id="crosshair" class="crosshair"></div>
+
+        <div id="hud" class="hud">
+            <div class="hud-item">
+                <span class="hud-label">HEALTH</span>
+                <div class="hud-bar health-bar">
+                    <div id="healthFill" class="hud-fill"></div>
+                </div>
+                <span id="healthValue" class="hud-value">100</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">AMMO</span>
+                <div class="hud-bar ammo-bar">
+                    <div id="ammoFill" class="hud-fill"></div>
+                </div>
+                <span id="ammoValue" class="hud-value">30 / 120</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">SCORE</span>
+                <span id="scoreValue" class="hud-value">0</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">WAVE</span>
+                <span id="waveValue" class="hud-value">1</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">KILLS</span>
+                <span id="killsValue" class="hud-value">0</span>
+            </div>
+        </div>
+
+        <div id="minimap" class="minimap">
+            <canvas id="minimapCanvas"></canvas>
+        </div>
+
+        <div id="weapon" class="weapon">
+            <div class="weapon-sprite" id="weaponSprite"></div>
+            <div class="muzzle-flash" id="muzzleFlash"></div>
+        </div>
+    </div>
+
+    <div id="startScreen" class="overlay-screen">
+        <div class="screen-content">
+            <h1>AKA FPS</h1>
+            <p class="subtitle">Raycasting Shooter</p>
+            <div class="controls-help">
+                <div class="control-row"><kbd>WASD</kbd><span>Move</span></div>
+                <div class="control-row"><kbd>Mouse</kbd><span>Aim / Turn</span></div>
+                <div class="control-row"><kbd>Click</kbd><span>Shoot</span></div>
+                <div class="control-row"><kbd>Shift</kbd><span>Run</span></div>
+                <div class="control-row"><kbd>R</kbd><span>Reload</span></div>
+                <div class="control-row"><kbd>Space</kbd><span>Interact / Open Doors</span></div>
+                <div class="control-row"><kbd>M</kbd><span>Toggle Map</span></div>
+                <div class="control-row"><kbd>Esc</kbd><span>Pause</span></div>
+            </div>
+            <button id="startBtn" class="menu-btn">START GAME</button>
+            <p class="credit">Click to lock pointer · Best played in fullscreen</p>
+        </div>
+    </div>
+
+    <div id="pauseScreen" class="overlay-screen hidden">
+        <div class="screen-content">
+            <h2>PAUSED</h2>
+            <div class="pause-menu">
+                <button id="resumeBtn" class="menu-btn">RESUME</button>
+                <button id="restartBtn" class="menu-btn">RESTART</button>
+                <button id="quitBtn" class="menu-btn">QUIT TO MENU</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="gameOverScreen" class="overlay-screen hidden">
+        <div class="screen-content">
+            <h2>GAME OVER</h2>
+            <div class="final-stats">
+                <div class="stat"><span class="stat-value" id="finalScore">0</span><span class="stat-label">SCORE</span></div>
+                <div class="stat"><span class="stat-value" id="finalWave">1</span><span class="stat-label">WAVES</span></div>
+                <div class="stat"><span class="stat-value" id="finalKills">0</span><span class="stat-label">KILLS</span></div>
+                <div class="stat"><span class="stat-value" id="finalAccuracy">0%</span><span class="stat-label">ACCURACY</span></div>
+            </div>
+            <div class="pause-menu">
+                <button id="playAgainBtn" class="menu-btn">PLAY AGAIN</button>
+                <button id="mainMenuBtn" class="menu-btn">MAIN MENU</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="winScreen" class="overlay-screen hidden">
+        <div class="screen-content">
+            <h2>VICTORY!</h2>
+            <p class="victory-text">You survived all waves!</p>
+            <div class="final-stats">
+                <div class="stat"><span class="stat-value" id="winScore">0</span><span class="stat-label">SCORE</span></div>
+                <div class="stat"><span class="stat-value" id="winKills">0</span><span class="stat-label">KILLS</span></div>
+                <div class="stat"><span class="stat-value" id="winAccuracy">0%</span><span class="stat-label">ACCURACY</span></div>
+                <div class="stat"><span class="stat-value" id="winTime">0:00</span><span class="stat-label">TIME</span></div>
+            </div>
+            <div class="pause-menu">
+                <button id="playAgainWinBtn" class="menu-btn">PLAY AGAIN</button>
+                <button id="mainMenuWinBtn" class="menu-btn">MAIN MENU</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="fps-game.js"></script>
+</body>
+</html>
