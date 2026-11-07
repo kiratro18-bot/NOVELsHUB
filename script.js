@@ -1475,6 +1475,9 @@ function toggleAutoHideNav() {
     btn.setAttribute('aria-checked', String(enabled));
     store.set('autoHideNav', enabled);
     document.body.classList.toggle('auto-hide-nav', enabled);
+    var dock = document.querySelector('.browser-dock');
+    if (dock) dock.classList.toggle('nav-visible', enabled);
+    lastScrollY = window.scrollY;
     showToast(enabled ? 'Auto-hide nav enabled' : 'Auto-hide nav disabled');
 }
 /* ============================================================
@@ -1739,6 +1742,8 @@ window.addEventListener('load', function () {
     var autoHideNav = store.get('autoHideNav', false);
     if (autoHideNav) {
         document.body.classList.add('auto-hide-nav');
+        var dock = document.querySelector('.browser-dock');
+        if (dock) dock.classList.add('nav-visible');
         var anBtn = document.getElementById('autoHideNavToggle');
         if (anBtn) { anBtn.classList.add('on'); anBtn.setAttribute('aria-checked', 'true'); }
     }

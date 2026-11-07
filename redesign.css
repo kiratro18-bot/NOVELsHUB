@@ -422,3 +422,15 @@ html.exclusive-scrollbar body *::-webkit-scrollbar-corner { background: var(--ex
     :root body.editorial #reader-shelf #personalCurrentCard { grid-column: auto; }
     :root body.editorial .browser-dock .browser-tab { min-width: 45px; }
 }
+
+:root body.auto-hide-nav .browser-dock {
+    transform: translateX(-50%) translateY(calc(100% + 22px));
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .28s ease, opacity .22s ease;
+}
+:root body.auto-hide-nav .browser-dock.nav-visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
