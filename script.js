@@ -24,13 +24,13 @@ var store = {
 var APP_STORAGE_KEYS = [
     'readProgress', 'chapterReadIds', 'hahv2Read', 'bookmarks', 'currentlyReading', 'readingLog', 'readingQueue',
     'privateReaderNotes', 'novelComments', 'recentSearches', 'lightMode', 'theme', 'morphismStyle',
-    'tiltEnabled', 'motionEnabled', 'readerFontScale', 'readerAchUnlocks',
+    'tiltEnabled', 'motionEnabled', 'readerFontScale', 'readerAchUnlocks', 'exclusiveScrollbarEnabled',
     'goldenPetalCaught', 'nightOwlRead', 'oneDayRead', 'searchedOnce', 'sharedOnce',
     'themeChanged', 'lastCommentAt', 'readerLevel', 'achievementsCollapsed', 'readerProfile', 'releaseReminders',
     'midnightMemoryWon', 'midnightMemoryBest', 'hiddenDiscoveries'
 ];
 function confirmClearLocalData() {
-    var ok = window.confirm('This permanently erases reading progress, bookmarks, your reading queue, private notes, and saved preferences in this browser. This can\'t be undone. Continue?');
+    var ok = window.confirm('This permanently erases all saved reader data and preferences from this browser. This can\'t be undone. Continue?');
     if (!ok) return;
     APP_STORAGE_KEYS.forEach(function (k) { try { localStorage.removeItem(k); } catch (e) { } });
     showToast('Local data cleared ✦ Reloading…');
@@ -105,13 +105,48 @@ var readProgress = store.get('readProgress', {});
 var bookmarks = store.get('bookmarks', {});
 var currentlyReadingOrder = store.get('currentlyReading', null);
 var readingLog = store.get('readingLog', {});
-var readingQueue = store.get('readingQueue', {});
-if (!readingQueue || typeof readingQueue !== 'object' || Array.isArray(readingQueue)) readingQueue = {};
-var privateReaderNotes = store.get('privateReaderNotes', {});
 var readerProfile = store.get('readerProfile', {});
 if (!readerProfile || typeof readerProfile !== 'object' || Array.isArray(readerProfile)) readerProfile = {};
 
 function getRead(n) { var v = readProgress[n.order]; return typeof v === 'number' ? Math.max(0, Math.min(v, n.ch)) : 0; }
+
+function exclusiveScrollbarProgress() {
+    var available = novels.filter(function (novel) {
+        return novel.ch > 0 && String(novel.status).toLowerCase() !== 'upcoming';
+    });
+    var complete = available.filter(function (novel) { return getRead(novel) >= novel.ch; }).length;
+    return { complete: complete, total: available.length, unlocked: available.length > 0 && complete === available.length };
+}
+
+function renderExclusiveScrollbarSetting() {
+    var progress = exclusiveScrollbarProgress();
+    var toggle = document.getElementById('exclusiveScrollbarToggle');
+    var help = document.getElementById('exclusiveScrollbarProgress');
+    var enabled = progress.unlocked && store.get('exclusiveScrollbarEnabled', false) === true;
+    document.body.classList.toggle('exclusive-scrollbar', enabled);
+    document.documentElement.classList.toggle('exclusive-scrollbar', enabled);
+    document.documentElement.classList.toggle('light-scrollbar', document.body.classList.contains('light'));
+    if (toggle) {
+        toggle.disabled = !progress.unlocked;
+        toggle.classList.toggle('on', enabled);
+        toggle.setAttribute('aria-checked', String(enabled));
+        toggle.setAttribute('aria-disabled', String(!progress.unlocked));
+    }
+    if (help) {
+        help.textContent = progress.unlocked
+            ? 'Unlocked · Apply the copper scrollbar across the site.'
+            : 'Locked · ' + progress.complete + ' of ' + progress.total + ' released stories completed.';
+    }
+}
+
+function toggleExclusiveScrollbar() {
+    var progress = exclusiveScrollbarProgress();
+    if (!progress.unlocked) return;
+    var enabled = !store.get('exclusiveScrollbarEnabled', false);
+    store.set('exclusiveScrollbarEnabled', enabled);
+    renderExclusiveScrollbarSetting();
+    showToast(enabled ? 'Exclusive scrollbar enabled.' : 'Exclusive scrollbar disabled.');
+}
 
 /* ============================================================
    AURORA / MOOD
@@ -233,12 +268,11 @@ function renderHero() {
         .filter(function (n) { return n.status !== 'upcoming' && n.ch > 0; })
         .slice()
         .sort(function (a, b) { return (Number(b.views) || 0) - (Number(a.views) || 0); });
-    var petalFeatured = eligible.filter(function (n) {
-        return n.order === 11 || n.order === 19;
-    }).sort(function (a, b) { return a.order === 11 ? -1 : 1; });
-    heroFeaturedList = petalFeatured.concat(eligible.filter(function (n) {
-        return petalFeatured.every(function (petal) { return petal.order !== n.order; });
-    }).slice(0, Math.max(0, 3 - petalFeatured.length))).slice(0, 3);
+    heroFeaturedList = eligible.slice(0, 3);
+    var petalVolumeFour = eligible.find(function (n) { return n.order === 19; });
+    if (petalVolumeFour && !heroFeaturedList.some(function (n) { return n.order === petalVolumeFour.order; })) {
+        heroFeaturedList = heroFeaturedList.slice(0, 2).concat(petalVolumeFour);
+    }
     if (!heroFeaturedList.length) return;
 
     heroFeaturedIndex = 0;
@@ -261,14 +295,14 @@ function paintHeroFeature(i, animate) {
     var imgEl = document.getElementById('heroFeatureImg');
     if (animate) {
         imgEl.style.opacity = '0';
-        setTimeout(function () { imgEl.src = n.img; imgEl.style.opacity = '.5'; }, 260);
+        setTimeout(function () { imgEl.src = n.img; imgEl.style.opacity = '.66'; }, 260);
     } else {
         imgEl.src = n.img;
     }
     var vol = (n.title.match(/Vol\.?\s*(\d+)/i) || [])[1];
     var textEl = document.getElementById('heroFeatureText');
     textEl.innerHTML =
-        '<span class="trend-badge">✿ Featured story' + (vol ? ' · Vol. ' + vol : '') + '</span>' +
+        '<span class="trend-badge">FEATURED STORY' + (vol ? ' · VOL. ' + vol : '') + '</span>' +
         '<h1 class="hero-feature-title">' + esc(n.title.trim()) + '</h1>' +
         '<p class="hero-feature-desc">' + esc(n.blurb) + '</p>' +
         '<div class="hero-meta-row"><span>' + (n.rating ? ('⭐ ' + n.rating + ' rating') : '⭐ New') + '</span>' +
@@ -359,46 +393,50 @@ function renderReadingHistory() {
         return '<div class="history-row"><span>' + esc(label) + '</span><strong>' + count + ' ' + (count === 1 ? 'chapter' : 'chapters') + '</strong></div>';
     }).join('');
 }
-var readerNotebookQuery = '';
-var readerNotebookSearchBound = false;
-function renderReaderNotebook() {
-    var list = document.getElementById('readerNotebookList');
-    if (!list) return;
-    var entries = Object.keys(privateReaderNotes || {}).map(function (key) {
-        var novel = novels.find(function (item) { return String(item.order) === String(key); });
-        var note = String(privateReaderNotes[key] || '').trim();
-        return novel && note ? { novel: novel, note: note } : null;
-    }).filter(Boolean).sort(function (a, b) { return a.novel.title.localeCompare(b.novel.title); });
-    var count = document.getElementById('readerNotebookCount');
-    var status = document.getElementById('readerNotebookSearchStatus');
-    var search = document.getElementById('readerNotebookSearch');
-    if (search && !readerNotebookSearchBound) {
-        search.addEventListener('input', function () {
-            readerNotebookQuery = search.value.trim().toLocaleLowerCase();
-            renderReaderNotebook();
-        });
-        readerNotebookSearchBound = true;
-    }
-    var visible = entries.filter(function (entry) {
-        return !readerNotebookQuery || (entry.novel.title + ' ' + entry.note).toLocaleLowerCase().indexOf(readerNotebookQuery) !== -1;
-    });
-    if (count) count.textContent = entries.length + (entries.length === 1 ? ' saved note' : ' saved notes');
-    if (!entries.length) {
-        if (status) status.textContent = 'Notes you save from a story will appear here';
-        list.innerHTML = '<div class="reader-notebook-empty"><span aria-hidden="true">✎</span><strong>Your notebook is waiting</strong><p>Open any novel, add a private note, and it will be collected here for easy access.</p><button class="pill-btn" type="button" onclick="scrollToId(\'catalog\')">Browse the shelf →</button></div>';
-        return;
-    }
-    if (!visible.length) {
-        if (status) status.textContent = 'No notes match that search';
-        list.innerHTML = '<div class="reader-notebook-empty"><strong>No matching notes</strong><p>Try another title or phrase.</p></div>';
-        return;
-    }
-    if (status) status.textContent = readerNotebookQuery ? 'Matching your search' : 'Private to this browser';
-    list.innerHTML = visible.map(function (entry) {
-        var snippet = entry.note.length > 360 ? entry.note.slice(0, 357).trimEnd() + '…' : entry.note;
-        return '<article class="reader-notebook-card"><div class="reader-notebook-card-top"><span class="reader-notebook-mark" aria-hidden="true">✦</span><span class="reader-notebook-label">STORY NOTE</span></div><h3>' + esc(entry.novel.title.trim()) + '</h3><p>' + esc(snippet) + '</p><button class="reader-notebook-open" type="button" onclick="openSpotlight(' + entry.novel.order + ')">Open note <span aria-hidden="true">→</span></button></article>';
+function renderStoryCompareOptions() {
+    var first = document.getElementById('storyCompareFirst');
+    var second = document.getElementById('storyCompareSecond');
+    if (!first || !second) return;
+    var options = novels.map(function (novel) {
+        return '<option value="' + novel.order + '">' + esc(novel.title.trim()) + '</option>';
     }).join('');
+    first.innerHTML = options;
+    second.innerHTML = options;
+    if (novels.length > 1) second.value = String(novels[1].order);
 }
+
+function compareStories() {
+    var firstSelect = document.getElementById('storyCompareFirst');
+    var secondSelect = document.getElementById('storyCompareSecond');
+    var result = document.getElementById('storyCompareResult');
+    if (!firstSelect || !secondSelect || !result) return;
+    var firstNovel = novels.find(function (novel) { return novel.order === Number(firstSelect.value); });
+    var secondNovel = novels.find(function (novel) { return novel.order === Number(secondSelect.value); });
+    if (!firstNovel || !secondNovel) {
+        result.textContent = 'Choose two stories to compare.';
+        return;
+    }
+    if (firstNovel.order === secondNovel.order) {
+        result.textContent = 'Choose two different stories to compare.';
+        return;
+    }
+    function statusLabel(novel) {
+        var status = String(novel.status || 'unknown');
+        return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+    }
+    function chapterLabel(novel) {
+        if (!novel.ch) return 'Not released yet';
+        return novel.ch + (novel.ch === 1 ? ' chapter' : ' chapters');
+    }
+    function storyCard(novel) {
+        var genres = novel.genres.map(function (genre) { return badgeLabel[genre] || genre; }).join(' · ');
+        var rating = novel.rating ? '★ ' + novel.rating : 'Not rated yet';
+        var views = novel.views ? fmtNum(novel.views) + ' readers' : 'New story';
+        return '<article class="story-compare-card"><div class="story-compare-cover" style="background:linear-gradient(' + esc(novel.grad) + ')"><img src="' + esc(novel.img) + '" alt="" loading="lazy" onerror="imgFail(this)"></div><div class="story-compare-copy"><span class="story-compare-genres">' + esc(genres) + '</span><h3>' + esc(novel.title.trim()) + '</h3><p>' + esc(novel.blurb) + '</p><dl><div><dt>Status</dt><dd>' + esc(statusLabel(novel)) + '</dd></div><div><dt>Chapters</dt><dd>' + esc(chapterLabel(novel)) + '</dd></div><div><dt>Rating</dt><dd>' + esc(rating) + '</dd></div><div><dt>Readers</dt><dd>' + esc(views) + '</dd></div></dl><button type="button" class="pill-btn" onclick="openSpotlight(' + novel.order + ')">View story →</button></div></article>';
+    }
+    result.innerHTML = '<div class="story-compare-pair">' + storyCard(firstNovel) + '<span class="story-compare-divider" aria-hidden="true">VS</span>' + storyCard(secondNovel) + '</div>';
+}
+
 function renderStoryWorlds() {
     var grid = document.getElementById('storyWorldGrid');
     if (!grid) return;
@@ -487,14 +525,13 @@ function importReaderData(input) {
 function refreshReadingUI() {
     renderContinueReading();
     renderPersonalShelf();
-    renderReadingQueue();
+    renderExclusiveScrollbarSetting();
     renderReaderLevel();
     renderReaderAchievements();
     renderCatalog();
     renderHeatmap();
     renderReaderStreak();
     renderReadingHistory();
-    renderReaderNotebook();
     renderStoryWorlds();
     renderForYouPicks();
 }
@@ -505,49 +542,6 @@ window.addEventListener('storage', function (event) {
     readingLog = store.get('readingLog', {});
     refreshReadingUI();
 });
-function updateQueueButton(order) {
-    var button = document.getElementById('spQueueBtn');
-    if (!button) return;
-    var saved = !!readingQueue[order];
-    button.textContent = saved ? '✓ Saved in reading queue' : '＋ Add to reading queue';
-    button.classList.toggle('active', saved);
-    button.setAttribute('aria-pressed', String(saved));
-}
-function toggleReadingQueue(order) {
-    order = order || spotlightOrder;
-    var novel = novels.find(function (n) { return n.order === Number(order); });
-    if (!novel) return;
-    if (readingQueue[novel.order]) {
-        delete readingQueue[novel.order];
-        showToast(novel.title + ' removed from your queue.');
-    } else {
-        readingQueue[novel.order] = Date.now();
-        showToast(novel.title + ' saved to your reading queue ✦');
-    }
-    store.set('readingQueue', readingQueue);
-    updateQueueButton(novel.order);
-    renderReadingQueue();
-    renderForYouPicks();
-}
-function renderReadingQueue() {
-    var list = document.getElementById('readingQueueList');
-    if (!list) return;
-    var queued = novels.filter(function (n) { return !!readingQueue[n.order]; })
-        .sort(function (a, b) { return Number(readingQueue[a.order]) - Number(readingQueue[b.order]); });
-    var count = document.getElementById('readingQueueCount');
-    if (count) count.textContent = queued.length + ' saved';
-    if (!queued.length) {
-        list.innerHTML = '<div class="queue-empty glass"><span aria-hidden="true">↗</span><strong>Your next read, saved</strong><p>Open any story and add it to your queue for later.</p><button type="button" class="pill-btn" onclick="scrollToId(\'catalog\')">Browse the shelf →</button></div>';
-        hideSkeleton('readingQueueSkeleton');
-        return;
-    }
-    list.innerHTML = queued.map(function (n) {
-        var read = getRead(n), pct = n.ch ? Math.round(read / n.ch * 100) : 0;
-        var meta = n.status === 'upcoming' ? 'Coming soon' : (n.ch - read) + ' chapters left';
-        return '<article class="queue-card glass"><button class="queue-story" type="button" onclick="openSpotlight(' + n.order + ')"><span class="queue-cover" style="background:linear-gradient(' + n.grad + ')"><img src="' + esc(n.img) + '" alt="" loading="lazy" onerror="imgFail(this)"></span><span class="queue-story-copy"><strong>' + esc(n.title) + '</strong><span>' + meta + '</span>' + (n.ch ? '<span class="queue-progress"><i style="width:' + pct + '%"></i></span>' : '') + '</span><span class="queue-open-mark" aria-hidden="true">→</span></button><button type="button" class="queue-remove" onclick="toggleReadingQueue(' + n.order + ')" aria-label="Remove ' + esc(n.title) + ' from reading queue">×</button></article>';
-    }).join('');
-    hideSkeleton('readingQueueSkeleton');
-}
 function personalMiniCard(n, label, actionText) {
     if (!n) return '<div class="personal-empty"><span class="personal-empty-icon">✦</span><strong>Nothing here yet</strong><span>Choose a story from the Shelf to start building this space.</span></div>';
     var read = getRead(n), pct = n.ch ? Math.round(read / n.ch * 100) : 0;
@@ -688,10 +682,9 @@ function renderForYouPicks() {
     }).map(function (n) {
         var read = getRead(n);
         var genreScore = n.genres.reduce(function (sum, genre) { return sum + (affinity[genre] || 0); }, 0);
-        var queued = !!readingQueue[n.order];
         var isCurrent = currentlyReadingOrder === n.order;
-        var score = (hasHistory ? genreScore : (Number(n.rating) || 0)) + (queued ? 4 : 0) + (isCurrent ? 5 : 0) + (read ? 2 : 0);
-        var reason = isCurrent ? 'Pick up where you left off' : queued ? 'Already waiting in your queue' : read ? 'Continue a story you started' : hasHistory && genreScore ? 'Matches genres you read and save' : 'A reader favorite to get you started';
+        var score = (hasHistory ? genreScore : (Number(n.rating) || 0)) + (isCurrent ? 5 : 0) + (read ? 2 : 0);
+        var reason = isCurrent ? 'Pick up where you left off' : read ? 'Continue a story you started' : hasHistory && genreScore ? 'Matches genres you read and save' : 'A reader favorite to get you started';
         return { novel: n, score: score, reason: reason };
     }).sort(function (a, b) { return b.score - a.score || a.novel.order - b.novel.order; }).slice(0, 3);
     if (!scored.length) {
@@ -828,7 +821,6 @@ function openSpotlight(order) {
     document.getElementById('spStatusRow').innerHTML = n.genres.map(function (g) { return '<span class="nc-tag" style="color:var(--ink);border-color:var(--panel-border-strong)">' + badgeLabel[g] + '</span>'; }).join('') +
         '<span class="nc-tag ' + statusCls + '" style="border:none">' + n.status + '</span>';
     document.getElementById('spTitle').textContent = n.title;
-    loadPrivateNote(n);
     document.getElementById('spByline').textContent = 'A Novel by AKA · ⭐ ' + (n.rating || '—') + ' · 👁 ' + fmtNum(n.views);
     document.getElementById('spDesc').textContent = n.blurb;
     var read = getRead(n), pct = n.ch ? Math.round(read / n.ch * 100) : 0;
@@ -850,7 +842,6 @@ function openSpotlight(order) {
     var bbtn = document.getElementById('spBookmarkBtn');
     if (currentlyReadingOrder === order) { bbtn.textContent = '✓ Currently Reading'; bbtn.classList.add('active'); }
     else { bbtn.textContent = '🔖 Set as Currently Reading'; bbtn.classList.remove('active'); }
-    updateQueueButton(order);
     document.getElementById('spReadBtn').textContent = (read > 0 && read < n.ch) ? 'Continue Reading →' : 'Start Reading →';
     document.getElementById('spotlightOverlay').classList.add('open');
     document.getElementById('spotlightPanel').classList.add('open');
@@ -1070,10 +1061,8 @@ var readerAchievementDefs = [
     { id: 'genre-all', icon: '🌈', title: 'Every Kind of Story', hint: 'Explore all six genres on the shelf.', category: 'Discovery', target: 6, metric: function (s) { return s.genres; } },
     { id: 'first-favorite', icon: '💗', title: 'Kept Close', hint: 'Save your first story as a favorite.', category: 'Collection', target: 1, metric: function (s) { return s.favorites; } },
     { id: 'five-favorites', icon: '💐', title: 'A Favorite for Every Mood', hint: 'Save five stories as favorites.', category: 'Collection', target: 5, metric: function (s) { return s.favorites; } },
-    { id: 'queue-three', icon: '🪄', title: 'Stories for Later', hint: 'Save three stories to your reading queue.', category: 'Collection', target: 3, metric: function (s) { return s.queued; } },
     { id: 'reminder-one', icon: '🔔', title: 'A Note to Come Back', hint: 'Set a reminder for an upcoming release.', category: 'Collection', target: 1, metric: function (s) { return s.reminders; } },
     { id: 'reminder-three', icon: '📬', title: 'Release Day Ready', hint: 'Save three release reminders.', category: 'Collection', target: 3, metric: function (s) { return s.reminders; } },
-    { id: 'private-note', icon: '✍️', title: 'A Thought to Keep', hint: 'Write a private note about a story.', category: 'Personal', target: 1, metric: function (s) { return s.notes; } },
     { id: 'search', icon: '🔎', title: 'Found It', hint: 'Use search to find a story.', category: 'Personal', target: 1, metric: function (s) { return s.searched; } },
     { id: 'share', icon: '🕊️', title: 'Pass It Along', hint: 'Share a story link with someone.', category: 'Personal', target: 1, metric: function (s) { return s.shared; } },
     { id: 'library-secrets', icon: '🗝️', title: 'Behind the Bookcase', hint: 'Find all three hidden Library secrets.', category: 'Secrets', target: 2, metric: function (s) { return s.secrets; } }
@@ -1087,7 +1076,6 @@ function getReaderAchievementStats() {
     var available = novels.filter(function (novel) { return novel.status !== 'upcoming' && novel.ch > 0; });
     var discoveries = store.get('hiddenDiscoveries', {});
     if (!discoveries || typeof discoveries !== 'object' || Array.isArray(discoveries)) discoveries = {};
-    var notes = privateReaderNotes && typeof privateReaderNotes === 'object' ? privateReaderNotes : {};
     return {
         read: totalRead(),
         completed: completedCount(),
@@ -1099,9 +1087,7 @@ function getReaderAchievementStats() {
         days: distinctReadingDays(),
         genres: genresTouched(),
         favorites: Object.keys(bookmarks).filter(function (key) { return !!bookmarks[key]; }).length,
-        queued: Object.keys(readingQueue).filter(function (key) { return !!readingQueue[key]; }).length,
         reminders: releaseReminders.length,
-        notes: Object.keys(notes).filter(function (key) { return String(notes[key] || '').trim().length > 0; }).length,
         searched: store.get('searchedOnce', false) ? 1 : 0,
         shared: store.get('sharedOnce', false) ? 1 : 0,
         secrets: Object.keys(discoveries).filter(function (key) { return !!discoveries[key]; }).length
@@ -1338,58 +1324,6 @@ function renderCalendar() {
 }
 
 /* ============================================================
-   3.2 — PRIVATE READER NOTES
-   ============================================================ */
-function loadPrivateNote(n) {
-    var input = document.getElementById('spPrivateNote');
-    var count = document.getElementById('spNotesCount');
-    var saved = document.getElementById('spNotesSaved');
-    if (!input || !n) return;
-
-    input.dataset.order = String(n.order);
-    input.value = privateReaderNotes[n.order] || '';
-    if (count) count.textContent = input.value.length + ' / 1000';
-    if (saved) {
-        saved.textContent = privateReaderNotes[n.order] ? 'Saved locally' : 'Not saved yet';
-        saved.classList.toggle('has-note', !!privateReaderNotes[n.order]);
-    }
-
-    if (!input.dataset.countBound) {
-        input.addEventListener('input', function () {
-            if (count) count.textContent = input.value.length + ' / 1000';
-            if (saved) {
-                saved.textContent = 'Unsaved changes';
-                saved.classList.remove('has-note');
-            }
-        });
-        input.dataset.countBound = '1';
-    }
-}
-
-function savePrivateNote() {
-    var input = document.getElementById('spPrivateNote');
-    var saved = document.getElementById('spNotesSaved');
-    if (!input || !input.dataset.order) return;
-
-    var order = Number(input.dataset.order);
-    var value = sanitize(input.value).slice(0, 1000);
-
-    if (value) privateReaderNotes[order] = value;
-    else delete privateReaderNotes[order];
-
-    store.set('privateReaderNotes', privateReaderNotes);
-    renderReaderAchievements();
-    renderReaderNotebook();
-
-    if (saved) {
-        saved.textContent = value ? 'Saved locally ✓' : 'Note cleared ✓';
-        saved.classList.add('has-note');
-    }
-
-    showToast(value ? 'Private note saved ✦' : 'Private note cleared ✦');
-}
-
-/* ============================================================
    COMMAND-K SEARCH
    ============================================================ */
 var recentSearches = store.get('recentSearches', []);
@@ -1499,6 +1433,7 @@ function saveReaderProfile() {
 function toggleLight() {
     document.body.classList.toggle('light');
     var on = document.body.classList.contains('light');
+    document.documentElement.classList.toggle('light-scrollbar', on);
     store.set('lightMode', on ? 'on' : 'off');
     var t = document.getElementById('lightToggle'); if (t) { t.classList.toggle('on', on); t.setAttribute('aria-checked', String(on)); }
 }
@@ -1773,9 +1708,9 @@ window.addEventListener('load', function () {
     initAchievementFilters();
     renderReaderProfile();
     renderReadingHistory();
-    renderReaderNotebook();
     renderStoryWorlds();
     renderStorySampler();
+    renderStoryCompareOptions();
     renderForYouPicks();
     renderReaderAchievements();
     restoreSectionContent('storySamplerContent', 'storySamplerToggle', 'storySamplerCollapsed', 'story sampler');
@@ -1784,6 +1719,8 @@ window.addEventListener('load', function () {
     var defaultLightMode = 'on';
     var wantLight = store.get('lightMode', defaultLightMode) === 'on';
     document.body.classList.toggle('light', wantLight);
+    document.documentElement.classList.toggle('light-scrollbar', wantLight);
+    renderExclusiveScrollbarSetting();
     var t = document.getElementById('lightToggle');
     if (t) { t.classList.toggle('on', wantLight); t.setAttribute('aria-checked', String(wantLight)); }
     document.getElementById('motionToggle').classList.toggle('on', motionEnabled);
@@ -1811,7 +1748,6 @@ window.addEventListener('load', function () {
     paintAurora(moodColors.all);
     renderHero();
     renderStats();
-    renderReadingQueue();
     renderHeatmap();
     renderCalendar();
 

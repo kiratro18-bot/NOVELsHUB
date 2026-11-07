@@ -3,117 +3,113 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>AKA FPS — Raycasting Shooter</title>
-    <link rel="stylesheet" href="fps-game.css">
+    <meta name="theme-color" content="#080b12" />
+    <title>AKA // Null Range</title>
+    <link rel="stylesheet" href="fps-game.css" />
 </head>
 <body>
-    <canvas id="gameCanvas"></canvas>
+    <canvas id="gameCanvas" aria-label="3D first person arena"></canvas>
+    <div class="scanlines" aria-hidden="true"></div>
 
-    <div id="ui">
-        <div id="crosshair" class="crosshair"></div>
+    <div id="ui" aria-live="polite">
+        <header class="topline">
+            <a class="brand" href="index.html" aria-label="AKA home"><span class="brand-mark">A</span><span>AKA<span class="brand-divider"> //</span> FIELD TEST</span></a>
+            <div class="sim-status"><span class="live-dot"></span><span id="statusLabel">SIMULATION STANDBY</span></div>
+            <button id="mapToggle" class="map-toggle" type="button" title="Toggle minimap (M)">MAP <span>M</span></button>
+        </header>
 
-        <div id="hud" class="hud">
-            <div class="hud-item">
-                <span class="hud-label">HEALTH</span>
-                <div class="hud-bar health-bar">
-                    <div id="healthFill" class="hud-fill"></div>
+        <div id="crosshair" class="crosshair" aria-hidden="true"><i></i><i></i><b></b></div>
+        <div id="hitMarker" class="hit-marker" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <div id="damageFlash" class="damage-flash" aria-hidden="true"></div>
+
+        <section class="combat-hud" aria-label="Combat status">
+            <div class="health-panel">
+                <div class="panel-heading"><span>VITALS</span><span id="healthValue">100</span></div>
+                <div class="hud-bar"><div id="healthFill" class="hud-fill"></div></div>
+            </div>
+            <div class="ammo-panel">
+                <div class="ammo-readout"><span class="ammo-icon">▰</span><span id="ammoValue">25 <small>/ 75</small></span></div>
+                <span class="panel-caption">VANDAL RIFLE <b>02</b></span>
+            </div>
+            <div class="combat-stats">
+                <div><span class="panel-caption">ELIMS</span><b id="killsValue">00</b></div>
+                <div><span class="panel-caption">SCORE</span><b id="scoreValue">0000</b></div>
+                <div><span class="panel-caption">WAVE</span><b id="waveValue">01</b></div>
+            </div>
+        </section>
+
+        <aside id="minimap" class="minimap" aria-label="Arena minimap">
+            <div class="minimap-head"><span>ARENA SCAN</span><span>LIVE</span></div>
+            <canvas id="minimapCanvas" width="180" height="180"></canvas>
+            <div class="map-legend"><span><i class="player-key"></i> YOU</span><span><i class="enemy-key"></i> HOSTILE</span></div>
+        </aside>
+
+        <div id="toast" class="toast" role="status"></div>
+        <div id="waveBanner" class="wave-banner"><span>WAVE <b id="bannerWave">01</b></span><i></i><small id="waveSubtext">HOSTILES INBOUND</small></div>
+
+        <div id="weapon" class="weapon" aria-hidden="true">
+            <div class="weapon-shadow"></div>
+            <img id="weaponFallback" src="assets/models/vandal-held.png" alt="" />
+            <canvas id="weaponCanvas" aria-hidden="true"></canvas>
+            <div id="muzzleFlash" class="muzzle-flash"></div>
+        </div>
+    </div>
+
+    <section id="startScreen" class="overlay-screen">
+        <div class="menu-frame">
+            <div class="menu-copy">
+                <div class="eyebrow"><span class="eyebrow-line"></span> COMBAT SIMULATOR <span class="eyebrow-id">NO. 001</span></div>
+                <h1>NULL<span>//</span><br>RANGE</h1>
+                <p class="subtitle">A 3D first-person arena prototype.</p>
+                <p class="intro">Enter the training grid. Track hostiles, stay mobile, and see how many waves you can clear.</p>
+                <button id="startBtn" class="menu-btn" type="button"><span>DEPLOY TO ARENA</span><b>↗</b></button>
+                <div class="menu-foot"><span><i class="live-dot"></i> BUILD 0.1 / PLAYABLE</span><span>AKA INTERACTIVE</span></div>
+            </div>
+            <div class="briefing">
+                <div class="briefing-top"><span>FIELD GUIDE</span><span>01 / 01</span></div>
+                <div class="briefing-title">OPERATIONS</div>
+                <div class="control-list">
+                    <div class="control-row"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>Move</span></div>
+                    <div class="control-row"><kbd>MOUSE</kbd><span>Aim / look</span></div>
+                    <div class="control-row"><kbd>LMB</kbd><span>Fire sidearm</span></div>
+                    <div class="control-row"><kbd>SHIFT</kbd><span>Sprint</span></div>
+                    <div class="control-row"><kbd>SPACE</kbd><span>Jump</span></div>
+                    <div class="control-row"><kbd>R</kbd><span>Reload</span></div>
+                    <div class="control-row"><kbd>M</kbd><span>Toggle map</span></div>
+                    <div class="control-row"><kbd>ESC</kbd><span>Pause</span></div>
                 </div>
-                <span id="healthValue" class="hud-value">100</span>
-            </div>
-            <div class="hud-item">
-                <span class="hud-label">AMMO</span>
-                <div class="hud-bar ammo-bar">
-                    <div id="ammoFill" class="hud-fill"></div>
-                </div>
-                <span id="ammoValue" class="hud-value">30 / 120</span>
-            </div>
-            <div class="hud-item">
-                <span class="hud-label">SCORE</span>
-                <span id="scoreValue" class="hud-value">0</span>
-            </div>
-            <div class="hud-item">
-                <span class="hud-label">WAVE</span>
-                <span id="waveValue" class="hud-value">1</span>
-            </div>
-            <div class="hud-item">
-                <span class="hud-label">KILLS</span>
-                <span id="killsValue" class="hud-value">0</span>
+                <div class="briefing-tip"><span class="tip-icon">✳</span><p>Hostiles close in over time. Use the whole arena, and aim for the head to finish them faster.</p></div>
+                <div class="briefing-foot"><span>SIMULATION ZONE</span><span>35° 41' N / 139° 41' E</span></div>
             </div>
         </div>
+        <div class="ambient-orb orb-one"></div><div class="ambient-orb orb-two"></div>
+    </section>
 
-        <div id="minimap" class="minimap">
-            <canvas id="minimapCanvas"></canvas>
+    <section id="pauseScreen" class="overlay-screen hidden">
+        <div class="dialog-card">
+            <div class="eyebrow"><span class="eyebrow-line"></span> SIGNAL INTERRUPTED</div>
+            <h2>PAUSED<span>.</span></h2>
+            <p>Take a breath. The arena will wait.</p>
+            <div class="pause-menu"><button id="resumeBtn" class="menu-btn" type="button"><span>RESUME RUN</span><b>↗</b></button><button id="restartBtn" class="menu-btn secondary" type="button">RESTART SIMULATION</button><button id="quitBtn" class="text-btn" type="button">EXIT TO BRIEFING</button></div>
         </div>
+    </section>
 
-        <div id="weapon" class="weapon">
-            <div class="weapon-sprite" id="weaponSprite"></div>
-            <div class="muzzle-flash" id="muzzleFlash"></div>
-        </div>
-    </div>
-
-    <div id="startScreen" class="overlay-screen">
-        <div class="screen-content">
-            <h1>AKA FPS</h1>
-            <p class="subtitle">Raycasting Shooter</p>
-            <div class="controls-help">
-                <div class="control-row"><kbd>WASD</kbd><span>Move</span></div>
-                <div class="control-row"><kbd>Mouse</kbd><span>Aim / Turn</span></div>
-                <div class="control-row"><kbd>Click</kbd><span>Shoot</span></div>
-                <div class="control-row"><kbd>Shift</kbd><span>Run</span></div>
-                <div class="control-row"><kbd>R</kbd><span>Reload</span></div>
-                <div class="control-row"><kbd>Space</kbd><span>Interact / Open Doors</span></div>
-                <div class="control-row"><kbd>M</kbd><span>Toggle Map</span></div>
-                <div class="control-row"><kbd>Esc</kbd><span>Pause</span></div>
-            </div>
-            <button id="startBtn" class="menu-btn">START GAME</button>
-            <p class="credit">Click to lock pointer · Best played in fullscreen</p>
-        </div>
-    </div>
-
-    <div id="pauseScreen" class="overlay-screen hidden">
-        <div class="screen-content">
-            <h2>PAUSED</h2>
-            <div class="pause-menu">
-                <button id="resumeBtn" class="menu-btn">RESUME</button>
-                <button id="restartBtn" class="menu-btn">RESTART</button>
-                <button id="quitBtn" class="menu-btn">QUIT TO MENU</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="gameOverScreen" class="overlay-screen hidden">
-        <div class="screen-content">
-            <h2>GAME OVER</h2>
+    <section id="gameOverScreen" class="overlay-screen hidden">
+        <div class="dialog-card results-card">
+            <div class="eyebrow"><span class="eyebrow-line"></span> CONNECTION TERMINATED</div>
+            <h2>RUN<br>ENDED<span>.</span></h2>
+            <p>Every run gives us better data.</p>
             <div class="final-stats">
-                <div class="stat"><span class="stat-value" id="finalScore">0</span><span class="stat-label">SCORE</span></div>
-                <div class="stat"><span class="stat-value" id="finalWave">1</span><span class="stat-label">WAVES</span></div>
-                <div class="stat"><span class="stat-value" id="finalKills">0</span><span class="stat-label">KILLS</span></div>
-                <div class="stat"><span class="stat-value" id="finalAccuracy">0%</span><span class="stat-label">ACCURACY</span></div>
+                <div class="stat"><b id="finalScore">0000</b><span>SCORE</span></div><div class="stat"><b id="finalWave">01</b><span>WAVE</span></div><div class="stat"><b id="finalKills">00</b><span>ELIMS</span></div><div class="stat"><b id="finalAccuracy">0%</b><span>ACCURACY</span></div>
             </div>
-            <div class="pause-menu">
-                <button id="playAgainBtn" class="menu-btn">PLAY AGAIN</button>
-                <button id="mainMenuBtn" class="menu-btn">MAIN MENU</button>
-            </div>
+            <div class="pause-menu"><button id="playAgainBtn" class="menu-btn" type="button"><span>RUN IT BACK</span><b>↗</b></button><button id="mainMenuBtn" class="text-btn" type="button">RETURN TO BRIEFING</button></div>
         </div>
-    </div>
+    </section>
 
-    <div id="winScreen" class="overlay-screen hidden">
-        <div class="screen-content">
-            <h2>VICTORY!</h2>
-            <p class="victory-text">You survived all waves!</p>
-            <div class="final-stats">
-                <div class="stat"><span class="stat-value" id="winScore">0</span><span class="stat-label">SCORE</span></div>
-                <div class="stat"><span class="stat-value" id="winKills">0</span><span class="stat-label">KILLS</span></div>
-                <div class="stat"><span class="stat-value" id="winAccuracy">0%</span><span class="stat-label">ACCURACY</span></div>
-                <div class="stat"><span class="stat-value" id="winTime">0:00</span><span class="stat-label">TIME</span></div>
-            </div>
-            <div class="pause-menu">
-                <button id="playAgainWinBtn" class="menu-btn">PLAY AGAIN</button>
-                <button id="mainMenuWinBtn" class="menu-btn">MAIN MENU</button>
-            </div>
-        </div>
-    </div>
-
+    <script type="importmap">
+        {"imports":{"three":"./vendor/three/three.module.js","three/addons/":"./vendor/three/addons/"}}
+    </script>
     <script src="fps-game.js"></script>
+    <script type="module" src="fps-game-weapon.js"></script>
 </body>
 </html>
