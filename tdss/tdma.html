@@ -48,6 +48,8 @@ transition:transform .25s ease-out,box-shadow .25s;animation:drop .7s cubic-bezi
 .ph b{font:700 3rem 'Space Grotesk',sans-serif;color:rgba(255,255,255,.92);text-shadow:0 2px 12px rgba(0,0,0,.5)}
 .cap{display:block;margin-top:10px;font:700 1.22rem/1.1 Caveat,cursive;min-height:2.3em}
 .card.locked .ph{filter:grayscale(1) brightness(.5)}
+.read-mark{position:absolute;right:8px;bottom:8px;z-index:2;padding:4px 8px;border-radius:99px;background:#13734d;color:#fff;font:700 .58rem 'Space Mono',monospace;letter-spacing:.08em;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.card.read .ph b{color:#d9ffe9}
 .seal{position:absolute;left:-8%;right:-8%;top:38%;padding:4px 0;text-align:center;background:var(--red);color:#fff;font:700 .7rem 'Space Mono',monospace;letter-spacing:.34em;transform:rotate(-14deg);box-shadow:0 4px 10px rgba(0,0,0,.5);z-index:2}
 .otag{position:absolute;right:-6px;top:14px;background:#2fb67c;color:#06231a;font:700 .62rem 'Space Mono',monospace;letter-spacing:.16em;padding:3px 9px;transform:rotate(8deg);z-index:2}
 .modal{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:34px 16px 16px}
@@ -99,22 +101,25 @@ transition:transform .25s ease-out,box-shadow .25s;animation:drop .7s cubic-bezi
 <main class="board" id="board"></main>
 <div class="modal" id="modal" hidden><div class="backdrop" id="bd"></div><article class="folder" id="folder" role="dialog" aria-modal="true" aria-label="Chapter file"></article></div>
 <script>
-var BASE="the-dead-mans-alibi/"; // folder holding the chapter pages
+var BASE=""; // chapter pages live beside this index
 var CH=[
- {n:"01",label:"Chapter 1",title:"The Man Who Wasn’t There",tag:"Cold open · A dead man",h:215,file:"chapter1.html",time:"October 30 — 8:16 AM",sum:"A detective asks Toma whether his father is really dead. Then a photograph says otherwise.",pre:["“Your father is dead, correct?”","Toma Kisaragi stared at the detective.","Then at the vending-machine coffee in his hand.","Then back at the detective.","“…That’s a weird way to start a conversation.”"]},
- {n:"02",label:"Chapter 2",title:"The Girl at the Door",tag:"Midnight · A key",h:345,file:"chapter2.html",sum:"A late-night visitor, a missing woman and a key with a number on it.",pre:["Toma didn’t immediately open the door.","He looked through the peephole.","Mio.","Of course."]},
- {n:"03",label:"Chapter 3",title:"Four Men, One Dead Man",tag:"Case files · Alibis",h:35,file:"chapter3.html",sum:"Four cases, four witnesses, and the same name in every statement.",pre:["Shun was not supposed to access police records outside his training.","He knew that.","He also knew Toma would probably do something stupid without him."]},
- {n:"04",label:"Chapter 4",title:"The Girl Who Knew Too Much",tag:"Secrets · Trust",h:275,file:"chapter4.html",sum:"An old envelope, a handwritten note and a confession about what Mio knew.",pre:["They didn’t speak on the way back.","Toma sat in the passenger seat while Shun drove.","His phone kept vibrating."]},
- {n:"05",label:"Chapter 5",title:"People We Meet Along the Way",tag:"Station · Locker 317",h:160,file:"chapter5.html",time:"November 1 — 2:17 PM",sum:"A crowded railway station, a locker and a tape recording nobody expected.",pre:["The railway station was crowded.","Schoolchildren ran between platforms.","Office workers hurried towards the ticket gates."]},
- {n:"06",label:"Chapter 6",title:"The Locker Under Platform Nine",tag:"Warrant · A park bench",h:200,file:"chapter6.html",sum:"A warrant, a secret meeting and a photograph of someone who should not exist.",pre:["The next morning, Shun brought bad news.","“The police have issued a warrant.”","“For what?”"]},
- {n:"07",label:"Chapter 7",title:"The Names Nobody Remembered",tag:"Names · A bakery",h:320,file:"chapter7.html",sum:"Old school records, a changed name and a small bakery on the edge of the city.",pre:["Natsumi refused to go back to the apartment.","She spent the entire evening searching through old documents.","At midnight, she found something."]},
- {n:"08",label:"Chapter 8",title:"A Man Who Died Twice",tag:"Coast road · Reunion",h:0,file:"chapter8.html",time:"November 2 — 6:30 AM",sum:"The place where the city ends, and someone who is not supposed to be there.",pre:["The place where the city ended was an old coastal road.","There were no buildings nearby."]},
- {n:"09",label:"Chapter 9",title:"The Dead Man’s Alibi",tag:"Ledger · The terminal",h:45,file:"chapter9.html",time:"November 3 — 8:15 AM",sum:"Six people, one ledger and less than ninety minutes before the demolition.",pre:["The group gathered at Shun’s apartment.","There were now six people."]},
- {n:"10",label:"Chapter 10",title:"The Last Person to Leave",tag:"Archive · Homecoming",h:130,file:"chapter10.html",sum:"The archive under the terminal, and the person still missing.",pre:["The eastern archive was beneath the old terminal.","The original documents were still there."]},
- {n:"11",label:"Chapter 11",title:"A Better Kind of Tomorrow",tag:"Festival · Letters",h:20,file:"chapter11.html",time:"May 18 — Five months later",sum:"A cultural festival, an exhibition of ordinary things and a letter from a father.",pre:["The university courtyard was crowded.","Students were preparing for the annual cultural festival."]},
- {n:"Ep",label:"Epilogue",title:"Nobody’s Alibi",tag:"One year later",h:250,file:"epilogue.html",time:"One year later",sum:"A quiet year, and one message that arrives after dark.",pre:["The old Northbridge Terminal was still standing.","Its ownership had changed."]}
+ {n:"01",label:"Chapter 1",title:"The Man Who Wasn’t There",tag:"Cold open · A dead man",h:215,file:"tdma1.html",time:"October 30 — 8:16 AM",sum:"A detective asks Toma whether his father is really dead. Then a photograph says otherwise.",pre:["“Your father is dead, correct?”","Toma Kisaragi stared at the detective.","Then at the vending-machine coffee in his hand.","Then back at the detective.","“…That’s a weird way to start a conversation.”"]},
+ {n:"02",label:"Chapter 2",title:"The Girl at the Door",tag:"Midnight · A key",h:345,file:"tdma2.html",sum:"A late-night visitor, a missing woman and a key with a number on it.",pre:["Toma didn’t immediately open the door.","He looked through the peephole.","Mio.","Of course."]},
+ {n:"03",label:"Chapter 3",title:"Four Men, One Dead Man",tag:"Case files · Alibis",h:35,file:"tdma3.html",sum:"Four cases, four witnesses, and the same name in every statement.",pre:["Shun was not supposed to access police records outside his training.","He knew that.","He also knew Toma would probably do something stupid without him."]},
+ {n:"04",label:"Chapter 4",title:"The Girl Who Knew Too Much",tag:"Secrets · Trust",h:275,file:"tdma4.html",sum:"An old envelope, a handwritten note and a confession about what Mio knew.",pre:["They didn’t speak on the way back.","Toma sat in the passenger seat while Shun drove.","His phone kept vibrating."]},
+ {n:"05",label:"Chapter 5",title:"People We Meet Along the Way",tag:"Station · Locker 317",h:160,file:"tdma5.html",time:"November 1 — 2:17 PM",sum:"A crowded railway station, a locker and a tape recording nobody expected.",pre:["The railway station was crowded.","Schoolchildren ran between platforms.","Office workers hurried towards the ticket gates."]},
+ {n:"06",label:"Chapter 6",title:"The Locker Under Platform Nine",tag:"Warrant · A park bench",h:200,file:"tdma6.html",sum:"A warrant, a secret meeting and a photograph of someone who should not exist.",pre:["The next morning, Shun brought bad news.","“The police have issued a warrant.”","“For what?”"]},
+ {n:"07",label:"Chapter 7",title:"The Names Nobody Remembered",tag:"Names · A bakery",h:320,file:"tdma7.html",sum:"Old school records, a changed name and a small bakery on the edge of the city.",pre:["Natsumi refused to go back to the apartment.","She spent the entire evening searching through old documents.","At midnight, she found something."]},
+ {n:"08",label:"Chapter 8",title:"A Man Who Died Twice",tag:"Coast road · Reunion",h:0,file:"tdma8.html",time:"November 2 — 6:30 AM",sum:"The place where the city ends, and someone who is not supposed to be there.",pre:["The place where the city ended was an old coastal road.","There were no buildings nearby."]},
+ {n:"09",label:"Chapter 9",title:"The Dead Man’s Alibi",tag:"Ledger · The terminal",h:45,file:"tdma9.html",time:"November 3 — 8:15 AM",sum:"Six people, one ledger and less than ninety minutes before the demolition.",pre:["The group gathered at Shun’s apartment.","There were now six people."]},
+ {n:"10",label:"Chapter 10",title:"The Last Person to Leave",tag:"Archive · Homecoming",h:130,file:"tdma10.html",sum:"The archive under the terminal, and the person still missing.",pre:["The eastern archive was beneath the old terminal.","The original documents were still there."]},
+ {n:"11",label:"Chapter 11",title:"A Better Kind of Tomorrow",tag:"Festival · Letters",h:20,file:"tdma11.html",time:"May 18 — Five months later",sum:"A cultural festival, an exhibition of ordinary things and a letter from a father.",pre:["The university courtyard was crowded.","Students were preparing for the annual cultural festival."]},
+ {n:"Ep",label:"Epilogue",title:"Nobody’s Alibi",tag:"One year later",h:250,file:"tdmae.html",time:"One year later",sum:"A quiet year, and one message that arrives after dark.",pre:["The old Northbridge Terminal was still standing.","Its ownership had changed."]}
 ];
-var UNLOCKED=["#"]; // add a chapter's file name here to unlock it
+var readIds=[];
+try { var savedIds=JSON.parse(localStorage.getItem("chapterReadIds")||"{}"); if(savedIds&&Array.isArray(savedIds[22])) readIds=savedIds[22]; } catch(e) {}
+function wasRead(chapter){return readIds.indexOf(chapter.n==="Ep"?"epilogue":"ch"+Number(chapter.n))>-1}
+var UNLOCKED=[];
 CH.forEach(function(c){c.locked=UNLOCKED.indexOf(c.file)<0});
 var NOTES=["“Your father is dead, correct?”","“Don’t trust the police.”","“Don’t let them find the girl.”","“The number you are trying to reach is—”","“I don’t joke at work.”"];
 
@@ -133,14 +138,18 @@ tg.onclick=function(){body.classList.toggle("lights");store("tdma-lights",body.c
 var ni=0,nel=document.getElementById("note");
 function note(){nel.classList.remove("show");setTimeout(function(){nel.textContent=NOTES[ni++%NOTES.length];nel.classList.add("show")},RM?0:500)}
 note();setInterval(note,3800);
-document.getElementById("count").textContent=CH.length+" files · "+CH.filter(function(c){return!c.locked}).length+" declassified · move the flashlight, click a file";
+function updateCount(){document.getElementById("count").textContent=CH.length+" files · "+CH.filter(function(c){return!c.locked}).length+" declassified · "+CH.filter(wasRead).length+" read · move the flashlight, click a file"}
+updateCount();
 
 /* the board */
 var board=document.getElementById("board");
 function R(i){return(((i*37)%9)-4)*.8}function D(i){return(((i*53)%5)-2)*7}
 board.innerHTML='<svg class="string" id="str"><path id="sp"/></svg>'+CH.map(function(c,i){
-  return '<button class="card'+(c.locked?' locked':'')+'" type="button" data-i="'+i+'" style="--h:'+c.h+';--r:'+R(i)+'deg;--dy:'+D(i)+'px;--i:'+i+'"><span class="ph"><b>'+c.n+'</b></span><span class="cap">'+c.title+'</span>'+(c.locked?'<span class="seal">SEALED</span>':'<span class="otag">OPEN</span>')+'</button>';
+  return '<button class="card'+(c.locked?' locked':'')+(wasRead(c)?' read':'')+'" type="button" aria-label="'+c.label+': '+c.title+(wasRead(c)?', read':'')+(c.locked?', locked':'')+'" data-i="'+i+'" style="--h:'+c.h+';--r:'+R(i)+'deg;--dy:'+D(i)+'px;--i:'+i+'"><span class="ph"><b>'+c.n+'</b></span><span class="cap">'+c.title+'</span>'+(wasRead(c)?'<span class="read-mark">✓ Read</span>':'')+(c.locked?'<span class="seal">SEALED</span>':'<span class="otag">OPEN</span>')+'</button>';
 }).join("");
+function syncReadMarks(){try{var saved=JSON.parse(localStorage.getItem("chapterReadIds")||"{}");readIds=saved&&Array.isArray(saved[22])?saved[22]:[]}catch(err){readIds=[]}board.querySelectorAll(".card").forEach(function(card){var was=wasRead(CH[+card.dataset.i]),mark=card.querySelector(".read-mark");card.classList.toggle("read",was);if(was&&!mark){mark=document.createElement("span");mark.className="read-mark";mark.textContent="✓ Read";card.appendChild(mark)}else if(!was&&mark)mark.remove()});updateCount()}
+addEventListener("storage",function(e){if(e.key==="chapterReadIds")syncReadMarks()});
+addEventListener("pageshow",syncReadMarks);
 var sp=document.getElementById("sp"),svg=document.getElementById("str");
 function str(){var cs=board.querySelectorAll(".card"),p=[];
   cs.forEach(function(c){p.push([c.offsetLeft+c.offsetWidth/2,c.offsetTop+2])});

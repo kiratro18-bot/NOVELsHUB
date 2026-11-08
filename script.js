@@ -76,7 +76,7 @@ function fmtNum(n) {
 /* novels array now lives in novels-data.js (loaded before this script in index.html) */
 var storyWorlds = [
     { title: 'Him and Her', type: 'Three-volume series', note: 'Follow the relationship from the original story through Volumes 2 and 3.', order: [5, 10, 14] },
-    { title: 'The Petal That Falls With a Smile', type: 'Prequel + four volumes', note: 'Begin with the Sora and Ren prequel, then continue through Volumes 1–4.', order: [18, 3, 8, 11, 19] },
+    { title: 'The Petal That Falls With a Smile', type: 'Prequel + four volumes', note: 'Begin with the vol 1, then continue to prequel and then Volumes 2–4.', order: [18, 3, 8, 11, 19] },
     { title: 'The Rain Pact', type: 'Main story + companion', note: 'Read The Rain Pact first, then visit The Other Side of Rain for its companion journey.', order: [1, 7] },
     { title: 'Ten Percent of Forever', type: 'Shared universe · Main story + companion', note: 'Read Ten Percent of Forever, then continue in the same universe with The Things We Never Returned.', order: [2, 21] }
 ];
@@ -813,7 +813,7 @@ var readerFontScale = store.get('readerFontScale', 1);
 function openSpotlight(order) {
     var n = novels.find(function (x) { return x.order === order; });
     if (!n) return;
-            spotlightOrder = order;
+    spotlightOrder = order;
     var bg = document.getElementById('spCoverBg');
     bg.style.background = 'linear-gradient(' + n.grad + ')';
     bg.innerHTML = '<img src="' + esc(n.img) + '" style="width:100%;height:100%;object-fit:cover;opacity:.85" onerror="imgFail(this)">';
@@ -1252,7 +1252,7 @@ function renderHeatmap() {
    ============================================================ */
 var upcomingReleases = [
     { date: '2026-11-09', title: "The Other Day - Chapter 11 & 12" },
-    { date: '2026-11-08', title: 'Petal Vol. 4 — chpater 4 ' },
+    { date: '2026-11-15', title: 'Petal Vol. 4 — chpater 5 ' },
 ];
 var calSorted = [];
 var releaseReminders = store.get('releaseReminders', []);
@@ -1795,7 +1795,7 @@ if ('IntersectionObserver' in window) {
         var active = dockSections.find(function (entry) { return entry.section === visible.target; });
         if (active) setDockActive(active.item);
     }, { rootMargin: "-20% 0px -55% 0px", threshold: [0, .15, .35, .6] });
-    
+
     dockSections.forEach(function (entry) { dockObserver.observe(entry.section); });
 }
 
@@ -1806,61 +1806,61 @@ if ('IntersectionObserver' in window) {
 
 const EYE_KEY = "eyeLastSeen";
 
-function shouldWakeEye(){
+function shouldWakeEye() {
 
-    const last = store.get(EYE_KEY,0);
+    const last = store.get(EYE_KEY, 0);
 
-    if(Date.now()-last < 7*24*60*60*1000) return false;
+    if (Date.now() - last < 7 * 24 * 60 * 60 * 1000) return false;
 
     const hour = new Date().getHours();
 
-    const chance = (hour>=0 && hour<3) ? 0.15 : 0.01;
+    const chance = (hour >= 0 && hour < 3) ? 0.15 : 0.01;
 
     return Math.random() < chance;
 }
 
-function wakeEye(){
+function wakeEye() {
 
-    const eye=document.getElementById("eyeEvent");
-    const pupil=document.getElementById("eyePupil");
+    const eye = document.getElementById("eyeEvent");
+    const pupil = document.getElementById("eyePupil");
 
-    if(!eye||!pupil) return;
+    if (!eye || !pupil) return;
 
     document.body.classList.add("eye-awakened");
     eye.classList.add("active");
 
-    store.set(EYE_KEY,Date.now());
+    store.set(EYE_KEY, Date.now());
 
     showToast("UNKNOWN SIGNAL DETECTED");
 
-    function follow(e){
+    function follow(e) {
 
-        const x=(e.clientX-window.innerWidth/2)*0.02;
-        const y=(e.clientY-window.innerHeight/2)*0.02;
+        const x = (e.clientX - window.innerWidth / 2) * 0.02;
+        const y = (e.clientY - window.innerHeight / 2) * 0.02;
 
-        pupil.style.transform=`translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+        pupil.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
     }
 
-    window.addEventListener("mousemove",follow);
+    window.addEventListener("mousemove", follow);
 
-    const glitch=setInterval(()=>{
+    const glitch = setInterval(() => {
 
-        document.body.style.filter="brightness(.88)";
+        document.body.style.filter = "brightness(.88)";
 
-        setTimeout(()=>document.body.style.filter="",90);
+        setTimeout(() => document.body.style.filter = "", 90);
 
-    },7000);
+    }, 7000);
 
-    setTimeout(()=>{
+    setTimeout(() => {
 
         eye.classList.remove("active");
         document.body.classList.remove("eye-awakened");
-        window.removeEventListener("mousemove",follow);
+        window.removeEventListener("mousemove", follow);
         clearInterval(glitch);
 
         revealWatcherSecret();
 
-    },45000);
+    }, 45000);
 }
 
 function revealLibrarySecret(key, message) {
@@ -1877,23 +1877,23 @@ function revealWatcherSecret() {
 document.addEventListener('DOMContentLoaded', function () {
     setTimeout(() => {
 
-    if(shouldWakeEye()){
+        if (shouldWakeEye()) {
 
-        wakeEye();
+            wakeEye();
 
-    }
+        }
 
-}, 3000);
+    }, 3000);
 
-setTimeout(() => {
+    setTimeout(() => {
 
-    if(shouldTriggerEclipse()){
+        if (shouldTriggerEclipse()) {
 
-        triggerEclipse();
+            triggerEclipse();
 
-    }
+        }
 
-}, 5000);
+    }, 5000);
 });
 
 /* ============================================================
@@ -1909,78 +1909,77 @@ setTimeout(() => {
 
 const ECLIPSE_KEY = "lastEclipseEvent";
 
-function shouldTriggerEclipse()
-{
-setTimeout(() => {
-    const cmdk = document.getElementById("cmdkInput");
-    if (cmdk) cmdk.placeholder = "The library remembers who stayed...";
-}, 25000);
+function shouldTriggerEclipse() {
+    setTimeout(() => {
+        const cmdk = document.getElementById("cmdkInput");
+        if (cmdk) cmdk.placeholder = "The library remembers who stayed...";
+    }, 25000);
 
-setTimeout(() => {
-    const cmdk = document.getElementById("cmdkInput");
-    if (cmdk) cmdk.placeholder = "Search novels, genres, moods…";
-}, 120000);
+    setTimeout(() => {
+        const cmdk = document.getElementById("cmdkInput");
+        if (cmdk) cmdk.placeholder = "Search novels, genres, moods…";
+    }, 120000);
 
 
-    const last = store.get(ECLIPSE_KEY,0);
+    const last = store.get(ECLIPSE_KEY, 0);
 
-    if(Date.now()-last < 7*24*60*60*1000) return false;
+    if (Date.now() - last < 7 * 24 * 60 * 60 * 1000) return false;
 
     const h = new Date().getHours();
 
-    const chance = (h>=0 && h<3) ? 0.15 : 0.005;
+    const chance = (h >= 0 && h < 3) ? 0.15 : 0.005;
 
     return Math.random() < chance;
 }
 
-function triggerEclipse(){
+function triggerEclipse() {
 
-    const event=document.getElementById("eclipseEvent");
+    const event = document.getElementById("eclipseEvent");
 
-    if(!event) return;
+    if (!event) return;
 
     document.body.classList.add("eclipse-active");
     event.classList.add("active");
 
-    store.set(ECLIPSE_KEY,Date.now());
+    store.set(ECLIPSE_KEY, Date.now());
 
     showToast("🌒 The Library has gone silent...");
 
     // Pick one random shelf card
 
-   if (!document.querySelector("#catalogGrid .novel-card")) {
-    renderCatalog();
-}
+    if (!document.querySelector("#catalogGrid .novel-card")) {
+        renderCatalog();
+    }
 
-const cards = [...document.querySelectorAll("#catalogGrid .novel-card")];
+    const cards = [...document.querySelectorAll("#catalogGrid .novel-card")];
 
-    let blessed=null;
+    let blessed = null;
 
-    if(cards.length){
+    if (cards.length) {
 
-        blessed=cards[Math.floor(Math.random()*cards.length)];
+        blessed = cards[Math.floor(Math.random() * cards.length)];
 
         blessed.classList.add("eclipse-blessed");
     }
 
-    if(blessed){
+    if (blessed) {
 
-        blessed.style.pointerEvents="auto";
+        blessed.style.pointerEvents = "auto";
 
-        blessed.addEventListener("click",revealEclipseSecret,{once:true});
+        blessed.addEventListener("click", revealEclipseSecret, { once: true });
     }
 
-    setTimeout(()=>{
+    setTimeout(() => {
 
         event.classList.remove("active");
         document.body.classList.remove("eclipse-active");
 
-        if(blessed)
+        if (blessed)
             blessed.classList.remove("eclipse-blessed");
 
         showToast("The eclipse has passed.");
 
-    },120000); // 2 minutes
+    }, 120000); // 2 minutes
 }
 
 function revealEclipseSecret() {
@@ -2001,53 +2000,53 @@ document.addEventListener("keydown", (e) => {
 // Guaranteed fallback if any browser/OS/extension still eats the shortcut:
 // open devtools console and run  debugEclipse()
 window.debugEclipse = function () {
-  if (typeof triggerEclipse === "function") {
-    triggerEclipse();
-  } else {
-    console.error("triggerEclipse() is missing.");
-  }
+    if (typeof triggerEclipse === "function") {
+        triggerEclipse();
+    } else {
+        console.error("triggerEclipse() is missing.");
+    }
 };
 /* =========================
    KONAMI NEON MODE
 ========================= */
 
 const konami = [
-  "ArrowUp","ArrowUp",
-  "ArrowDown","ArrowDown",
-  "ArrowLeft","ArrowRight",
-  "ArrowLeft","ArrowRight",
-  "b","a"
+    "ArrowUp", "ArrowUp",
+    "ArrowDown", "ArrowDown",
+    "ArrowLeft", "ArrowRight",
+    "ArrowLeft", "ArrowRight",
+    "b", "a"
 ];
 
 let konamiIndex = 0;
 let neonUnlocked = false;
 
 document.addEventListener("keydown", (e) => {
-  const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+    const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
 
-  if (key === konami[konamiIndex]) {
-    konamiIndex++;
+    if (key === konami[konamiIndex]) {
+        konamiIndex++;
 
-    if (konamiIndex === konami.length) {
-      activateNeonMode();
-      konamiIndex = 0;
+        if (konamiIndex === konami.length) {
+            activateNeonMode();
+            konamiIndex = 0;
+        }
+    } else {
+        konamiIndex = 0;
     }
-  } else {
-    konamiIndex = 0;
-  }
 });
 
 function activateNeonMode() {
-  document.body.classList.add("neon-mode");
+    document.body.classList.add("neon-mode");
 
-  if (!neonUnlocked) {
-    revealNeonSecret();
-    neonUnlocked = true;
-  }
+    if (!neonUnlocked) {
+        revealNeonSecret();
+        neonUnlocked = true;
+    }
 
-  setTimeout(() => {
-    document.body.classList.remove("neon-mode");
-  }, 10000);
+    setTimeout(() => {
+        document.body.classList.remove("neon-mode");
+    }, 10000);
 }
 
 function revealNeonSecret() {

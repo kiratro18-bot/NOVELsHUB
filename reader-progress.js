@@ -10,14 +10,16 @@
   var chapter = 0;
   var chapterId = '';
   var customReadKey = '';
+  var trackOnly = false;
 
-  function route(regex, novelOrder, chapterNumber, id, readKey) {
+  function route(regex, novelOrder, chapterNumber, id, readKey, onlyTrackChapter) {
     var result = path.match(regex);
     if (!result) return false;
     order = novelOrder;
     chapter = typeof chapterNumber === 'function' ? chapterNumber(result) : chapterNumber;
     chapterId = id ? id(result) : 'ch' + chapter;
     customReadKey = readKey || '';
+    trackOnly = onlyTrackChapter === true;
     return true;
   }
 
@@ -31,8 +33,10 @@
     route(/\/tptfwas\/tptfwasv2-([1-5])\.html$/, 8, function (m) { return +m[1]; }) ||
     route(/\/tptfwas\/tptfwas3-1\.html$/, 11, 1) ||
     route(/\/tptfwas\/tptfwasv3-([2-9])\.html$/, 11, function (m) { return +m[1]; }) ||
-    route(/\/tptfwas\/tptfwas4-([1-3])\.html$/, 19, function (m) { return +m[1]; }) ||
+    route(/\/tptfwas\/tptfwas4-([1-4])\.html$/, 19, function (m) { return +m[1]; }) ||
     route(/\/tptfwas\/p([1-5])\.html$/, 18, function (m) { return +m[1]; }) ||
+    route(/\/tdss\/tdma([1-9]|10|11)\.html$/, 22, function (m) { return +m[1]; }, null, null, true) ||
+    route(/\/tdss\/tdmae\.html$/, 22, 12, function () { return 'epilogue'; }, null, true) ||
     route(/\/tdss\/tdss([1-9]|10|11)\.html$/, 4, function (m) { return +m[1]; }) ||
     route(/\/hah\/hahv2-([1-4])\.html$/, 10, function (m) { return +m[1]; }) ||
     route(/\/hah\/hah05\.html$/, 14, 1, function () { return 'ch0.5'; }, 'hahv2Read') ||
@@ -61,22 +65,24 @@
     try { localStorage.setItem(key, JSON.stringify(value)); } catch (error) { }
   }
 
-  var progress = read('readProgress', {});
-  if (!progress || typeof progress !== 'object' || Array.isArray(progress)) progress = {};
-  var existing = Math.max(0, Number(progress[order]) || 0);
-  var delta = Math.max(0, chapter - existing);
-  if (delta) {
-    progress[order] = chapter;
-    write('readProgress', progress);
-    var log = read('readingLog', {});
-    if (!log || typeof log !== 'object' || Array.isArray(log)) log = {};
-    var day = new Date().toISOString().slice(0, 10);
-    log[day] = (Number(log[day]) || 0) + delta;
-    write('readingLog', log);
-    var hour = new Date().getHours();
-    if (hour >= 23 || hour < 5) write('nightOwlRead', true);
+  if (!trackOnly) {
+    var progress = read('readProgress', {});
+    if (!progress || typeof progress !== 'object' || Array.isArray(progress)) progress = {};
+    var existing = Math.max(0, Number(progress[order]) || 0);
+    var delta = Math.max(0, chapter - existing);
+    if (delta) {
+      progress[order] = chapter;
+      write('readProgress', progress);
+      var log = read('readingLog', {});
+      if (!log || typeof log !== 'object' || Array.isArray(log)) log = {};
+      var day = new Date().toISOString().slice(0, 10);
+      log[day] = (Number(log[day]) || 0) + delta;
+      write('readingLog', log);
+      var hour = new Date().getHours();
+      if (hour >= 23 || hour < 5) write('nightOwlRead', true);
+    }
+    write('currentlyReading', order);
   }
-  write('currentlyReading', order);
 
   var ids = read('chapterReadIds', {});
   if (!ids || typeof ids !== 'object' || Array.isArray(ids)) ids = {};

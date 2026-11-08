@@ -35,6 +35,9 @@
       --border-strong: rgba(201, 127, 160, 0.3);
 
       --glow: rgba(249, 199, 217, 0.4);
+      --scroll-track: #f4e5ec;
+      --scroll-thumb: #d58ba8;
+      --scroll-thumb-hover: #b96789;
     }
 
     body.dark {
@@ -53,6 +56,9 @@
       --border-strong: rgba(201, 127, 160, 0.25);
 
       --glow: rgba(106, 45, 72, 0.4);
+      --scroll-track: #24131c;
+      --scroll-thumb: #85445f;
+      --scroll-thumb-hover: #c97fa0;
     }
 
     * {
@@ -63,6 +69,30 @@
 
     html {
       scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+    }
+
+    html::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    html::-webkit-scrollbar-track {
+      background: var(--scroll-track);
+    }
+
+    html::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--petal-1), var(--scroll-thumb));
+      border: 2px solid var(--scroll-track);
+      border-radius: 999px;
+    }
+
+    html::-webkit-scrollbar-thumb:hover {
+      background: var(--scroll-thumb-hover);
+    }
+
+    html::-webkit-scrollbar-corner {
+      background: var(--scroll-track);
     }
 
     body {
