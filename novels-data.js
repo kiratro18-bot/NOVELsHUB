@@ -134,7 +134,7 @@ var novels = [
         blurb: "Detective Toma Kisaragi investigates a dead man with an impossible alibi. Four cases, a missing woman, and a buried archive draw him toward a truth someone wants kept hidden.", grad: "135deg,#171a22,#6f252c", collections: ["newest"]
     },
     {
-        order: 23, title: "Case File: The Silence Between Rings", img: "./img/sub1/cfy.jpg", link: "./cfy/cfs.html", genres: ["mystery", "drama"], status: "upcoming", ch: 0, rating: 0, views: 0, releaseOffsetDays: 0,
+        order: 23, title: "Case File: The Silence Between Rings", img: "./img/sub2/cfs.jpg", link: "./cfy/cfs.html", genres: ["mystery", "drama"], status: "upcoming", ch: 0, rating: 0, views: 0, releaseOffsetDays: 0,
         chapterLinks: ["./cfy/cfs.html"],
         chapterLabels: ["The Silence Between Rings"],
         blurb: "Set in the Case File: You universe, a dispatcher answers a call from a line that should be dead. A detective, a journalist, and a room missing from the plan lead toward the silence between rings.", grad: "135deg,#3a2a4a,#5a2a30", collections: ["newest"]

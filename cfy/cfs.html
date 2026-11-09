@@ -21,7 +21,8 @@
 
         * {
             box-sizing: border-box;
-            margin: 0
+            margin: 0;
+            -webkit-tap-highlight-color: transparent
         }
 
         body {
@@ -60,6 +61,14 @@
             margin-top: 14px;
             color: var(--soft);
             font-style: italic
+        }
+
+        .release {
+            margin-top: 8px;
+            color: var(--blue);
+            font-family: var(--type);
+            font-size: .9rem;
+            font-weight: 700
         }
 
         .call {
@@ -479,6 +488,7 @@
             <div>
                 <h1>The Silence Between Rings</h1>
                 <p class="kind">A psychological mystery / Crime thriller</p>
+                <p class="release">New chapters released biweekly</p>
             </div>
             <div class="call" aria-live="polite">
                 <div class="clock"><span id="time">2:16 AM</span><small id="state">night shift</small></div>
@@ -498,7 +508,6 @@
             <button class="cab" id="cab" type="button" aria-label="Metal cabinet beside the staircase">cabinet</button>
         </section>
         <p class="hint">Each room is a chapter. The cabinet by the stairs is not on the plan. Knock three times.</p>
-
         <section id="r17" aria-live="polite">
             <h2>Room 17</h2>
             <p>Internal line. Unlisted.</p>
