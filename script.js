@@ -78,7 +78,8 @@ var storyWorlds = [
     { title: 'Him and Her', type: 'Three-volume series', note: 'Follow the relationship from the original story through Volumes 2 and 3.', order: [5, 10, 14] },
     { title: 'The Petal That Falls With a Smile', type: 'Prequel + four volumes', note: 'Begin with the vol 1, then continue to prequel and then Volumes 2–4.', order: [18, 3, 8, 11, 19] },
     { title: 'The Rain Pact', type: 'Main story + companion', note: 'Read The Rain Pact first, then visit The Other Side of Rain for its companion journey.', order: [1, 7] },
-    { title: 'Ten Percent of Forever', type: 'Shared universe · Main story + companion', note: 'Read Ten Percent of Forever, then continue in the same universe with The Things We Never Returned.', order: [2, 21] }
+    { title: 'Ten Percent of Forever', type: 'Shared universe · Main story + companion', note: 'Read Ten Percent of Forever, then continue in the same universe with The Things We Never Returned.', order: [2, 21] },
+    { title: 'Case File: You', type: 'Shared universe · Mystery series', note: 'Follow Case File: You into a new mystery in The Silence Between Rings.', order: [6, 23] }
 ];
 var storySamples = [
     { id: 'rain', label: 'The Rain Pact', mood: 'Romance · Chapter One', title: 'Drizzle and Blue Umbrellas', excerpt: 'The first time Aoi met him, she didn’t even know his name. It was raining—of course it was. The kind of drizzle that crept in slowly, catching everyone off guard.', link: './rp/rpc1.html' },
@@ -774,18 +775,19 @@ function renderCatalog() {
         var isLiked = !!bookmarks[n.order];
         return '<article class="novel-card" style="animation-delay:' + (i * 0.03) + 's">' +
             '<button type="button" class="novel-card-open" onclick="openSpotlight(' + n.order + ')" aria-label="View details for ' + esc(n.title) + '"></button>' +
-            '<div class="nc-cover">' + coverHtml(n, '').replace('<div class=""', '<div style="width:100%;height:100%"') +
+            '<div class="nc-cover">' + coverHtml(n, 'nc-image-wrap') +
             '<div class="nc-grad"></div>' +
             '<span class="nc-status ' + statusCls + '">' + n.status + '</span>' +
             '<div class="nc-quickrow">' +
             '<button type="button" class="nc-qbtn' + (isLiked ? ' liked' : '') + '" onclick="toggleLikeNovel(' + n.order + ')" aria-label="' + (isLiked ? 'Remove from favorites' : 'Add to favorites') + '" aria-pressed="' + isLiked + '">' + (isLiked ? '♥' : '♡') + '</button>' +
             '<button type="button" class="nc-qbtn" onclick="shareNovelQuick(' + n.order + ')" aria-label="Share ' + esc(n.title) + '">↗</button>' +
             '</div>' +
+            '</div>' +
             '<div class="nc-body"><div class="nc-genres">' + n.genres.slice(0, 3).map(function (g) { return '<span class="nc-tag">' + badgeLabel[g] + '</span>'; }).join('') + '</div>' +
             '<div class="nc-title">' + esc(n.title) + '</div>' +
             '<div class="nc-meta"><span>' + (n.rating ? ('⭐ ' + n.rating) : '—') + '</span><span>👁 ' + fmtNum(n.views) + '</span><span>📖 ' + (n.ch || '0') + ' ch</span></div>' +
             (n.ch ? '<div class="nc-progress"><div class="nc-progress-fill" style="width:' + pct + '%"></div></div><div class="nc-progress-label">' + read + ' / ' + n.ch + ' read</div>' : '<div class="nc-progress-label">Releasing soon</div>') +
-            '</div></div></article>';
+            '</div></article>';
     }).join('');
     hideSkeleton('catalogSkeleton');
 }
@@ -829,14 +831,13 @@ function openSpotlight(order) {
     var chList = document.getElementById('spChapterList');
     var html = '';
     var isSingleChapter = n.ch === 1;
-    for (var i = 1; i <= Math.min(n.ch, 10); i++) {
+    for (var i = 1; i <= n.ch; i++) {
         var isRead = i <= read;
         var cName = n.chapterLabels && n.chapterLabels[i - 1] ? n.chapterLabels[i - 1] : (isSingleChapter ? 'One Shot' : 'Chapter ' + i);
         var cLink = n.chapterLinks && n.chapterLinks[i - 1] ? n.chapterLinks[i - 1] : (n.link || '#');
         html += '<a class="sp-ch-item" href="' + esc(cLink) + '"><div class="sp-ch-num' + (isRead ? ' read' : '') + '">' + (isRead ? '✓' : i) + '</div><span style="flex:1">' + esc(cName) + '</span>' +
             (isRead ? '<span style="font-size:10px;color:var(--sage)">Read</span>' : '<span style="font-size:10px;color:var(--muted)">→</span>') + '</a>';
     }
-    if (n.ch > 10) html += '<div style="text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--muted);padding:6px">+ ' + (n.ch - 10) + ' more chapters</div>';
     if (n.ch === 0) html = '<div style="text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--muted);padding:10px">Chapters land here on release day.</div>';
     chList.innerHTML = html;
     var bbtn = document.getElementById('spBookmarkBtn');
@@ -881,9 +882,9 @@ function updateReaderMode() {
     var readerChapterLabel = n.chapterLabels && n.chapterLabels[readerModeChapter - 1] ? n.chapterLabels[readerModeChapter - 1] : 'Chapter ' + readerModeChapter;
     document.getElementById('readerModeChapterText').textContent = n.ch ? readerChapterLabel : 'Coming on release day';
     document.getElementById('readerModeBody').textContent = n.ch ? ('You are in the focus space for chapter ' + readerModeChapter + '. Open the full chapter when you are ready; progress updates automatically as you read.') : 'This story is part of the upcoming shelf. Keep it bookmarked and return when the chapter lands.';
-    var activeChapterLink = n.chapterLinks && n.chapterLinks[readerModeChapter - 1] ? n.chapterLinks[readerModeChapter - 1] : n.link;
-    document.getElementById('readerModeOpenBtn').textContent = activeChapterLink && activeChapterLink !== '#' ? 'Open ' + readerChapterLabel.toLowerCase() + ' →' : 'Story link coming soon';
-    document.getElementById('readerModeOpenBtn').disabled = !activeChapterLink || activeChapterLink === '#';
+    var novelLink = n.link;
+    document.getElementById('readerModeOpenBtn').textContent = novelLink && novelLink !== '#' ? 'Open chapter selection →' : 'Story link coming soon';
+    document.getElementById('readerModeOpenBtn').disabled = !novelLink || novelLink === '#';
     var bbtn = document.getElementById('readerModeBookmarkBtn');
     bbtn.textContent = currentlyReadingOrder === n.order ? '✓ Currently Reading' : '🔖 Set as Currently Reading';
     bbtn.classList.toggle('active', currentlyReadingOrder === n.order);
@@ -917,9 +918,9 @@ function readerModeBookmark() {
 }
 function readerModeOpenStory() {
     var n = novels.find(function (x) { return x.order === readerModeOrder; });
-    var chapterLink = n && n.chapterLinks && n.chapterLinks[readerModeChapter - 1] ? n.chapterLinks[readerModeChapter - 1] : (n && n.link);
-    if (!chapterLink || chapterLink === '#') { showToast('The full chapter link is coming soon ✦'); return; }
-    window.location.href = chapterLink;
+    var novelLink = n && n.link;
+    if (!novelLink || novelLink === '#') { showToast('The chapter selection page is coming soon ✦'); return; }
+    window.location.href = novelLink;
 }
 function toggleBookmark() {
     if (!spotlightOrder) return;
@@ -1251,7 +1252,8 @@ function renderHeatmap() {
    CALENDAR
    ============================================================ */
 var upcomingReleases = [
-    { date: '2026-11-09', title: "The Other Day - Chapter 11 & 12" },
+    { date: '2026-11-16', title: "The Dead Man’s Alibi" },
+    { date: '2026-11-10', title: "Case File: The Silence Between Rings" },
     { date: '2026-11-15', title: 'Petal Vol. 4 — chpater 5 ' },
 ];
 var calSorted = [];

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>The Silence Between Rings — Floor Plan</title>
+    <style>
+        :root {
+            --paper: #d8ddd0;
+            --paper2: #cbd1c2;
+            --ink: #1d2b3a;
+            --soft: #4f6070;
+            --yellow: #e6c84c;
+            --blue: #2f5f8f;
+            --stamp: #b0443a;
+            --metal: #a9b2b8;
+            --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+            --type: "American Typewriter", "Courier New", Courier, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0
+        }
+
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--serif);
+            line-height: 1.55;
+            background-image: repeating-linear-gradient(0deg, transparent 0 31px, rgba(29, 43, 58, .06) 31px 32px),
+                repeating-linear-gradient(90deg, transparent 0 31px, rgba(29, 43, 58, .06) 31px 32px);
+            padding: env(safe-area-inset-top, 0) 0 env(safe-area-inset-bottom, 0)
+        }
+
+        .wrap {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 44px 24px 72px
+        }
+
+        /* header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+            flex-wrap: wrap;
+            align-items: flex-start
+        }
+
+        h1 {
+            font-size: clamp(2.3rem, 6.5vw, 4.4rem);
+            line-height: 1;
+            font-weight: 400;
+            max-width: 9em
+        }
+
+        .kind {
+            margin-top: 14px;
+            color: var(--soft);
+            font-style: italic
+        }
+
+        .call {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding-top: 6px
+        }
+
+        .clock {
+            font-size: 2.6rem;
+            line-height: 1;
+            font-variant-numeric: lining-nums tabular-nums
+        }
+
+        .clock small {
+            display: block;
+            font-size: .8rem;
+            font-family: var(--type);
+            color: var(--soft);
+            margin-top: 4px
+        }
+
+        .bell {
+            position: relative;
+            width: 56px;
+            height: 56px
+        }
+
+        .bell i {
+            position: absolute;
+            inset: 0;
+            border: 2px solid var(--blue);
+            border-radius: 50%;
+            opacity: 0
+        }
+
+        .bell.ring i {
+            animation: ring 2.4s ease-out both
+        }
+
+        .bell.ring i:nth-child(2) {
+            animation-delay: .7s
+        }
+
+        .bell.ring i:nth-child(3) {
+            animation-delay: 1.4s
+        }
+
+        @keyframes ring {
+            0% {
+                transform: scale(.1);
+                opacity: .9
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0
+            }
+        }
+
+        .stamp {
+            margin: 30px 0 8px;
+            display: inline-block;
+            font-family: var(--type);
+            font-size: .85rem;
+            color: var(--stamp);
+            border: 2px solid var(--stamp);
+            padding: 4px 12px;
+            transform: rotate(-2deg);
+            opacity: .85
+        }
+
+        .bar {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 18px 0 36px
+        }
+
+        .go {
+            font: 600 1rem var(--serif);
+            color: var(--paper);
+            background: var(--ink);
+            padding: 12px 24px;
+            text-decoration: none;
+            border: 2px solid var(--ink)
+        }
+
+        .go:hover {
+            background: transparent;
+            color: var(--ink)
+        }
+
+        .prog {
+            font-family: var(--type);
+            font-size: .9rem;
+            color: var(--soft)
+        }
+
+        /* floor plan */
+        .plan {
+            display: grid;
+            grid-template-columns: 130px repeat(4, 1fr);
+            grid-template-rows: auto 60px auto auto;
+            border: 6px solid var(--ink);
+            background: var(--paper2);
+            position: relative
+        }
+
+        .room {
+            position: relative;
+            display: block;
+            padding: 20px 18px 26px;
+            color: inherit;
+            text-decoration: none;
+            border: 3px solid var(--ink);
+            margin: -3px;
+            background: var(--paper);
+            transition: background .2s
+        }
+
+        .room:hover,
+        .room:focus-visible {
+            background: var(--yellow);
+            outline: none
+        }
+
+        .room:focus-visible {
+            box-shadow: inset 0 0 0 3px var(--blue)
+        }
+
+        .room .n {
+            font-size: 2.4rem;
+            line-height: 1
+        }
+
+        .room .t {
+            font-size: 1.2rem;
+            line-height: 1.2;
+            margin-top: 10px
+        }
+
+        .room .d {
+            font-size: .92rem;
+            color: var(--soft);
+            margin-top: 6px
+        }
+
+        .room:hover .d {
+            color: var(--ink)
+        }
+
+        .room .tag {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            font: .75rem var(--type);
+            color: var(--soft)
+        }
+
+        .room.read {
+            background: var(--paper2)
+        }
+
+        .room.read .n,
+        .room.read .t {
+            opacity: .55
+        }
+
+        .room.read .tag::before {
+            content: "visited"
+        }
+
+        .room:not(.read) .tag::before {
+            content: "unvisited"
+        }
+
+        .room:not(.read) .tag {
+            color: var(--stamp)
+        }
+
+        /* doors cut into the wall facing the corridor */
+        .room::after {
+            content: "";
+            position: absolute;
+            left: 18px;
+            width: 38px;
+            height: 9px;
+            background: var(--paper2);
+            border-left: 2px solid var(--ink);
+            border-right: 2px solid var(--ink);
+            transition: width .25s
+        }
+
+        .room.top::after {
+            bottom: -6px
+        }
+
+        .room.bot::after {
+            top: -6px
+        }
+
+        .room:hover::after,
+        .room.open::after {
+            width: 72px
+        }
+
+        .room.open {
+            background: var(--yellow)
+        }
+
+        .stairs {
+            grid-area: 1/1/3/2;
+            border: 3px solid var(--ink);
+            margin: -3px;
+            position: relative;
+            background: repeating-linear-gradient(180deg, var(--paper) 0 13px, var(--ink) 13px 15px)
+        }
+
+        .stairs span {
+            position: absolute;
+            left: 8px;
+            bottom: 8px;
+            font: .75rem var(--type);
+            background: var(--paper);
+            padding: 0 4px
+        }
+
+        .hall {
+            grid-area: 2/2/3/6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative
+        }
+
+        .hall::before {
+            content: "";
+            position: absolute;
+            left: 8px;
+            right: 8px;
+            top: 50%;
+            border-top: 2px dashed rgba(29, 43, 58, .35)
+        }
+
+        .hall span {
+            position: relative;
+            background: var(--paper2);
+            padding: 0 12px;
+            font: .8rem var(--type);
+            color: var(--soft)
+        }
+
+        .cab {
+            grid-area: 3/1;
+            margin: -3px;
+            border: 3px solid var(--ink);
+            background: var(--metal);
+            cursor: pointer;
+            font: .78rem var(--type);
+            color: var(--ink);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            text-align: left;
+            min-height: 120px;
+            background-image: linear-gradient(90deg, transparent 48%, rgba(29, 43, 58, .35) 48% 52%, transparent 52%)
+        }
+
+        .cab:hover {
+            background-color: #b9c1c6
+        }
+
+        .cab:focus-visible {
+            outline: 3px solid var(--blue);
+            outline-offset: -6px
+        }
+
+        .cab.thud {
+            animation: thud .18s
+        }
+
+        .cab.reply {
+            animation: thud .18s .5s 2
+        }
+
+        @keyframes thud {
+            50% {
+                transform: translateX(-3px)
+            }
+        }
+
+        .hint {
+            margin-top: 14px;
+            font-style: italic;
+            color: var(--soft)
+        }
+
+        /* room 17 */
+        #r17 {
+            display: none;
+            margin-top: 28px;
+            background: var(--blue);
+            color: #eaf0f5;
+            padding: 30px 28px;
+            border: 6px solid var(--ink)
+        }
+
+        #r17.on {
+            display: block
+        }
+
+        #r17 h2 {
+            font-size: 2rem;
+            font-weight: 400
+        }
+
+        #r17 p {
+            margin-top: 8px;
+            max-width: 34em
+        }
+
+        .dots {
+            font-family: var(--type);
+            letter-spacing: .5em;
+            margin-top: 18px;
+            min-height: 1.6em
+        }
+
+        .say {
+            font-size: 1.4rem;
+            margin-top: 6px;
+            opacity: 0;
+            transition: opacity 1.2s
+        }
+
+        .say.show {
+            opacity: 1
+        }
+
+        .reset {
+            margin-top: 36px;
+            font: .85rem var(--type);
+            background: none;
+            border: 0;
+            color: var(--soft);
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 0
+        }
+
+        @media (max-width:760px) {
+            .plan {
+                grid-template-columns: 1fr;
+                grid-template-rows: none
+            }
+
+            .plan>* {
+                grid-area: auto !important
+            }
+
+            .stairs {
+                height: 44px;
+                order: -1
+            }
+
+            .hall {
+                height: 44px
+            }
+
+            .room.top::after,
+            .room.bot::after {
+                top: auto;
+                bottom: -6px
+            }
+
+            .room.bot {
+                order: 3
+            }
+
+            .hall {
+                order: 2
+            }
+
+            .room.top {
+                order: 1
+            }
+
+            .cab {
+                order: 4
+            }
+
+            .wrap {
+                padding: 32px 16px 56px
+            }
+        }
+
+        @media (prefers-reduced-motion:reduce) {
+            * {
+                animation: none !important;
+                transition: none !important
+            }
+
+            .say {
+                opacity: 1
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="wrap">
+        <header>
+            <div>
+                <h1>The Silence Between Rings</h1>
+                <p class="kind">A psychological mystery / Crime thriller</p>
+            </div>
+            <div class="call" aria-live="polite">
+                <div class="clock"><span id="time">2:16 AM</span><small id="state">night shift</small></div>
+                <div class="bell" id="bell" aria-hidden="true"><i></i><i></i><i></i></div>
+            </div>
+        </header>
+
+        <span class="stamp">AOBA HOUSE — ARCHIVE COPY, PAGES MISSING</span>
+        <div class="bar">
+            <a class="go" id="go" href="#">Answer the call</a>
+            <span class="prog" id="prog"></span>
+        </div>
+
+        <section class="plan" id="plan" aria-label="Chapters, laid out as the rooms of Aoba House">
+            <div class="stairs" aria-hidden="true"><span>stairs</span></div>
+            <div class="hall" aria-hidden="true"><span>west corridor</span></div>
+            <button class="cab" id="cab" type="button" aria-label="Metal cabinet beside the staircase">cabinet</button>
+        </section>
+        <p class="hint">Each room is a chapter. The cabinet by the stairs is not on the plan. Knock three times.</p>
+
+        <section id="r17" aria-live="polite">
+            <h2>Room 17</h2>
+            <p>Internal line. Unlisted.</p>
+            <div class="dots" id="dots"></div>
+            <p class="say" id="say">Thank you for answering.</p>
+        </section>
+
+        <button class="reset" id="reset" type="button">Clear reading progress</button>
+    </main>
+
+    <script>
+        /* Edit each href to match your chapter file names. */
+        const KEY = "silence-between-rings";
+        const chapters = [
+            { n: 1, title: "2:17 AM", href: "silence-ch1.html", desc: "A dispatcher takes a call from a line that should be dead." },
+            { n: 2, title: "The Disconnected Number", href: "silence-ch2.html", desc: "A detective, a journalist, and a room missing from the plan." },
+            { n: 3, title: "Eleven Years Ago", href: "silence-ch3.html", desc: "Back to Aoba House, where someone already knows why they came." },
+            { n: 4, title: "The Room Between", href: "silence-ch4.html", desc: "Behind the cabinet: a telephone, a ledger, and three numbers." },
+            { n: 5, title: "The Missing Recording", href: "silence-ch5.html", desc: "The archive keeps the night of the fire. Not all of it." },
+            { n: 6, title: "An Unfamiliar Voice", href: "silence-ch6.html", desc: "The line rings again, and the voice on it is new." },
+            { n: 7, title: "Don't Answer", href: "silence-ch7.html", desc: "A key, an address, and a time that has become familiar." },
+            { n: 8, title: "The Silence Between Rings", href: "silence-ch8.html", desc: "The last call is answered." },
+            { n: 9, title: "Epilogue", href: "silence-epilogue.html", desc: "After the final ring, the people left behind decide what to do with the truth." }
+        ];
+        let read = []; try { read = JSON.parse(localStorage.getItem(KEY) || "[]") } catch (e) { }
+        const save = () => { try { localStorage.setItem(KEY, JSON.stringify(read)) } catch (e) { } };
+        const plan = document.getElementById("plan"), cab = document.getElementById("cab");
+        const reduce = matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+        function render() {
+            plan.querySelectorAll(".room").forEach(r => r.remove());
+            chapters.forEach(c => {
+                const a = document.createElement("a");
+                const top = c.n <= 4;
+                a.className = "room " + (top ? "top" : "bot") + (read.includes(c.n) ? " read" : "");
+                a.href = c.href; a.dataset.n = c.n;
+                a.style.gridArea = c.n === 9 ? "4/2/5/6" : (top ? 1 : 3) + "/" + (((c.n - 1) % 4) + 2);
+                a.innerHTML = '<span class="tag"></span><div class="n">' + c.n + '</div><div class="t">' + c.title + '</div><div class="d">' + c.desc + '</div>';
+                plan.insertBefore(a, cab);
+            });
+            const next = chapters.find(c => !read.includes(c.n)), t = next || chapters[0], g = document.getElementById("go");
+            g.href = t.href; g.dataset.n = t.n;
+            g.textContent = !read.length ? "Answer the call" : next ? (next.title === "Epilogue" ? "Continue to the Epilogue" : "Pick up at Chapter " + next.n) : "Listen again from Chapter 1";
+            document.getElementById("prog").textContent = read.length + " of " + chapters.length + " rooms visited";
+        }
+        function go(e) {
+            const a = e.target.closest("a[data-n]"); if (!a) return;
+            const n = +a.dataset.n; if (!read.includes(n)) { read.push(n); save(); }
+            if (e.metaKey || e.ctrlKey || e.shiftKey || reduce) return;
+            e.preventDefault(); a.classList.add("open");
+            setTimeout(() => { location.href = a.href }, 420);
+        }
+        plan.addEventListener("click", go);
+        document.getElementById("go").addEventListener("click", go);
+        document.getElementById("reset").addEventListener("click", () => { read = []; save(); render(); });
+
+        /* the call: 2:16 -> 2:17, one ring cycle */
+        const time = document.getElementById("time"), state = document.getElementById("state"), bell = document.getElementById("bell");
+        function ringNow() { time.textContent = "2:17 AM"; state.textContent = "incoming call"; bell.classList.add("ring"); }
+        reduce ? ringNow() : setTimeout(ringNow, 2200);
+
+        /* room 17: knock three times, get two back */
+        let knocks = [], opened = false;
+        cab.addEventListener("click", () => {
+            if (opened) return;
+            const now = Date.now(); knocks = knocks.filter(k => now - k < 2000); knocks.push(now);
+            cab.classList.remove("thud"); void cab.offsetWidth; cab.classList.add("thud");
+            if (knocks.length >= 3) {
+                opened = true; cab.classList.add("reply");
+                setTimeout(openRoom, reduce ? 0 : 1300);
+            }
+        });
+        function openRoom() {
+            const r = document.getElementById("r17"), d = document.getElementById("dots"), s = document.getElementById("say");
+            r.classList.add("on"); r.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+            if (reduce) { d.textContent = "●  ●  ●"; s.classList.add("show"); return; }
+            let i = 0; const iv = setInterval(() => { d.textContent += (i ? "  " : "") + "●"; i++; if (i === 3) { clearInterval(iv); setTimeout(() => s.classList.add("show"), 1400); } }, 900);
+        }
+        render();
+    </script>
+</body>
+
+</html>

@@ -44,7 +44,7 @@
     route(/\/hah\/hah([1-5])\.html$/, 5, function (m) { return +m[1]; }) ||
     route(/\/cfy\/cfy(1[0-5]|[1-9])\.html$/, 6, function (m) { return +m[1]; }) ||
     route(/\/tsor\/tosor([1-5])\.html$/, 7, function (m) { return +m[1]; }) ||
-    route(/\/tod\/tod(10|[1-9])\.html$/, 16, function (m) { return +m[1]; }) ||
+    route(/\/tod\/tod(1[0-2]|[1-9])\.html$/, 16, function (m) { return +m[1]; }) ||
     route(/\/tod\/tod\.(3|8)\.html$/, 16, function (m) { return +m[1]; }) ||
     route(/\/os\/os\.html$/, 9, 1) ||
     route(/\/os\/os2\.html$/, 12, 1) ||

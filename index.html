@@ -23,6 +23,9 @@
         rel="stylesheet">
     <link rel="stylesheet" href="redesign.css">
     <meta name="google-site-verification" content="CjtMMlctLjvkx0nCfKICKUhFmq-v7zvq7Fznj-fMKTw" />
+  <style>
+    *, *::before, *::after { -webkit-tap-highlight-color: transparent; }
+  </style>
 </head>
 
 <body class="editorial">
@@ -236,7 +239,7 @@
         </div>
         <div class="nav-actions">
             <button class="search-trigger" onclick="openCmdk()" aria-label="Open search"><span>🔍</span><span
-                    class="nav-search-label">Search</span><span class="kbd"></span></button>
+                    class="nav-search-label">Search</span></button>
             <button class="icon-btn nav-settings-btn" onclick="openSettings()" aria-label="Open settings"
                 title="Settings">⚙</button>
         </div>
@@ -408,7 +411,7 @@
                 </div>
                 <div class="shelf-wrap">
                     <div class="shelf-tools glass">
-                        <span class="side-label">FILTER BY</span>
+                        <span class="side-label">REFINE YOUR FIND</span>
                         <div class="filter-section-label">Genre</div>
                         <div class="filter-pills" id="genrePills" role="group" aria-label="Filter stories by genre">
                             <button type="button" class="pill-btn active" data-genre="all"
@@ -636,35 +639,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ============ FIRST-PAGE SAMPLER ============ -->
-        <section class="section story-sampler-section" id="story-sampler" aria-labelledby="storySamplerTitle">
-            <div class="wrap">
-                <div class="section-head">
-                    <div><span class="eyebrow">A taste of the story</span>
-                        <h2 class="section-title" id="storySamplerTitle">Sample the <em>opening</em></h2>
-                        <p class="section-sub">Switch between real opening excerpts, then head straight into chapter
-                            one.</p>
-                    </div>
-                    <button class="pill-btn section-content-toggle" id="storySamplerToggle" type="button"
-                        onclick="toggleSectionContent('storySamplerContent', 'storySamplerToggle', 'storySamplerCollapsed', 'story sampler')"
-                        aria-expanded="true" aria-controls="storySamplerContent">Minimize story sampler <span
-                            aria-hidden="true">⌃</span></button>
-                </div>
-                <div class="story-sampler-card" id="storySamplerContent">
-                    <div class="sampler-choices" id="samplerChoices" role="group" aria-label="Choose an opening scene">
-                    </div>
-                    <article class="sampler-reading" aria-live="polite" aria-atomic="true">
-                        <span class="sampler-kicker" id="samplerGenre"></span>
-                        <h3 id="samplerStoryTitle"></h3>
-                        <p class="sampler-chapter-title" id="samplerChapterTitle"></p>
-                        <blockquote id="samplerExcerpt"></blockquote>
-                        <a class="sketch-btn sketch-btn-primary sampler-open-link" id="samplerOpenLink"
-                            href="./rp/rpc1.html">Read chapter one →</a>
-                    </article>
                 </div>
             </div>
         </section>
@@ -976,7 +950,7 @@
                         <div class="footer-col-title">Explore</div>
                         <div class="footer-links">
                             <a href="#catalog">The Shelf</a><a href="#story-worlds">Story worlds</a><a
-                                href="#story-sampler">Read a sample</a><a href="#story-compare">Compare stories</a><a
+                                href="#catalog">Browse the shelf</a><a href="#story-compare">Compare stories</a><a
                                 href="#announcements">Announcements</a><a href="#achievements">Milestones</a><a
                                 href="#readingHeatmap">Reading activity</a>
                         </div>

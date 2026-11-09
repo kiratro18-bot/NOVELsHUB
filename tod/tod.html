@@ -717,8 +717,8 @@
       <p class="hero-subtitle">A Normal yet something is not right events.</p>
       <div class="hero-divider"></div>
       <div class="hero-meta">
-        <span>📖 9 Chapters</span>
-        <span>✅ Ongoing</span>
+        <span>📖 12 Chapters</span>
+        <span>Completed</span>
         <span>💫 drama · mystery</span>
       </div>
     </div>
@@ -774,7 +774,7 @@
         <span class="read-arrow">→</span>
       </a>
 
-       <a class="chapter-card" href="tod5.html">
+      <a class="chapter-card" href="tod5.html">
         <div class="chapter-num">05</div>
         <div class="chapter-info">
           <div class="chapter-label">Chapter Five</div>
@@ -792,7 +792,7 @@
         <span class="read-arrow">→</span>
       </a>
 
-      
+
       <a class="chapter-card" href="tod7.html">
         <div class="chapter-num">07</div>
         <div class="chapter-info">
@@ -802,7 +802,7 @@
         <span class="read-arrow">→</span>
       </a>
 
-       <a class="chapter-card" href="tod.8.html">
+      <a class="chapter-card" href="tod.8.html">
         <div class="chapter-num">08</div>
         <div class="chapter-info">
           <div class="chapter-label">Chapter Eight</div>
@@ -811,7 +811,7 @@
         <span class="read-arrow">→</span>
       </a>
 
-        <a class="chapter-card" href="tod9.html">
+      <a class="chapter-card" href="tod9.html">
         <div class="chapter-num">09</div>
         <div class="chapter-info">
           <div class="chapter-label">Chapter Nine</div>
@@ -820,7 +820,7 @@
         <span class="read-arrow">→</span>
       </a>
 
-       <a class="chapter-card" href="tod10.html">
+      <a class="chapter-card" href="tod10.html">
         <div class="chapter-num">10</div>
         <div class="chapter-info">
           <div class="chapter-label">Chapter Ten</div>
@@ -829,20 +829,20 @@
         <span class="read-arrow">→</span>
       </a>
 
-      <a class="chapter-card" href="#">
+      <a class="chapter-card" href="tod11.html">
         <div class="chapter-num">11</div>
         <div class="chapter-info">
-          <div class="chapter-label">Chapter </div>
-          <div class="chapter-title">Coming soon</div>
+          <div class="chapter-label">Chapter Eleven</div>
+          <div class="chapter-title">The Person Who Wrote It</div>
         </div>
         <span class="read-arrow">→</span>
       </a>
 
-      <a class="chapter-card" href="#">
+      <a class="chapter-card" href="tod12.html">
         <div class="chapter-num">12</div>
         <div class="chapter-info">
-          <div class="chapter-label">Chapter </div>
-          <div class="chapter-title">Coming soon</div>
+          <div class="chapter-label">Chapter Twelve</div>
+          <div class="chapter-title">We Did</div>
         </div>
         <span class="read-arrow">→</span>
       </a>
@@ -850,7 +850,7 @@
 
 
       <div class="the-end">
-        <div class="the-end-title">~ Weekly ~</div>
+        <div class="the-end-title">~Volume 1~</div>
         <div class="the-end-sub">Thank you for reading</div>
       </div>
 
@@ -952,11 +952,11 @@
       });
 
       /* ── READING PROGRESS (track which chapters visited) ── */
-      var totalChapters = 6;
+      var totalChapters = 12;
       var read = 0;
       try {
-        var stored = JSON.parse(localStorage.getItem('bikyRead') || '[]');
-        read = stored.length;
+        var progress = JSON.parse(localStorage.getItem('readProgress') || '{}');
+        read = Math.min(totalChapters, Math.max(0, Number(progress[16]) || 0));
       } catch (e) { }
       document.getElementById('progressFill').style.width = (read / totalChapters * 100) + '%';
 
