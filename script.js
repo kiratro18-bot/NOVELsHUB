@@ -27,7 +27,8 @@ var APP_STORAGE_KEYS = [
     'tiltEnabled', 'motionEnabled', 'readerFontScale', 'readerAchUnlocks', 'exclusiveScrollbarEnabled',
     'goldenPetalCaught', 'nightOwlRead', 'oneDayRead', 'searchedOnce', 'sharedOnce',
     'themeChanged', 'lastCommentAt', 'readerLevel', 'achievementsCollapsed', 'readerProfile', 'releaseReminders',
-    'midnightMemoryWon', 'midnightMemoryBest', 'hiddenDiscoveries'
+    'midnightMemoryWon', 'midnightMemoryBest', 'hiddenDiscoveries', 'cfsEventJoined',
+    'cfsEventReadAt', 'cfsEventMilestone'
 ];
 function confirmClearLocalData() {
     var ok = window.confirm('This permanently erases all saved reader data and preferences from this browser. This can\'t be undone. Continue?');
@@ -46,6 +47,49 @@ function showToast(msg) {
     t.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2800);
+}
+var CFS_EVENT_END = new Date(2026, 10, 24, 23, 59, 59, 999);
+function cfsEventIsOpen() { return new Date() <= CFS_EVENT_END; }
+function cfsEventReadInTime() {
+    var readAt = Number(store.get('cfsEventReadAt', 0));
+    return readAt > 0 && readAt <= CFS_EVENT_END.getTime();
+}
+function renderCfsEvent() {
+    var status = document.getElementById('cfsEventStatus');
+    var action = document.getElementById('cfsEventAction');
+    if (!status || !action) return;
+    var joined = store.get('cfsEventJoined', false) === true;
+    var earned = store.get('cfsEventMilestone', false) === true;
+    var readInTime = cfsEventReadInTime();
+    if (earned) {
+        status.textContent = 'You answered the call and earned the limited Night Shift Witness milestone.';
+        action.textContent = '✦ Milestone collected'; action.disabled = true; action.onclick = null;
+    } else if (!cfsEventIsOpen()) {
+        status.textContent = 'This limited event has ended. The Night Shift Witness milestone is no longer available.';
+        action.textContent = 'Event ended'; action.disabled = true; action.onclick = null;
+    } else if (joined && readInTime) {
+        status.textContent = 'Chapter 1 complete. Claim your limited Night Shift Witness milestone before November 24.';
+        action.textContent = 'Claim milestone ✦'; action.disabled = false; action.onclick = claimCfsMilestone;
+    } else if (joined) {
+        status.textContent = 'You’re on the case. Read Chapter 1 of The Silence Between Rings before November 24 to unlock the limited Night Shift Witness milestone.';
+        action.textContent = 'Read Chapter 1'; action.disabled = false; action.onclick = openCfsChapter;
+    } else {
+        status.textContent = 'Read Chapter 1 of The Silence Between Rings before November 24 to earn the limited Night Shift Witness milestone.';
+        action.textContent = 'Join the case →'; action.disabled = false; action.onclick = joinCfsEvent;
+    }
+}
+function joinCfsEvent() {
+    if (!cfsEventIsOpen()) { renderCfsEvent(); return; }
+    store.set('cfsEventJoined', true);
+    renderCfsEvent();
+}
+function openCfsChapter() { window.location.href = './cfy/cfs1.html'; }
+function claimCfsMilestone() {
+    if (!cfsEventIsOpen() || !store.get('cfsEventJoined', false) || !cfsEventReadInTime()) { renderCfsEvent(); return; }
+    store.set('cfsEventMilestone', true);
+    showToast('✦ Limited milestone earned: Night Shift Witness');
+    renderReaderSpecialRanks();
+    renderCfsEvent();
 }
 function shakeEl(id) {
     var el = document.getElementById(id);
@@ -537,11 +581,12 @@ function refreshReadingUI() {
     renderForYouPicks();
 }
 window.addEventListener('storage', function (event) {
-    if (event.key !== 'readProgress' && event.key !== 'currentlyReading' && event.key !== 'readingLog' && event.key !== 'nightOwlRead') return;
+    if (event.key !== 'readProgress' && event.key !== 'currentlyReading' && event.key !== 'readingLog' && event.key !== 'nightOwlRead' && event.key !== 'cfsEventJoined' && event.key !== 'cfsEventReadAt' && event.key !== 'cfsEventMilestone') return;
     readProgress = store.get('readProgress', {});
     currentlyReadingOrder = store.get('currentlyReading', null);
     readingLog = store.get('readingLog', {});
     refreshReadingUI();
+    renderCfsEvent();
 });
 function personalMiniCard(n, label, actionText) {
     if (!n) return '<div class="personal-empty"><span class="personal-empty-icon">✦</span><strong>Nothing here yet</strong><span>Choose a story from the Shelf to start building this space.</span></div>';
@@ -1018,7 +1063,8 @@ function renderReaderSpecialRanks() {
         { icon: '🐉', name: 'World Forger', hint: 'Complete 100 novels[locked]', earned: completed.length >= 100, progress: Math.min(completed.length, 100) + ' / 100' },
         { icon: '👁️', name: 'The Observer', hint: 'Discover a hidden website achievement', earned: Object.keys(hidden).some(function (key) { return !!hidden[key]; }) },
         { icon: '♾️', name: 'Beyond Fiction', hint: 'Reach the maximum reader level', earned: level >= 15 },
-        { icon: '☠️', name: 'The Spoiler King', hint: 'Join a story discussion[LOCKED]', earned: !!store.get('lastCommentAt', false) }
+        { icon: '☠️', name: 'The Spoiler King', hint: 'Join a story discussion[LOCKED]', earned: !!store.get('lastCommentAt', false) },
+        { icon: '☎️', name: 'Night Shift Witness', hint: 'Limited title · Complete The Silence Between Rings Chapter 1 during the reader event', earned: !!store.get('cfsEventMilestone', false) }
     ];
     var earnedCount = ranks.filter(function (rank) { return rank.earned; }).length;
     if (count) count.textContent = earnedCount + ' / ' + ranks.length;
@@ -1253,8 +1299,8 @@ function renderHeatmap() {
    ============================================================ */
 var upcomingReleases = [
     { date: '2026-11-16', title: "The Dead Man’s Alibi" },
-    { date: '2026-11-10', title: "Case File: The Silence Between Rings" },
-    { date: '2026-11-15', title: 'Petal Vol. 4 — chpater 5 ' },
+    { date: '2026-11-24', title: "The Silence Between Rings — Chapter 2: The Disconnected Number" },
+    { date: '2026-11-15', title: 'Petal Vol. 4 — chp 5 ' },
 ];
 var calSorted = [];
 var releaseReminders = store.get('releaseReminders', []);
@@ -1710,6 +1756,7 @@ function announceToScreenReader(message, priority) {
    INIT
    ============================================================ */
 window.addEventListener('load', function () {
+    renderCfsEvent();
     initAchievementFilters();
     renderReaderProfile();
     renderReadingHistory();
