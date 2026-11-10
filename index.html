@@ -176,6 +176,7 @@
                 <button class="sp-btn primary" id="spReadBtn" onclick="goToNovel()">Start Reading →</button>
                 <button class="sp-btn ghost" id="spBookmarkBtn" onclick="toggleBookmark()">🔖 Set as Currently
                     Reading</button>
+                <button class="sp-btn ghost" id="spQueueBtn" onclick="toggleReadingQueue()">＋ Add to read next</button>
                 <button class="sp-btn ghost" onclick="shareNovel()">↗ Share this story</button>
             </div>
         </div>
@@ -780,6 +781,9 @@
                                 <div class="skeleton skeleton-btn" style="width: 100px;"></div>
                             </div>
                         </div>
+                    </article>
+                    <article class="glass personal-shelf-card" id="personalQueueCard" aria-label="Next in your reading queue">
+                        <div class="personal-empty"><span class="personal-empty-icon">✦</span><strong>Your read next list is empty</strong><span>Add a story from its details to plan what you’ll read next.</span></div>
                     </article>
                 </div>
             </div>

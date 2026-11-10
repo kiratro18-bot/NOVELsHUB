@@ -318,6 +318,10 @@ function renderHero() {
     if (petalVolumeFour && !heroFeaturedList.some(function (n) { return n.order === petalVolumeFour.order; })) {
         heroFeaturedList = heroFeaturedList.slice(0, 2).concat(petalVolumeFour);
     }
+    var silenceBetweenRings = novels.find(function (n) { return n.order === 23; });
+    if (silenceBetweenRings && !heroFeaturedList.some(function (n) { return n.order === silenceBetweenRings.order; })) {
+        heroFeaturedList = heroFeaturedList.slice(0, 3).concat(silenceBetweenRings);
+    }
     if (!heroFeaturedList.length) return;
 
     heroFeaturedIndex = 0;
@@ -353,11 +357,14 @@ function paintHeroFeature(i, animate) {
         '<div class="hero-meta-row"><span>' + (n.rating ? ('⭐ ' + n.rating + ' rating') : '⭐ New') + '</span>' +
         '<span>👁 ' + fmtNum(n.views) + ' readers</span>' +
         '<span>📖 ' + n.ch + ' chapter' + (n.ch === 1 ? '' : 's') + '</span>' +
-        '<span style="color: var(--rose)">' + (n.status === 'ongoing' ? 'Ongoing' : 'Completed') + '</span></div>';
+        '<span style="color: var(--rose)">' + (n.status === 'upcoming' ? 'Coming soon' : n.status === 'ongoing' ? 'Ongoing' : 'Completed') + '</span></div>';
     if (animate) { textEl.classList.remove('hero-fade'); void textEl.offsetWidth; textEl.classList.add('hero-fade'); }
 
     var startBtn = document.getElementById('heroStartBtn');
-    if (startBtn) startBtn.onclick = function () { openSpotlight(n.order); };
+    if (startBtn) {
+        startBtn.textContent = n.status === 'upcoming' ? 'View Case File →' : 'Start Reading →';
+        startBtn.onclick = function () { openSpotlight(n.order); };
+    }
 
     document.querySelectorAll('.hero-trend-dot').forEach(function (d, di) { d.classList.toggle('active', di === i); });
 }
@@ -597,13 +604,19 @@ function renderPersonalShelf() {
     var current = currentlyReadingOrder && novels.find(function (n) { return n.order === currentlyReadingOrder; });
     var favorites = novels.filter(function (n) { return bookmarks[n.order] && n.status !== 'upcoming'; }).sort(function (a, b) { return b.order - a.order; })[0];
     var finished = novels.filter(function (n) { return n.ch > 0 && getRead(n) >= n.ch; }).sort(function (a, b) { return b.order - a.order; })[0];
+    var queue = store.get('readingQueue', []);
+    if (!Array.isArray(queue)) queue = [];
+    queue = queue.map(Number).filter(function (order, index, list) { return Number.isInteger(order) && list.indexOf(order) === index && novels.some(function (n) { return n.order === order; }); });
+    var nextQueued = queue.map(function (order) { return novels.find(function (n) { return n.order === order; }); }).filter(function (n) { return n && n.status !== 'upcoming' && getRead(n) < n.ch; })[0];
     var currentEl = document.getElementById('personalCurrentCard');
     var favoriteEl = document.getElementById('personalFavoritesCard');
     var finishedEl = document.getElementById('personalFinishedCard');
+    var queueEl = document.getElementById('personalQueueCard');
     if (!currentEl || !favoriteEl || !finishedEl) return;
     currentEl.innerHTML = personalMiniCard(current, 'Currently reading', current ? 'Continue' : 'Choose a story');
     favoriteEl.innerHTML = personalMiniCard(favorites, 'A favorite from your shelf', favorites ? 'Open favorite' : 'Add a favorite');
     finishedEl.innerHTML = personalMiniCard(finished, 'Recently finished', finished ? 'Revisit' : 'Finish your first story');
+    if (queueEl) queueEl.innerHTML = personalMiniCard(nextQueued, 'Up next · ' + queue.length + ' queued', nextQueued ? 'Start next' : 'Add a story');
     // Skeletons are replaced by innerHTML above
 }
 function renderContinueReading() {
@@ -888,9 +901,29 @@ function openSpotlight(order) {
     var bbtn = document.getElementById('spBookmarkBtn');
     if (currentlyReadingOrder === order) { bbtn.textContent = '✓ Currently Reading'; bbtn.classList.add('active'); }
     else { bbtn.textContent = '🔖 Set as Currently Reading'; bbtn.classList.remove('active'); }
+    var queueBtn = document.getElementById('spQueueBtn');
+    var queue = store.get('readingQueue', []);
+    if (!Array.isArray(queue)) queue = [];
+    var queued = queue.indexOf(order) !== -1;
+    queueBtn.textContent = queued ? '✓ Added to read next · Remove' : '＋ Add to read next';
+    queueBtn.classList.toggle('active', queued);
+    queueBtn.disabled = !queued && (!n.ch || n.status === 'upcoming' || getRead(n) >= n.ch);
     document.getElementById('spReadBtn').textContent = (read > 0 && read < n.ch) ? 'Continue Reading →' : 'Start Reading →';
     document.getElementById('spotlightOverlay').classList.add('open');
     document.getElementById('spotlightPanel').classList.add('open');
+}
+function toggleReadingQueue() {
+    var n = novels.find(function (x) { return x.order === spotlightOrder; });
+    if (!n) return;
+    var queue = store.get('readingQueue', []);
+    if (!Array.isArray(queue)) queue = [];
+    queue = queue.map(Number).filter(function (order, index, list) { return Number.isInteger(order) && list.indexOf(order) === index && novels.some(function (story) { return story.order === order; }); });
+    var index = queue.indexOf(n.order);
+    if (index === -1) { queue.push(n.order); showToast('Added to your read next list'); }
+    else { queue.splice(index, 1); showToast('Removed from your read next list'); }
+    store.set('readingQueue', queue);
+    openSpotlight(n.order);
+    renderPersonalShelf();
 }
 function closeSpotlight() {
     document.getElementById('spotlightOverlay').classList.remove('open');
@@ -1300,7 +1333,7 @@ function renderHeatmap() {
 var upcomingReleases = [
     { date: '2026-11-16', title: "The Dead Man’s Alibi" },
     { date: '2026-11-24', title: "The Silence Between Rings — Chapter 2: The Disconnected Number" },
-    { date: '2026-11-15', title: 'Petal Vol. 4 — chp 5 ' },
+    { date: '2026-11-15', title: 'Petal Vol. 4 — chp 5 & 6' },
 ];
 var calSorted = [];
 var releaseReminders = store.get('releaseReminders', []);

@@ -49,10 +49,12 @@ function home() {
   } else h += '<p class="mut">Nothing in progress yet. <a href="#/shelf">Pick a story from the shelf</a>.</p>';
   return h + '<h2>Editor’s picks</h2><ul class="grid">' + picks.map(card).join('') + '</ul><p style="margin-top:18px"><a class="btn" href="#/shelf">Browse the whole shelf</a></p>';
 }
-var q = '', g = 'all';
+var q = '', g = 'all', readingStatus = 'all';
 function shelfList() {
   var t = q.toLowerCase(), list = avail.filter(function (n) {
-    return (g === 'all' || (g === 'fav' ? isFav(n) : n.genres.indexOf(g) > -1)) && (!t || (n.title + ' ' + n.blurb + ' ' + n.genres.join(' ')).toLowerCase().indexOf(t) > -1);
+    var r = getRead(n);
+    var matchesStatus = readingStatus === 'all' || (readingStatus === 'unstarted' && r === 0) || (readingStatus === 'progress' && r > 0 && r < n.ch) || (readingStatus === 'finished' && r >= n.ch);
+    return matchesStatus && (g === 'all' || (g === 'fav' ? isFav(n) : n.genres.indexOf(g) > -1)) && (!t || (n.title + ' ' + n.blurb + ' ' + n.genres.join(' ')).toLowerCase().indexOf(t) > -1);
   });
   return list.length ? list.map(card).join('') : '<li class="mut">No stories match. Try another word or genre.</li>';
 }
@@ -61,8 +63,12 @@ function shelf() {
   var chips = ['all', 'fav'].concat(Object.keys(gs).sort()).map(function (x) {
     return '<button class="btn" data-g="' + esc(x) + '" aria-pressed="' + (x === g) + '">' + (x === 'all' ? 'All' : x === 'fav' ? '♥ Bookmarked' : esc(x)) + '</button>';
   }).join('');
+  var statuses = [['all', 'Every story'], ['unstarted', 'Not started'], ['progress', 'In progress'], ['finished', 'Finished']].map(function (x) {
+    return '<button class="btn" data-status="' + x[0] + '" aria-pressed="' + (x[0] === readingStatus) + '">' + x[1] + '</button>';
+  }).join('');
   return '<h1>Shelf</h1><label class="sr" for="q">Search novels</label><input id="q" type="search" placeholder="Search title, genre or story…" value="' + esc(q) + '" autocomplete="off">' +
-    '<div class="chips" role="group" aria-label="Filter by genre">' + chips + '</div><ul class="grid" id="list">' + shelfList() + '</ul>';
+    '<h2>Reading status</h2><div class="chips" role="group" aria-label="Filter by reading status">' + statuses + '</div>' +
+    '<h2>Genre and bookmarks</h2><div class="chips" role="group" aria-label="Filter by genre or bookmark">' + chips + '</div><ul class="grid" id="list">' + shelfList() + '</ul>';
 }
 function novel(order) {
   var n = novels.filter(function (x) { return x.order === order; })[0];
@@ -110,6 +116,7 @@ main.addEventListener('click', function (e) {
   var b = e.target.closest('button'); if (!b) return;
   var p = location.hash.split('/'), n = novels.filter(function (x) { return x.order === +p[2]; })[0];
   if (b.dataset.g) { g = b.dataset.g; render(); }
+  else if (b.dataset.status) { readingStatus = b.dataset.status; render(); }
   else if (b.id === 'fav' && n) { announce(toggleFav(n) ? 'Bookmarked' : 'Bookmark removed'); render(); document.getElementById('fav').focus(); }
   else if (b.id === 'cur' && n) { setCur(n); render(); document.getElementById('cur').focus(); }
   else if (b.id === 'savenm') { var nm = sanitize(document.getElementById('nm').value).slice(0, 32) || 'Reader'; var pr = obj('readerProfile'); pr.name = nm; store.set('readerProfile', pr); render(); announce('Name saved'); }
