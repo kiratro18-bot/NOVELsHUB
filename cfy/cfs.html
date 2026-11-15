@@ -523,14 +523,14 @@
         const KEY = "silence-between-rings";
         const chapters = [
             { n: 1, title: "2:17 AM", href: "cfs1.html", desc: "A dispatcher takes a call from a line that should be dead." },
-            { n: 2, title: "The Disconnected Number", href: "silence-ch2.html", desc: "A detective, a journalist, and a room missing from the plan." },
-            { n: 3, title: "Eleven Years Ago", href: "silence-ch3.html", desc: "Back to Aoba House, where someone already knows why they came." },
-            { n: 4, title: "The Room Between", href: "silence-ch4.html", desc: "Behind the cabinet: a telephone, a ledger, and three numbers." },
-            { n: 5, title: "The Missing Recording", href: "silence-ch5.html", desc: "The archive keeps the night of the fire. Not all of it." },
-            { n: 6, title: "An Unfamiliar Voice", href: "silence-ch6.html", desc: "The line rings again, and the voice on it is new." },
-            { n: 7, title: "Don't Answer", href: "silence-ch7.html", desc: "A key, an address, and a time that has become familiar." },
-            { n: 8, title: "The Silence Between Rings", href: "silence-ch8.html", desc: "The last call is answered." },
-            { n: 9, title: "Epilogue", href: "silence-epilogue.html", desc: "After the final ring, the people left behind decide what to do with the truth." }
+            { n: 2, title: "The Disconnected Number", href: "#", desc: "A detective, a journalist, and a room missing from the plan." },
+            { n: 3, title: "Eleven Years Ago", href: "#", desc: "Back to Aoba House, where someone already knows why they came." },
+            { n: 4, title: "The Room Between", href: "#", desc: "Behind the cabinet: a telephone, a ledger, and three numbers." },
+            { n: 5, title: "The Missing Recording", href: "#", desc: "The archive keeps the night of the fire. Not all of it." },
+            { n: 6, title: "An Unfamiliar Voice", href: "#", desc: "The line rings again, and the voice on it is new." },
+            { n: 7, title: "Don't Answer", href: "#", desc: "A key, an address, and a time that has become familiar." },
+            { n: 8, title: "The Silence Between Rings", href: "#", desc: "The last call is answered." },
+            { n: 9, title: "Epilogue", href: "#", desc: "After the final ring, the people left behind decide what to do with the truth." }
         ];
         let read = []; try { read = JSON.parse(localStorage.getItem(KEY) || "[]") } catch (e) { }
         const save = () => { try { localStorage.setItem(KEY, JSON.stringify(read)) } catch (e) { } };

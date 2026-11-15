@@ -23,9 +23,13 @@
         rel="stylesheet">
     <link rel="stylesheet" href="redesign.css">
     <meta name="google-site-verification" content="CjtMMlctLjvkx0nCfKICKUhFmq-v7zvq7Fznj-fMKTw" />
-  <style>
-    *, *::before, *::after { -webkit-tap-highlight-color: transparent; }
-  </style>
+    <style>
+        *,
+        *::before,
+        *::after {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
 </head>
 
 <body class="editorial">
@@ -61,6 +65,18 @@
         <div class="sph-body">
             <section class="sph-section" id="readerProfileSettings" aria-labelledby="readerProfileHeading">
                 <h2 class="sph-section-title" id="readerProfileHeading">Reader profile</h2>
+                <div class="profile-photo-setting">
+                    <span class="profile-photo-label">Profile photo</span>
+                    <div class="profile-photo-actions">
+                        <button class="pill-btn" type="button"
+                            onclick="document.getElementById('readerProfilePhotoInput').click()">Choose photo</button>
+                        <button class="pill-btn profile-photo-remove" id="readerProfilePhotoRemove" type="button"
+                            onclick="removeReaderProfilePhoto()" hidden>Remove photo</button>
+                    </div>
+                    <input id="readerProfilePhotoInput" class="reader-profile-photo-input" type="file" accept="image/*"
+                        onchange="setReaderProfilePhoto(this)">
+                    <span class="sph-help">Use any image from your device. It stays in this browser.</span>
+                </div>
                 <label class="profile-field">Display name
                     <input id="readerProfileNameInput" type="text" maxlength="32" autocomplete="nickname"
                         placeholder="Your name">
@@ -141,10 +157,24 @@
                 <h2 class="sph-section-title" id="settingsDataTitle">Your data</h2>
                 <p class="sph-data-copy">Your reading progress and settings stay on this device and are not sent to a
                     server.</p>
+                <div class="settings-backup">
+                    <h3 class="settings-backup-title">Reader data backup</h3>
+                    <p class="sph-data-copy">Download your progress, bookmarks, and preferences, or restore a backup
+                        from another browser.</p>
+                    <div class="backup-actions">
+                        <button type="button" class="pill-btn" onclick="exportReaderData()">Download backup ↓</button>
+                        <button type="button" class="pill-btn"
+                            onclick="document.getElementById('readerBackupFile').click()">Restore backup ↑</button>
+                        <input id="readerBackupFile" class="reader-backup-file" type="file"
+                            accept="application/json,.json" onchange="importReaderData(this)">
+                    </div>
+                    <p class="backup-note">Backup files stay on your device. Restoring replaces this browser’s saved
+                        reader data.</p>
+                </div>
                 <button class="pill-btn" id="clearDataBtn" onclick="confirmClearLocalData()">Clear local data</button>
             </section>
             <div class="sph-version">
-                Version 4.0 · Nov 2026
+                Version 4.1 · Nov 2026
             </div>
         </div>
     </aside>
@@ -241,6 +271,10 @@
         <div class="nav-actions">
             <button class="search-trigger" onclick="openCmdk()" aria-label="Open search"><span>🔍</span><span
                     class="nav-search-label">Search</span></button>
+            <button class="search-trigger milestones-trigger" id="milestonesButton" type="button"
+                onclick="openAchievementsPanel()" aria-controls="achievementsPanel" aria-haspopup="dialog"
+                aria-expanded="false" aria-label="Open your reading milestones" title="Your reading milestones"><span
+                    aria-hidden="true">✦</span><span class="nav-search-label">Milestones</span></button>
             <button class="icon-btn nav-settings-btn" onclick="openSettings()" aria-label="Open settings"
                 title="Settings">⚙</button>
         </div>
@@ -293,7 +327,7 @@
                                 <strong class="author-name" id="readerRankName">Novice Reader</strong>
                                 <span class="author-level" id="readerLevelSub">Level 1</span>
                             </div>
-                            <span class="hero-profile-chevron" aria-hidden="true">⌄</span>
+                            <span class="hero-profile-chevron" aria-hidden="true"></span>
                         </summary>
                         <div class="hero-profile-details">
                             <div class="xp-bar">
@@ -320,6 +354,17 @@
                             </details>
                         </div>
                     </details>
+                    <article class="hero-card glass hero-heatmap-card" id="readingHeatmap"
+                        aria-labelledby="heatmapTitle">
+                        <div class="hero-card-label">YOUR READING ACTIVITY</div>
+                        <h2 class="hero-heatmap-title" id="heatmapTitle">Reading heatmap</h2>
+                        <div class="hm-streak-note" id="heatmapStreakNote">No active streak · best 0 days</div>
+                        <div class="heatmap-grid" id="heatmapGrid"></div>
+                        <div class="hm-legend">Less <span class="hm-cell"></span><span class="hm-cell"
+                                style="background:rgba(var(--accent-rgb),.3)"></span><span class="hm-cell"
+                                style="background:rgba(var(--accent-rgb),.6)"></span><span class="hm-cell"
+                                style="background:var(--rose)"></span> More</div>
+                    </article>
                 </div>
             </div>
         </section>
@@ -333,20 +378,15 @@
                     </div>
                 </div>
                 <div class="announcements-list">
-                    <!-- Author-managed note: change this copy in index.html when you want to update it. -->
-                    <aside class="case-closed-banner author-note" aria-label="A note from the author">
-                        <div class="case-closed-mark" aria-hidden="true">✍️</div>
-                        <div class="case-closed-copy"><span class="case-closed-kicker">A NOTE FROM THE
-                                AUTHOR</span><strong>The After the Rain epilogue is here.</strong>
-                            <p>Read the new epilogue in <em>Ten Percent of Forever</em> for a proper ending.</p>
-                        </div>
-                    </aside>
                     <aside class="case-closed-banner" aria-label="Limited-time Case File reader event">
                         <div class="case-closed-mark" aria-hidden="true">☎</div>
-                        <div class="case-closed-copy"><span class="case-closed-kicker">LIMITED-TIME READER EVENT · ENDS NOV 24</span><strong>Answer the 2:17 AM call.</strong>
-                            <p id="cfsEventStatus">Read Chapter 1 of <em>The Silence Between Rings</em> before the next chapter arrives to earn the limited Night Shift Witness milestone.</p>
+                        <div class="case-closed-copy"><span class="case-closed-kicker">LIMITED-TIME READER EVENT · ENDS
+                                NOV 24</span><strong>Answer the 2:17 AM call.</strong>
+                            <p id="cfsEventStatus">Read Chapter 1 of <em>The Silence Between Rings</em> before the next
+                                chapter arrives to earn the limited Night Shift Witness milestone.</p>
                         </div>
-                        <button class="case-closed-action" id="cfsEventAction" type="button" onclick="joinCfsEvent()">Join the case <span aria-hidden="true">→</span></button>
+                        <button class="case-closed-action" id="cfsEventAction" type="button"
+                            onclick="joinCfsEvent()">Join the case <span aria-hidden="true">→</span></button>
                     </aside>
                     <aside class="case-closed-banner"
                         aria-label="The Petal That Falls With a Smile Volume 4 announcement">
@@ -363,46 +403,6 @@
             </div>
         </section>
 
-        <!-- ============ STATS STRIP ============ -->
-        <section class="section">
-            <div class="wrap">
-                <div class="section-head">
-                    <div>
-                        <h2 class="section-title">The Library at a <em>Glance</em></h2>
-                        <p class="section-sub">Everything AKA has written, in numbers.</p>
-                    </div>
-                    <span class="library-note">A growing library</span>
-                </div>
-                <div class="stats-grid" id="statsGrid">
-                    <div class="skeleton-grid cols-6" aria-hidden="true" id="statsSkeleton">
-                        <div class="skeleton skeleton-card stat-tile">
-                            <div class="skeleton skeleton-stat"></div>
-                            <div class="skeleton skeleton-stat-label"></div>
-                        </div>
-                        <div class="skeleton skeleton-card stat-tile">
-                            <div class="skeleton skeleton-stat"></div>
-                            <div class="skeleton skeleton-stat-label"></div>
-                        </div>
-                        <div class="skeleton skeleton-card stat-tile">
-                            <div class="skeleton skeleton-stat"></div>
-                            <div class="skeleton skeleton-stat-label"></div>
-                        </div>
-                        <div class="skeleton skeleton-card stat-tile">
-                            <div class="skeleton skeleton-stat"></div>
-                            <div class="skeleton skeleton-stat-label"></div>
-                        </div>
-                        <div class="skeleton skeleton-card stat-tile">
-                            <div class="skeleton skeleton-stat"></div>
-                            <div class="skeleton skeleton-stat-label"></div>
-                        </div>
-                        <div class="skeleton skeleton-card stat-tile">
-                            <div class="skeleton skeleton-stat"></div>
-                            <div class="skeleton skeleton-stat-label"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
         <!-- ============ THE SHELF ============ -->
         <section class="section" id="catalog" aria-labelledby="catalogTitle">
             <div class="wrap">
@@ -420,6 +420,9 @@
                 <div class="shelf-wrap">
                     <div class="shelf-tools glass">
                         <span class="side-label">REFINE YOUR FIND</span>
+                        <label class="shelf-search-label" for="shelfSearch">Search stories</label>
+                        <input class="shelf-search" id="shelfSearch" type="search"
+                            placeholder="Title, genre, or keyword…" autocomplete="off">
                         <div class="filter-section-label">Genre</div>
                         <div class="filter-pills" id="genrePills" role="group" aria-label="Filter stories by genre">
                             <button type="button" class="pill-btn active" data-genre="all"
@@ -516,26 +519,42 @@
             </div>
         </section>
 
-        <section class="section story-compare-section" id="story-compare" aria-labelledby="storyCompareTitle">
+        <!-- ============ STATS STRIP ============ -->
+        <section class="section">
             <div class="wrap">
                 <div class="section-head">
                     <div>
-                        <span class="eyebrow">Choose with confidence</span>
-                        <h2 class="section-title" id="storyCompareTitle">Compare two <em>stories</em></h2>
-                        <p class="section-sub">See genre, status, chapters, ratings, and readership side by side.</p>
+                        <h2 class="section-title">The Library at a <em>Glance</em></h2>
+                        <p class="section-sub">Everything AKA has written, in numbers.</p>
                     </div>
+                    <span class="library-note">A growing library</span>
                 </div>
-                <div class="story-compare-panel glass">
-                    <div class="story-compare-controls">
-                        <label for="storyCompareFirst">First story<select id="storyCompareFirst"></select></label>
-                        <span class="story-compare-vs" aria-hidden="true">vs</span>
-                        <label for="storyCompareSecond">Second story<select id="storyCompareSecond"></select></label>
-                        <button class="cta cta-primary" type="button" onclick="compareStories()">Compare
-                            stories</button>
-                    </div>
-                    <div class="story-compare-result" id="storyCompareResult" aria-live="polite">
-                        Choose any two stories to see how they differ. Your choices are kept only while this page is
-                        open.
+                <div class="stats-grid" id="statsGrid">
+                    <div class="skeleton-grid cols-6" aria-hidden="true" id="statsSkeleton">
+                        <div class="skeleton skeleton-card stat-tile">
+                            <div class="skeleton skeleton-stat"></div>
+                            <div class="skeleton skeleton-stat-label"></div>
+                        </div>
+                        <div class="skeleton skeleton-card stat-tile">
+                            <div class="skeleton skeleton-stat"></div>
+                            <div class="skeleton skeleton-stat-label"></div>
+                        </div>
+                        <div class="skeleton skeleton-card stat-tile">
+                            <div class="skeleton skeleton-stat"></div>
+                            <div class="skeleton skeleton-stat-label"></div>
+                        </div>
+                        <div class="skeleton skeleton-card stat-tile">
+                            <div class="skeleton skeleton-stat"></div>
+                            <div class="skeleton skeleton-stat-label"></div>
+                        </div>
+                        <div class="skeleton skeleton-card stat-tile">
+                            <div class="skeleton skeleton-stat"></div>
+                            <div class="skeleton skeleton-stat-label"></div>
+                        </div>
+                        <div class="skeleton skeleton-card stat-tile">
+                            <div class="skeleton skeleton-stat"></div>
+                            <div class="skeleton skeleton-stat-label"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -560,17 +579,35 @@
 
 
 
-        <!-- ============ MOOD PICKER ============ -->
-        <section class="section" style="padding-top:0">
+        <section class="section story-discovery-section" id="story-compare" aria-labelledby="storyDiscoveryTitle">
             <div class="wrap">
                 <div class="section-head">
                     <div>
-                        <h2 class="section-title">Browse by <em>Mood</em></h2>
-                        <p class="section-sub">Choose a mood and a reading window to find a story that fits.</p>
+                        <span class="eyebrow">Explore the library</span>
+                        <h2 class="section-title" id="storyDiscoveryTitle">Find a story that <em>fits</em></h2>
+                        <p class="section-sub">Browse by mood or compare two stories side by side.</p>
                     </div>
                 </div>
+                <div class="story-compare-panel glass">
+                    <h3 class="story-compare-heading">Compare two stories</h3>
+                    <p class="story-compare-description">See genre, status, chapters, ratings, and readership side by
+                        side.</p>
+                    <div class="story-compare-controls">
+                        <label for="storyCompareFirst">First story<select id="storyCompareFirst"></select></label>
+                        <span class="story-compare-vs" aria-hidden="true">vs</span>
+                        <label for="storyCompareSecond">Second story<select id="storyCompareSecond"></select></label>
+                        <button class="cta cta-primary" type="button" onclick="compareStories()">Compare
+                            stories</button>
+                    </div>
+                    <div class="story-compare-result" id="storyCompareResult" aria-live="polite">
+                        Choose any two stories to see how they differ. Your choices are kept only while this page is
+                        open.
+                    </div>
+                </div>
+                <!-- ============ MOOD PICKER ============ -->
                 <div class="story-match glass" id="storyMatch">
-                    <div class="story-match-intro"><span class="story-match-kicker"> · PERSONAL PICKER</span>
+                    <div class="story-match-intro"><span class="story-match-kicker">BROWSE BY MOOD · PERSONAL
+                            PICKER</span>
                         <h3>Find your next <em>read</em></h3>
                         <p>Tell us your mood and reading window. We’ll find a story that fits.</p>
                     </div>
@@ -651,34 +688,6 @@
             </div>
         </section>
 
-        <!-- ============ READER TOOLS ============ -->
-        <section class="section reader-tools-section" aria-label="Reader tools">
-            <div class="wrap reader-tools-grid">
-                <article class="reader-tool-card history-card">
-                    <span class="reader-tool-kicker">Your recent pages</span>
-                    <h2 class="reader-tool-title">Reading <em>history</em></h2>
-                    <p class="reader-tool-copy">A quick look at the chapters you’ve logged recently.</p>
-                    <div class="reading-history-list" id="readingHistoryList" aria-live="polite"></div>
-                </article>
-                <article class="reader-tool-card backup-card">
-                    <span class="reader-tool-kicker">Keep your place</span>
-                    <h2 class="reader-tool-title">Reader data <em>backup</em></h2>
-                    <p class="reader-tool-copy">Move your progress, bookmarks, and preferences to another browser or
-                        keep a copy for safekeeping.</p>
-                    <div class="backup-actions">
-                        <button type="button" class="sketch-btn sketch-btn-primary"
-                            onclick="exportReaderData()">Download backup ↓</button>
-                        <button type="button" class="sketch-btn"
-                            onclick="document.getElementById('readerBackupFile').click()">Restore backup ↑</button>
-                        <input id="readerBackupFile" class="reader-backup-file" type="file"
-                            accept="application/json,.json" onchange="importReaderData(this)">
-                    </div>
-                    <p class="backup-note">Backup files stay on your device. Restoring replaces this browser’s saved
-                        reader data.</p>
-                </article>
-            </div>
-        </section>
-
         <!-- ============ STORY WORLDS ============ -->
         <section class="section story-worlds-section" id="story-worlds" aria-labelledby="storyWorldsTitle">
             <div class="wrap">
@@ -691,7 +700,7 @@
                     <button class="pill-btn section-content-toggle" id="storyWorldsToggle" type="button"
                         onclick="toggleSectionContent('storyWorldGrid', 'storyWorldsToggle', 'storyWorldsCollapsed', 'connected stories')"
                         aria-expanded="true" aria-controls="storyWorldGrid">Minimize connected stories <span
-                            aria-hidden="true">⌃</span></button>
+                            class="section-toggle-chevron" aria-hidden="true"></span></button>
                 </div>
                 <div class="story-world-grid" id="storyWorldGrid">
                     <div class="skeleton-grid cols-4" aria-hidden="true" id="storyWorldSkeleton">
@@ -782,14 +791,49 @@
                             </div>
                         </div>
                     </article>
-                    <article class="glass personal-shelf-card" id="personalQueueCard" aria-label="Next in your reading queue">
-                        <div class="personal-empty"><span class="personal-empty-icon">✦</span><strong>Your read next list is empty</strong><span>Add a story from its details to plan what you’ll read next.</span></div>
+                    <article class="glass personal-shelf-card" id="personalQueueCard"
+                        aria-label="Next in your reading queue">
+                        <div class="personal-empty"><span class="personal-empty-icon">✦</span><strong>Your read next
+                                list is empty</strong><span>Add a story from its details to plan what you’ll read
+                                next.</span></div>
                     </article>
                 </div>
             </div>
         </section>
 
-        <!-- ============ READER ACHIEVEMENTS ============ -->
+        <!-- ============ READER TOOLS ============ -->
+        <section class="section reader-tools-section" aria-label="Reader tools">
+            <div class="wrap reader-tools-grid">
+                <article class="reader-tool-card history-card">
+                    <span class="reader-tool-kicker">Your recent pages</span>
+                    <h2 class="reader-tool-title">Reading <em>history</em></h2>
+                    <p class="reader-tool-copy">A quick look at the chapters you’ve logged recently.</p>
+                    <div class="reading-history-list" id="readingHistoryList" aria-live="polite"></div>
+                </article>
+                <article class="reader-tool-card calendar-tool-card" id="releaseCalendar"
+                    aria-labelledby="releaseCalendarTitle">
+                    <span class="reader-tool-kicker">Stay in the loop</span>
+                    <h2 class="reader-tool-title" id="releaseCalendarTitle">Release <em>calendar</em></h2>
+                    <p class="reader-tool-copy">Set a reminder and it will appear when you return on or after release
+                        day.</p>
+                    <div class="glass release-calendar-card">
+                        <div id="calendarList"></div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ============ READER ACHIEVEMENTS ============ -->
+    <div class="achievements-overlay" id="achievementsOverlay" aria-hidden="true" onclick="closeAchievementsPanel()">
+    </div>
+    <aside class="achievements-panel" id="achievementsPanel" role="dialog" aria-modal="true"
+        aria-labelledby="achievementsTitle" aria-hidden="true" tabindex="-1" inert>
+        <div class="achievements-panel-header"><span>MILESTONE COLLECTION</span>
+            <button class="icon-btn" type="button" onclick="closeAchievementsPanel()"
+                aria-label="Close reading milestones">✕</button>
+        </div>
         <section class="section achievements-gallery-section" id="achievements" aria-labelledby="achievementsTitle">
             <div class="wrap">
                 <div class="achievements-gallery-head">
@@ -803,14 +847,6 @@
                             <span class="achievement-total-icon" aria-hidden="true">✦</span>
                             <span><strong id="achievementCount">0 <i>/ 23</i></strong><small>milestones
                                     earned</small></span>
-                        </div>
-                        <div class="achievement-view-controls" role="group" aria-label="Milestones display controls">
-                            <button class="achievement-view-button" type="button" id="achievementMinimize"
-                                onclick="setAchievementContent(true)" aria-controls="achievementContent"
-                                aria-pressed="false"><span aria-hidden="true">−</span> Minimize</button>
-                            <button class="achievement-view-button" type="button" id="achievementMaximize"
-                                onclick="setAchievementContent(false)" aria-controls="achievementContent"
-                                aria-pressed="true"><span aria-hidden="true">＋</span> Maximize</button>
                         </div>
                     </div>
                 </div>
@@ -909,41 +945,7 @@
                 </div>
             </div>
         </section>
-
-        <section class="section release-calendar-section" id="releaseCalendar" aria-labelledby="releaseCalendarTitle">
-            <div class="wrap">
-                <div class="section-head">
-                    <div>
-                        <span class="eyebrow">Stay in the loop</span>
-                        <h2 class="section-title" id="releaseCalendarTitle">Release <em>calendar</em></h2>
-                        <p class="section-sub">Set a reminder and it will appear when you return on or after release
-                            day.</p>
-                    </div>
-                </div>
-                <div class="glass release-calendar-card">
-                    <div id="calendarList"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ============ HEATMAP ============ -->
-        <section class="section" id="readingHeatmap">
-            <div class="wrap">
-                <div class="glass reading-heatmap-card" style="padding:var(--sp-5)">
-                    <div class="section-head" style="margin-bottom:var(--sp-3)">
-                        <h2 class="section-title" style="font-size:19px">Your Reading Heatmap</h2>
-                    </div>
-                    <div class="hm-streak-note" id="heatmapStreakNote">No active streak · best 0 days</div>
-                    <div class="heatmap-grid" id="heatmapGrid"></div>
-                    <div class="hm-legend">Less <span class="hm-cell"></span><span class="hm-cell"
-                            style="background:rgba(var(--accent-rgb),.3)"></span><span class="hm-cell"
-                            style="background:rgba(var(--accent-rgb),.6)"></span><span class="hm-cell"
-                            style="background:var(--rose)"></span> More</div>
-                </div>
-            </div>
-        </section>
-
-    </main>
+    </aside>
 
     <!-- ============ FOOTER ============ -->
     <footer class="section">
@@ -953,22 +955,25 @@
                     <div>
                         <div class="nav-brand" style="margin-bottom:10px">Novels by <em>AKA</em></div>
                         <p style="font-size:12.5px;color:var(--ink-soft);line-height:1.7;max-width:340px">Original
-                            fiction by AKA, in a calmer reading room. Your progress stays saved in this browser.</p>
-                        <button class="pill-btn" style="margin-top:14px" onclick="toggleLight()">🌗 Switch
-                            appearance</button>
+                            fiction by AKA, in a calmer reading room. Your progress stays saved in this browser.
+                            <button class="pill-btn" style="margin-top:14px" onclick="toggleLight()">🌗 Switch
+                                appearance</button>
                     </div>
                     <div>
                         <div class="footer-col-title">Explore</div>
                         <div class="footer-links">
                             <a href="#catalog">The Shelf</a><a href="#story-worlds">Story worlds</a><a
                                 href="#catalog">Browse the shelf</a><a href="#story-compare">Compare stories</a><a
-                                href="#announcements">Announcements</a><a href="#achievements">Milestones</a><a
+                                href="#announcements">Announcements</a><a href="#achievements"
+                                onclick="event.preventDefault(); openAchievementsPanel()">Milestones</a><a
                                 href="#readingHeatmap">Reading activity</a>
                         </div>
                     </div>
                 </div>
+                <p class="footer-privacy-note">Privacy note: Reading progress, profile details, and settings are stored
+                    in this browser and aren’t sent to AKA. Backups are created only when you choose to export them.</p>
                 <div class="footer-bottom">
-                    <span>Filed &amp; maintained by AKA · Version 4.0 · Nov 2026</span>
+                    <span>Filed &amp; maintained by AKA · Version 4.1 · Nov 2026</span>
                     <span>Please don't repost or reupload Stories. Sharing links is always
                         appreciated.</span>
                 </div>
@@ -990,19 +995,20 @@
                             d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5zM4 6h13M8 8.5h8M8 12h8M8 15.5h6" />
                     </svg></span><span class="browser-tab-text">Shelf</span>
             </a>
-            <a href="#readingHeatmap" class="browser-tab" data-label="Activity" aria-label="Reading activity">
+            <a href="#story-worlds" class="browser-tab" data-label="Worlds" aria-label="Story worlds">
                 <span class="browser-tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24">
-                        <rect x="4" y="4" width="6" height="6" rx="1" />
-                        <rect x="14" y="4" width="6" height="6" rx="1" />
-                        <rect x="4" y="14" width="6" height="6" rx="1" />
-                        <rect x="14" y="14" width="6" height="6" rx="1" />
-                    </svg></span><span class="browser-tab-text">Activity</span>
+                        <circle cx="6.5" cy="7" r="2.5" />
+                        <circle cx="17.5" cy="7" r="2.5" />
+                        <circle cx="12" cy="17" r="2.5" />
+                        <path d="M9 8.5l2 6M15 8.5l-2 6M9 7h6" />
+                    </svg></span><span class="browser-tab-text">Worlds</span>
             </a>
-            <a href="#achievements" class="browser-tab" data-label="Milestones" aria-label="Reader milestones">
+            <a href="#releaseCalendar" class="browser-tab" data-label="Calendar" aria-label="Release calendar">
                 <span class="browser-tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24">
-                        <path d="m12 3 2.3 4.7 5.2.8-3.8 3.7.9 5.2-4.6-2.5-4.6 2.5.9-5.2-3.8-3.7 5.2-.8L12 3Z" />
-                        <path d="M8.5 17.4 7.5 22l4.5-2.2 4.5 2.2-1-4.6" />
-                    </svg></span><span class="browser-tab-text">Milestones</span>
+                        <rect x="3.5" y="5.5" width="17" height="15" rx="2" />
+                        <path
+                            d="M7.5 3.5v4M16.5 3.5v4M4 9.5h16M8 13.5h.01M12 13.5h.01M16 13.5h.01M8 17h.01M12 17h.01M16 17h.01" />
+                    </svg></span><span class="browser-tab-text">Calendar</span>
             </a>
             <span class="dock-divider dock-divider-settings" aria-hidden="true"></span>
             <button type="button" class="browser-tab browser-settings" onclick="openSettings()" aria-label="Settings"

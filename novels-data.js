@@ -109,9 +109,9 @@ var novels = [
         blurb: "Before the story of falling petals, a first snow brings two people together. Their growing closeness leads to a confession, a final week, and the choice of whether to say goodbye.", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
     },
     {
-        order: 19, title: "The Petal That Falls With A Smile vol 4", img: "./img/sub2/tpv4.jpg", link: "./tptfwas/tptfwasv4.html", genres: ["drama", "slice"], status: "ongoing", ch: 4, rating: 4.9, views: 23000, releaseOffsetDays: 0,
-        chapterLinks: ["./tptfwas/tptfwas4-1.html", "./tptfwas/tptfwas4-2.html", "./tptfwas/tptfwas4-3.html", "./tptfwas/tptfwas4-4.html"],
-        chapterLabels: ["She Understood", "Fireworks", "A Date", "The Tree"],
+        order: 19, title: "The Petal That Falls With A Smile vol 4", img: "./img/sub2/tpv4.jpg", link: "./tptfwas/tptfwasv4.html", genres: ["drama", "slice"], status: "ongoing", ch: 6, rating: 4.9, views: 29000, releaseOffsetDays: 0,
+        chapterLinks: ["./tptfwas/tptfwas4-1.html", "./tptfwas/tptfwas4-2.html", "./tptfwas/tptfwas4-3.html", "./tptfwas/tptfwas4-4.html", "./tptfwas/tptfwas4-5.html", "./tptfwas/tptfwas4-6.html"],
+        chapterLabels: ["She Understood", "Fireworks", "A Date", "The Tree", "Our Last Year", "A Dream"],
         blurb: "The Petal story moves from university life toward adulthood. New milestones, changing relationships, and the future ahead ask the characters what they are ready to become.", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
     },
     {

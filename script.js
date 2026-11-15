@@ -763,12 +763,17 @@ function renderForYouPicks() {
 /* ============================================================
    CATALOG (THE SHELF)
    ============================================================ */
-var activeGenre = 'all', activeStatus = 'all', catalogRenderTimer = null;
+var activeGenre = 'all', activeStatus = 'all', activeQuery = '', catalogRenderTimer = null;
 function scheduleCatalogRender() {
     clearTimeout(catalogRenderTimer);
     catalogRenderTimer = setTimeout(function () { catalogRenderTimer = null; renderCatalog(); }, 70);
 }
 document.addEventListener('DOMContentLoaded', function () {
+    var shelfSearch = document.getElementById('shelfSearch');
+    if (shelfSearch) shelfSearch.addEventListener('input', function () {
+        activeQuery = shelfSearch.value.trim();
+        renderCatalog();
+    });
     document.getElementById('genrePills').addEventListener('click', function (e) {
         var btn = e.target.closest('.pill-btn'); if (!btn) return;
         this.querySelectorAll('.pill-btn').forEach(function (b) {
@@ -790,6 +795,9 @@ document.addEventListener('DOMContentLoaded', function () {
 function clearShelfFilters() {
     activeGenre = 'all';
     activeStatus = 'all';
+    activeQuery = '';
+    var shelfSearch = document.getElementById('shelfSearch');
+    if (shelfSearch) shelfSearch.value = '';
     document.querySelectorAll('#genrePills .pill-btn').forEach(function (p) {
         var active = p.dataset.genre === 'all';
         p.classList.toggle('active', active);
@@ -810,12 +818,14 @@ function hideSkeleton(id) {
 
 function renderCatalog() {
     var grid = document.getElementById('catalogGrid');
+    var query = activeQuery.toLocaleLowerCase();
     var filtered = novels.filter(function (n) {
         var matchesGenre = activeGenre === 'all' || n.genres.indexOf(activeGenre) > -1;
         var matchesStatus = activeStatus === 'all' || (activeStatus === 'unread'
             ? n.status !== 'upcoming' && getRead(n) === 0
             : n.status === activeStatus);
-        return matchesGenre && matchesStatus;
+        var searchable = [n.title, n.blurb].concat(n.genres || []).join(' ').toLocaleLowerCase();
+        return matchesGenre && matchesStatus && (!query || searchable.indexOf(query) > -1);
     }).sort(function (a, b) { return b.order - a.order; });
     document.getElementById('shelfCount').textContent = filtered.length + ' stor' + (filtered.length === 1 ? 'y' : 'ies') + ', filed and ready to open.';
     var summaryEl = document.getElementById('catalogFilterSummary');
@@ -823,10 +833,11 @@ function renderCatalog() {
         var summary = [];
         if (activeGenre !== 'all') summary.push(badgeLabel[activeGenre] || activeGenre);
         if (activeStatus !== 'all') summary.push(activeStatus === 'unread' ? 'Unread' : activeStatus);
+        if (activeQuery) summary.push('Search: ' + activeQuery);
         summaryEl.textContent = summary.length ? summary.join(' · ') : 'Showing everything';
     }
     var clearBtn = document.getElementById('clearShelfBtn');
-    if (clearBtn) clearBtn.disabled = activeGenre === 'all' && activeStatus === 'all';
+    if (clearBtn) clearBtn.disabled = activeGenre === 'all' && activeStatus === 'all' && !activeQuery;
     grid.innerHTML = filtered.map(function (n, i) {
         var read = getRead(n), pct = n.ch ? Math.round(read / n.ch * 100) : 0;
         var statusCls = n.status === 'ongoing' ? 'status-ongoing' : n.status === 'upcoming' ? 'status-upcoming' : 'status-completed';
@@ -1093,10 +1104,8 @@ function renderReaderSpecialRanks() {
         { icon: '🕵️', name: 'Truth Seeker', hint: 'Complete a mystery novel', earned: completedMystery },
         { icon: '🌑', name: 'Void Walker', hint: 'Complete Dead Air', earned: completed.some(function (novel) { return novel.order === 20; }) },
         { icon: '💔', name: 'Heartbreaker', hint: 'Complete 10 tragic novels', earned: tragicCount >= 10, progress: Math.min(tragicCount, 10) + ' / 10' },
-        { icon: '🐉', name: 'World Forger', hint: 'Complete 100 novels[locked]', earned: completed.length >= 100, progress: Math.min(completed.length, 100) + ' / 100' },
         { icon: '👁️', name: 'The Observer', hint: 'Discover a hidden website achievement', earned: Object.keys(hidden).some(function (key) { return !!hidden[key]; }) },
         { icon: '♾️', name: 'Beyond Fiction', hint: 'Reach the maximum reader level', earned: level >= 15 },
-        { icon: '☠️', name: 'The Spoiler King', hint: 'Join a story discussion[LOCKED]', earned: !!store.get('lastCommentAt', false) },
         { icon: '☎️', name: 'Night Shift Witness', hint: 'Limited title · Complete The Silence Between Rings Chapter 1 during the reader event', earned: !!store.get('cfsEventMilestone', false) }
     ];
     var earnedCount = ranks.filter(function (rank) { return rank.earned; }).length;
@@ -1250,7 +1259,7 @@ function toggleSectionContent(contentId, buttonId, storageKey, label) {
     content.hidden = collapsed;
     button.setAttribute('aria-expanded', String(!collapsed));
     button.innerHTML = (collapsed ? 'Show ' : 'Minimize ') + label +
-        ' <span aria-hidden="true">' + (collapsed ? '⌄' : '⌃') + '</span>';
+        ' <span class="section-toggle-chevron' + (collapsed ? ' is-collapsed' : '') + '" aria-hidden="true"></span>';
     store.set(storageKey, collapsed);
 }
 function restoreSectionContent(contentId, buttonId, storageKey, label) {
@@ -1261,22 +1270,26 @@ function restoreSectionContent(contentId, buttonId, storageKey, label) {
     content.hidden = collapsed;
     button.setAttribute('aria-expanded', String(!collapsed));
     button.innerHTML = (collapsed ? 'Show ' : 'Minimize ') + label +
-        ' <span aria-hidden="true">' + (collapsed ? '⌄' : '⌃') + '</span>';
+        ' <span class="section-toggle-chevron' + (collapsed ? ' is-collapsed' : '') + '" aria-hidden="true"></span>';
 }
 function setAchievementContent(collapsed) {
     var content = document.getElementById('achievementContent');
     var minimizeButton = document.getElementById('achievementMinimize');
     var maximizeButton = document.getElementById('achievementMaximize');
-    if (!content || !minimizeButton || !maximizeButton) return;
-    content.hidden = collapsed;
-    minimizeButton.setAttribute('aria-pressed', String(collapsed));
-    maximizeButton.setAttribute('aria-pressed', String(!collapsed));
-    minimizeButton.classList.toggle('active', collapsed);
-    maximizeButton.classList.toggle('active', !collapsed);
-    store.set('achievementsCollapsed', collapsed);
+    if (!content) return;
+    content.hidden = !!collapsed;
+    if (minimizeButton) {
+        minimizeButton.setAttribute('aria-pressed', String(!!collapsed));
+        minimizeButton.classList.toggle('active', !!collapsed);
+    }
+    if (maximizeButton) {
+        maximizeButton.setAttribute('aria-pressed', String(!collapsed));
+        maximizeButton.classList.toggle('active', !collapsed);
+    }
+    store.set('achievementsCollapsed', !!collapsed);
 }
 function restoreAchievementContent() {
-    setAchievementContent(!!store.get('achievementsCollapsed', false));
+    setAchievementContent(false);
 }
 /* ============================================================
    SURPRISE ME — WEIGHTED RANDOM PICK
@@ -1333,7 +1346,7 @@ function renderHeatmap() {
 var upcomingReleases = [
     { date: '2026-11-16', title: "The Dead Man’s Alibi" },
     { date: '2026-11-24', title: "The Silence Between Rings — Chapter 2: The Disconnected Number" },
-    { date: '2026-11-15', title: 'Petal Vol. 4 — chp 5 & 6' },
+    { date: '2026-11-22', title: 'Petal Vol. 4 — chp 7' },
 ];
 var calSorted = [];
 var releaseReminders = store.get('releaseReminders', []);
@@ -1457,7 +1470,15 @@ function cmdkOpen(order) {
 }
 document.addEventListener('keydown', function (e) {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openCmdk(); return; }
-    if (e.key === 'Escape') { closeCmdk(); closeSettings(); closeSpotlight(); closeReaderMode(); return; }
+    if (e.key === 'Escape') { closeCmdk(); closeSettings(); closeSpotlight(); closeReaderMode(); closeAchievementsPanel(); return; }
+    var achievementsPanel = document.getElementById('achievementsPanel');
+    if (achievementsPanel && achievementsPanel.classList.contains('open') && e.key === 'Tab') {
+        var focusable = achievementsPanel.querySelectorAll('button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])');
+        if (!focusable.length) { e.preventDefault(); achievementsPanel.focus(); return; }
+        var first = focusable[0], last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
     if (document.getElementById('cmdkPanel').classList.contains('open')) {
         var rows = document.querySelectorAll('.cmdk-row');
         if (!rows.length) return;
@@ -1482,6 +1503,50 @@ function openSettings(section) {
     }, 180);
 }
 function closeSettings() { document.getElementById('settingsOverlay').classList.remove('open'); document.getElementById('settingsPanel').classList.remove('open'); }
+var achievementsReturnFocus = null, achievementsInertTargets = [];
+function openAchievementsPanel() {
+    var overlay = document.getElementById('achievementsOverlay');
+    var panel = document.getElementById('achievementsPanel');
+    var trigger = document.getElementById('milestonesButton');
+    if (!overlay || !panel) return;
+    achievementsReturnFocus = document.activeElement || trigger;
+    overlay.classList.add('open');
+    panel.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    panel.setAttribute('aria-hidden', 'false');
+    panel.removeAttribute('inert');
+    if (trigger) trigger.setAttribute('aria-expanded', 'true');
+    achievementsInertTargets = [];
+    Array.prototype.forEach.call(document.body.children, function (child) {
+        if (child !== overlay && child !== panel && !child.hasAttribute('inert')) {
+            child.setAttribute('inert', '');
+            achievementsInertTargets.push(child);
+        }
+    });
+    document.body.classList.add('achievements-panel-active');
+    setTimeout(function () {
+        if (!panel.classList.contains('open')) return;
+        var closeButton = panel.querySelector('.achievements-panel-header button');
+        if (closeButton) closeButton.focus();
+    }, 80);
+}
+function closeAchievementsPanel() {
+    var overlay = document.getElementById('achievementsOverlay');
+    var panel = document.getElementById('achievementsPanel');
+    if (!overlay || !panel || !panel.classList.contains('open')) return;
+    overlay.classList.remove('open');
+    panel.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    panel.setAttribute('aria-hidden', 'true');
+    panel.setAttribute('inert', '');
+    achievementsInertTargets.forEach(function (child) { child.removeAttribute('inert'); });
+    achievementsInertTargets = [];
+    document.body.classList.remove('achievements-panel-active');
+    var triggerButton = document.getElementById('milestonesButton');
+    if (triggerButton) triggerButton.setAttribute('aria-expanded', 'false');
+    var trigger = achievementsReturnFocus || document.getElementById('milestonesButton');
+    if (trigger) trigger.focus();
+}
 function renderReaderProfile() {
     var name = sanitize(readerProfile.name || 'Reader').slice(0, 32) || 'Reader';
     var bio = sanitize(readerProfile.bio || '').slice(0, 140);
@@ -1493,7 +1558,13 @@ function renderReaderProfile() {
     var bioInput = document.getElementById('readerProfileBioInput');
     if (nameDisplay) nameDisplay.textContent = name;
     if (bioDisplay) bioDisplay.textContent = bio || 'Make this reading space yours.';
-    if (avatar) avatar.textContent = initials;
+    if (avatar) {
+        avatar.textContent = readerProfile.photo ? '' : initials;
+        avatar.style.backgroundImage = readerProfile.photo ? 'url("' + readerProfile.photo + '")' : '';
+        avatar.classList.toggle('has-photo', !!readerProfile.photo);
+    }
+    var removePhotoButton = document.getElementById('readerProfilePhotoRemove');
+    if (removePhotoButton) removePhotoButton.hidden = !readerProfile.photo;
     if (nameInput) nameInput.value = name;
     if (bioInput) bioInput.value = bio;
 }
@@ -1506,10 +1577,47 @@ function saveReaderProfile() {
         if (nameInput) nameInput.focus();
         return;
     }
-    readerProfile = { name: name, bio: sanitize(bioInput ? bioInput.value : '').slice(0, 140) };
+    readerProfile = { name: name, bio: sanitize(bioInput ? bioInput.value : '').slice(0, 140), photo: readerProfile.photo || '' };
     store.set('readerProfile', readerProfile);
     renderReaderProfile();
     showToast('Reader profile saved ✦');
+}
+function setReaderProfilePhoto(input) {
+    var file = input && input.files && input.files[0];
+    if (!file) return;
+    if (!file.type || file.type.indexOf('image/') !== 0) {
+        showToast('Choose an image file for your profile photo.');
+        input.value = '';
+        return;
+    }
+    var reader = new FileReader();
+    reader.onerror = function () { showToast('That photo could not be opened. Try another image.'); input.value = ''; };
+    reader.onload = function () {
+        var image = new Image();
+        image.onerror = function () { showToast('That photo could not be opened. Try another image.'); input.value = ''; };
+        image.onload = function () {
+            var canvas = document.createElement('canvas');
+            var size = 256;
+            var crop = Math.min(image.naturalWidth, image.naturalHeight);
+            if (!crop) { showToast('That photo could not be opened. Try another image.'); return; }
+            canvas.width = size;
+            canvas.height = size;
+            canvas.getContext('2d').drawImage(image, (image.naturalWidth - crop) / 2, (image.naturalHeight - crop) / 2, crop, crop, 0, 0, size, size);
+            readerProfile.photo = canvas.toDataURL('image/jpeg', 0.82);
+            store.set('readerProfile', readerProfile);
+            renderReaderProfile();
+            showToast('Profile photo updated ✦');
+            input.value = '';
+        };
+        image.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+}
+function removeReaderProfilePhoto() {
+    readerProfile.photo = '';
+    store.set('readerProfile', readerProfile);
+    renderReaderProfile();
+    showToast('Profile photo removed.');
 }
 function toggleLight() {
     document.body.classList.toggle('light');

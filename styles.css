@@ -3310,6 +3310,13 @@ body.light .hero-feature-bg::after {
     color: var(--muted)
 }
 
+.footer-privacy-note {
+    margin: var(--sp-5) 0 0;
+    color: var(--ink-soft);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
 .social-row {
     display: flex;
     gap: 8px
@@ -4082,7 +4089,16 @@ body.light .nav-dock {
     background: var(--rose-dim);
     color: var(--ink);
     font: 700 13px/1 var(--font-mono);
+    background-position: center;
+    background-size: cover;
 }
+
+.reader-profile-avatar.has-photo { border-color: var(--panel-border-strong); }
+.profile-photo-setting { display: grid; gap: 9px; margin-top: 14px; }
+.profile-photo-label { color: var(--ink-soft); font-size: 12px; }
+.profile-photo-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.reader-profile-photo-input { display: none; }
+.profile-photo-remove[hidden] { display: none; }
 
 .reader-profile-copy {
     display: grid;
