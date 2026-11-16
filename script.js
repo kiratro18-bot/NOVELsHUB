@@ -123,7 +123,8 @@ var storyWorlds = [
     { title: 'The Petal That Falls With a Smile', type: 'Prequel + four volumes', note: 'Begin with the vol 1, then continue to prequel and then Volumes 2–4.', order: [18, 3, 8, 11, 19] },
     { title: 'The Rain Pact', type: 'Main story + companion', note: 'Read The Rain Pact first, then visit The Other Side of Rain for its companion journey.', order: [1, 7] },
     { title: 'Ten Percent of Forever', type: 'Shared universe · Main story + companion', note: 'Read Ten Percent of Forever, then continue in the same universe with The Things We Never Returned.', order: [2, 21] },
-    { title: 'Case File: You', type: 'Shared universe · Mystery series', note: 'Follow Case File: You into a new mystery in The Silence Between Rings.', order: [6, 23] }
+    { title: 'Case File: You', type: 'Shared universe · Mystery series', note: 'Follow Case File: You into a new mystery in The Silence Between Rings.', order: [6, 23] },
+    { title: 'The Day She Stayed', type: 'Shared universe · Companion mystery', note: 'The Dead Man’s Alibi takes place in the same story world as The Day She Stayed.', order: [4, 22] }
 ];
 var storySamples = [
     { id: 'rain', label: 'The Rain Pact', mood: 'Romance · Chapter One', title: 'Drizzle and Blue Umbrellas', excerpt: 'The first time Aoi met him, she didn’t even know his name. It was raining—of course it was. The kind of drizzle that crept in slowly, catching everyone off guard.', link: './rp/rpc1.html' },
@@ -1344,7 +1345,6 @@ function renderHeatmap() {
    CALENDAR
    ============================================================ */
 var upcomingReleases = [
-    { date: '2026-11-16', title: "The Dead Man’s Alibi" },
     { date: '2026-11-24', title: "The Silence Between Rings — Chapter 2: The Disconnected Number" },
     { date: '2026-11-22', title: 'Petal Vol. 4 — chp 7' },
 ];

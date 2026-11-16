@@ -128,7 +128,7 @@ var novels = [
 
     },
     {
-        order: 22, title: "The Dead Man’s Alibi", img: "./img/sub2/tdma.jpg", link: "./tdss/tdma.html", genres: ["mystery", "drama", "action"], status: "upcoming", ch: 0, rating: 0, views: 0, releaseOffsetDays: 0,
+        order: 22, title: "The Dead Man’s Alibi", img: "./img/sub2/tdma.jpg", link: "./tdss/tdma.html", genres: ["mystery", "drama", "action"], status: "completed", ch: 12, rating: 4.1, views: 10000, releaseOffsetDays: 0,
         chapterLinks: ["./tdss/tdma1.html", "./tdss/tdma2.html", "./tdss/tdma3.html", "./tdss/tdma4.html", "./tdss/tdma5.html", "./tdss/tdma6.html", "./tdss/tdma7.html", "./tdss/tdma8.html", "./tdss/tdma9.html", "./tdss/tdma10.html", "./tdss/tdma11.html", "./tdss/tdmae.html"],
         chapterLabels: ["The Man Who Wasn’t There", "The Girl at the Door", "Four Men, One Dead Man", "The Girl Who Knew Too Much", "People We Meet Along the Way", "The Locker Under Platform Nine", "The Names Nobody Remembered", "A Man Who Died Twice", "The Dead Man’s Alibi", "The Last Person to Leave", "A Better Kind of Tomorrow", "Nobody’s Alibi"],
         blurb: "Detective Toma Kisaragi investigates a dead man with an impossible alibi. Four cases, a missing woman, and a buried archive draw him toward a truth someone wants kept hidden.", grad: "135deg,#171a22,#6f252c", collections: ["newest"]
