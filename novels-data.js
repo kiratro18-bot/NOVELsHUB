@@ -139,4 +139,10 @@ var novels = [
         chapterLabels: ["2:17 AM"],
         blurb: "Set in the Case File: You universe, a dispatcher answers a call from a line that should be dead. A detective, a journalist, and a room missing from the plan lead toward the silence between rings.", grad: "135deg,#3a2a4a,#5a2a30", collections: ["newest"]
     },
+    {
+        order: 24, title: "The Summer We Forgot to Say Goodbye", img: "./img/sub2/tswf.jpg", link: "./os/tswgb.html", genres: ["drama", "romance", "slice", "sad"], status: "completed", ch: 1, rating: 4.8, views: 13000, releaseOffsetDays: 0,
+        chapterLinks: ["./os/tswgb.html"],
+        chapterLabels: ["The Summer We Forgot to Say Goodbye"],
+        blurb: "A summer of ordinary moments, a love that quietly slips away, and the long road toward finding something new. A bittersweet one-shot about memory, endings, and moving forward.", grad: "135deg,#4a2a3a,#c0566b", collections: ["hidden-gems", "newest"]
+    },
 ];
