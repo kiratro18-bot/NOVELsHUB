@@ -33,7 +33,7 @@
     route(/\/tptfwas\/tptfwasv2-([1-5])\.html$/, 8, function (m) { return +m[1]; }) ||
     route(/\/tptfwas\/tptfwas3-1\.html$/, 11, 1) ||
     route(/\/tptfwas\/tptfwasv3-([2-9])\.html$/, 11, function (m) { return +m[1]; }) ||
-    route(/\/tptfwas\/tptfwas4-([1-6])\.html$/, 19, function (m) { return +m[1]; }) ||
+    route(/\/tptfwas\/tptfwas4-([1-7])\.html$/, 19, function (m) { return +m[1]; }) ||
     route(/\/tptfwas\/p([1-5])\.html$/, 18, function (m) { return +m[1]; }) ||
     route(/\/tdss\/tdma([1-9]|10|11)\.html$/, 22, function (m) { return +m[1]; }, null, null, true) ||
     route(/\/tdss\/tdmae\.html$/, 22, 12, function () { return 'epilogue'; }, null, true) ||
