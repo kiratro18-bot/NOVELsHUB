@@ -109,7 +109,7 @@ var novels = [
         blurb: "Before the story of falling petals, a first snow brings two people together. Their growing closeness leads to a confession, a final week, and the choice of whether to say goodbye.", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
     },
     {
-        order: 19, title: "The Petal That Falls With A Smile vol 4", img: "./img/sub2/tpv4.jpg", link: "./tptfwas/tptfwasv4.html", genres: ["drama", "slice"], status: "ongoing", ch: 7, rating: 4.9, views: 29000, releaseOffsetDays: 0,
+        order: 19, title: "The Petal That Falls With A Smile vol 4", img: "./img/sub2/tpv4.jpg", link: "./tptfwas/tptfwasv4.html", genres: ["drama", "slice"], status: "ongoing", ch: 7, rating: 4.9, views: 35000, releaseOffsetDays: 0,
         chapterLinks: ["./tptfwas/tptfwas4-1.html", "./tptfwas/tptfwas4-2.html", "./tptfwas/tptfwas4-3.html", "./tptfwas/tptfwas4-4.html", "./tptfwas/tptfwas4-5.html", "./tptfwas/tptfwas4-6.html", "./tptfwas/tptfwas4-7.html"],
         chapterLabels: ["She Understood", "Fireworks", "A Date", "The Tree", "Our Last Year", "A Dream", "Date"],
         blurb: "The Petal story moves from university life toward adulthood. New milestones, changing relationships, and the future ahead ask the characters what they are ready to become.", grad: "135deg,#3a2a4a,#4a2a3a", collections: ["newest"]
@@ -134,9 +134,9 @@ var novels = [
         blurb: "Detective Toma Kisaragi investigates a dead man with an impossible alibi. Four cases, a missing woman, and a buried archive draw him toward a truth someone wants kept hidden.", grad: "135deg,#171a22,#6f252c", collections: ["newest"]
     },
     {
-        order: 23, title: "Case File: The Silence Between Rings", img: "./img/sub2/cfs.jpg", link: "./cfy/cfs.html", genres: ["mystery", "drama"], status: "ongoing", ch: 1, rating: 4.2, views: 10000, releaseOffsetDays: 0,
-        chapterLinks: ["./cfy/cfs1.html"],
-        chapterLabels: ["2:17 AM"],
+        order: 23, title: "Case File: The Silence Between Rings", img: "./img/sub2/cfs.jpg", link: "./cfy/cfs.html", genres: ["mystery", "drama"], status: "ongoing", ch: 2, rating: 4.2, views: 10000, releaseOffsetDays: 0,
+        chapterLinks: ["./cfy/cfs1.html", "./cfy/cfs2.html"],
+        chapterLabels: ["2:17 AM", "The Disconnected Number"],
         blurb: "Set in the Case File: You universe, a dispatcher answers a call from a line that should be dead. A detective, a journalist, and a room missing from the plan lead toward the silence between rings.", grad: "135deg,#3a2a4a,#5a2a30", collections: ["newest"]
     },
     {

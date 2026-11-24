@@ -11,7 +11,7 @@
          Keep all other resource types restricted to this origin and the fonts provider. -->
     <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; media-src 'self'; worker-src 'self'; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;">
-    <meta name="theme-color" content="#171c20">
+    <meta name="theme-color" content="#101a25">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
@@ -29,6 +29,277 @@
         *::after {
             -webkit-tap-highlight-color: transparent;
         }
+    </style>
+    <style>
+        /* Winter color layer: keeps the existing layout and only changes its palette and surfaces. */
+        :root body.editorial:not(.light) {
+            --void: #101a25;
+            --void-2: #152432;
+            --void-3: #203442;
+            --panel: rgba(201, 225, 237, .065);
+            --panel-2: rgba(201, 225, 237, .105);
+            --panel-solid: #172936;
+            --panel-border: rgba(196, 222, 235, .15);
+            --panel-border-strong: rgba(196, 222, 235, .25);
+            --ink: #eef5f8;
+            --ink-soft: #c4d2dc;
+            --muted: #93a7b5;
+            --muted-dim: #718694;
+            --rose: #72b5cc;
+            --accent-2: #4d8da8;
+            --accent-rgb: 114, 181, 204;
+            --gold: #a7bdc9;
+            --frost-surface: rgba(23, 41, 54, .82);
+            --rose-dim: rgba(var(--accent-rgb), .16);
+            --gold-dim: rgba(167, 189, 201, .14);
+            --cl-bg: #101a25;
+            --cl-surface: #172936;
+            --cl-well: #0b141d;
+            --cl-hi: rgba(201, 225, 237, .09);
+            --cl-lo: rgba(0, 0, 0, .3);
+            --cl-drop: rgba(0, 0, 0, .32);
+            --cl-ink: #eef5f8;
+            --cl-ink-soft: #c4d2dc;
+            --cl-muted: #93a7b5;
+            --cl-on-accent: #10212c;
+            --shadow-glass: 0 10px 32px rgba(3, 13, 22, .3);
+            --shadow-lift: 0 18px 46px rgba(3, 13, 22, .36);
+            color: var(--ink);
+            color-scheme: dark;
+            background-color: #101a25;
+            background-image:
+                radial-gradient(ellipse at 18% -10%, rgba(114, 181, 204, .16), transparent 46%),
+                radial-gradient(ellipse at 88% 4%, rgba(91, 147, 173, .09), transparent 38%);
+        }
+
+        :root body.editorial.light {
+            --void: #e9f1f6;
+            --void-2: #f6fafc;
+            --void-3: #dce8ef;
+            --panel: rgba(255, 255, 255, .62);
+            --panel-2: rgba(255, 255, 255, .82);
+            --panel-solid: #f7fafc;
+            --panel-border: rgba(49, 82, 102, .14);
+            --panel-border-strong: rgba(49, 82, 102, .23);
+            --ink: #1b2c3a;
+            --ink-soft: #4c6271;
+            --muted: #687f8e;
+            --muted-dim: #879aa7;
+            --rose: #397d98;
+            --accent-2: #5a9ab3;
+            --accent-rgb: 57, 125, 152;
+            --gold: #8199a8;
+            --frost-surface: rgba(247, 250, 252, .84);
+            --rose-dim: rgba(var(--accent-rgb), .14);
+            --gold-dim: rgba(129, 153, 168, .14);
+            --cl-bg: #e9f1f6;
+            --cl-surface: #f7fafc;
+            --cl-well: #dce8ef;
+            --cl-hi: rgba(255, 255, 255, .92);
+            --cl-lo: rgba(24, 49, 66, .1);
+            --cl-drop: rgba(24, 49, 66, .13);
+            --cl-ink: #1b2c3a;
+            --cl-ink-soft: #4c6271;
+            --cl-muted: #687f8e;
+            --cl-on-accent: #f7fafc;
+            --shadow-glass: 0 8px 26px rgba(31, 63, 82, .09);
+            --shadow-lift: 0 16px 38px rgba(31, 63, 82, .14);
+            color: var(--ink);
+            color-scheme: light;
+            background-color: #e9f1f6;
+            background-image:
+                radial-gradient(ellipse at 10% 8%, rgba(158, 204, 221, .2), transparent 30rem),
+                radial-gradient(ellipse at 92% 46%, rgba(208, 226, 237, .32), transparent 34rem);
+            background-attachment: fixed;
+        }
+
+        /* Keep the existing accent selector functional while keeping every choice wintry. */
+        :root body.editorial[data-theme="blue"] { --rose: #79bde0; --accent-2: #4d8daa; --accent-rgb: 121, 189, 224; }
+        :root body.editorial[data-theme="red"] { --rose: #88b5c8; --accent-2: #4d8197; --accent-rgb: 136, 181, 200; }
+        :root body.editorial[data-theme="violet"] { --rose: #a3c6df; --accent-2: #6b91b0; --accent-rgb: 163, 198, 223; }
+        :root body.editorial[data-theme="gold"] { --rose: #91b6c7; --accent-2: #5e879b; --accent-rgb: 145, 182, 199; }
+        :root body.editorial[data-theme="teal"] { --rose: #72bdc8; --accent-2: #438b99; --accent-rgb: 114, 189, 200; }
+        :root body.editorial[data-theme="emerald"] { --rose: #79b7b9; --accent-2: #4a8589; --accent-rgb: 121, 183, 185; }
+        :root body.editorial[data-theme="cyan"] { --rose: #65baca; --accent-2: #438b9c; --accent-rgb: 101, 186, 202; }
+        :root body.editorial.light[data-theme="blue"] { --rose: #326f8a; --accent-2: #548fa9; --accent-rgb: 50, 111, 138; }
+        :root body.editorial.light[data-theme="red"] { --rose: #3e7187; --accent-2: #5b8da1; --accent-rgb: 62, 113, 135; }
+        :root body.editorial.light[data-theme="violet"] { --rose: #4e7394; --accent-2: #6a91b0; --accent-rgb: 78, 115, 148; }
+        :root body.editorial.light[data-theme="gold"] { --rose: #426f84; --accent-2: #628da2; --accent-rgb: 66, 111, 132; }
+        :root body.editorial.light[data-theme="teal"] { --rose: #28798a; --accent-2: #4d9aa9; --accent-rgb: 40, 121, 138; }
+        :root body.editorial.light[data-theme="emerald"] { --rose: #347985; --accent-2: #5a9ba3; --accent-rgb: 52, 121, 133; }
+        :root body.editorial.light[data-theme="cyan"] { --rose: #26768c; --accent-2: #5094a8; --accent-rgb: 38, 118, 140; }
+
+        /* Frost existing surfaces without changing their size, placement, or interaction. */
+        :root body.editorial .glass,
+        :root body.editorial .hero-card,
+        :root body.editorial .stat-tile,
+        :root body.editorial .mood-card,
+        :root body.editorial .side-card,
+        :root body.editorial .milestone-tile,
+        :root body.editorial .news-item,
+        :root body.editorial .footer-panel,
+        :root body.editorial .queue-card,
+        :root body.editorial .settings-panel,
+        :root body.editorial .spotlight-panel,
+        :root body.editorial .reader-mode-panel,
+        :root body.editorial .cmdk-panel,
+        :root body.editorial .browser-dock,
+        :root body.editorial .nav-dock {
+            border-color: var(--panel-border);
+            background-color: var(--frost-surface);
+            -webkit-backdrop-filter: blur(14px);
+            backdrop-filter: blur(14px);
+        }
+
+        :root body.editorial .glass,
+        :root body.editorial .hero-card,
+        :root body.editorial .stat-tile,
+        :root body.editorial .mood-card,
+        :root body.editorial .side-card,
+        :root body.editorial .milestone-tile,
+        :root body.editorial .news-item,
+        :root body.editorial .footer-panel,
+        :root body.editorial .queue-card,
+        :root body.editorial .novel-card,
+        :root body.editorial .cal-item,
+        :root body.editorial .story-world-card,
+        :root body.editorial .settings-panel,
+        :root body.editorial .spotlight-panel,
+        :root body.editorial .reader-mode-panel,
+        :root body.editorial .cmdk-panel,
+        :root body.editorial .browser-dock,
+        :root body.editorial .nav-dock {
+            background-color: var(--frost-surface);
+        }
+
+        :root body.editorial .hero-feature {
+            border-color: rgba(183, 220, 234, .28);
+            box-shadow: inset 0 1px 0 rgba(238, 248, 251, .18), 0 24px 64px rgba(4, 15, 25, .3);
+        }
+
+        :root body.editorial .hero-feature::after {
+            color: rgba(201, 231, 240, .34);
+            content: "❄";
+        }
+
+        :root body.editorial.light .hero-feature::after { color: rgba(220, 241, 247, .7); }
+
+        :root body.editorial .hero-feature-bg::after {
+            background: linear-gradient(180deg, rgba(10, 24, 36, .04), rgba(10, 24, 36, .36) 48%, rgba(10, 24, 36, .88));
+        }
+
+        :root body.editorial.light .hero-feature-bg::after {
+            background: linear-gradient(180deg, rgba(13, 32, 46, .03), rgba(13, 32, 46, .28) 48%, rgba(13, 32, 46, .84));
+        }
+
+        :root body.editorial .site-nav {
+            background-color: rgba(16, 26, 37, .9);
+            border-bottom-color: rgba(196, 222, 235, .13);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+        }
+
+        :root body.editorial.light .site-nav { background-color: rgba(241, 247, 250, .9); }
+
+        :root body.editorial .novel-card,
+        :root body.editorial .queue-card,
+        :root body.editorial .milestone-tile,
+        :root body.editorial .cal-item,
+        :root body.editorial .story-world-card {
+            border-color: var(--panel-border);
+            box-shadow: 0 10px 28px rgba(7, 21, 31, .16);
+        }
+
+        :root body.editorial.light .novel-card,
+        :root body.editorial.light .queue-card,
+        :root body.editorial.light .milestone-tile,
+        :root body.editorial.light .cal-item,
+        :root body.editorial.light .story-world-card {
+            box-shadow: 0 10px 26px rgba(34, 67, 86, .08);
+        }
+
+        :root body.editorial :is(button, a, input, select, textarea):focus-visible {
+            outline-color: #8ed3e5;
+            outline-offset: 3px;
+        }
+
+        :root body.editorial :is(button, .novel-card, .pill-btn, .cta, .sp-btn):hover {
+            border-color: rgba(var(--accent-rgb), .58);
+        }
+
+        :root body.editorial input,
+        :root body.editorial select,
+        :root body.editorial textarea {
+            border-color: var(--panel-border-strong);
+        }
+
+        :root body.editorial {
+            isolation: isolate;
+        }
+
+        :root body.editorial::before,
+        :root body.editorial::after {
+            position: fixed;
+            inset: -10% 0 auto;
+            z-index: 20;
+            width: 100%;
+            height: 120%;
+            pointer-events: none;
+            content: "❄";
+            color: rgba(239, 250, 255, .56);
+            font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", sans-serif;
+            font-size: 14px;
+            text-shadow:
+                13vw 18vh 0 rgba(239, 250, 255, .56),
+                29vw 62vh 0 rgba(173, 215, 232, .48),
+                52vw 37vh 0 rgba(239, 250, 255, .5),
+                73vw 80vh 0 rgba(173, 215, 232, .42),
+                88vw 26vh 0 rgba(239, 250, 255, .5),
+                8vw 74vh 0 rgba(239, 250, 255, .42),
+                64vw 9vh 0 rgba(173, 215, 232, .46),
+                94vw 58vh 0 rgba(239, 250, 255, .4);
+            animation: aka-winter-fall 56s linear infinite;
+        }
+
+        :root body.editorial::after {
+            opacity: .52;
+            font-size: 11px;
+            text-shadow:
+                7vw 40vh 0 rgba(239, 250, 255, .4),
+                23vw 12vh 0 rgba(173, 215, 232, .36),
+                41vw 86vh 0 rgba(239, 250, 255, .38),
+                61vw 53vh 0 rgba(173, 215, 232, .34),
+                79vw 6vh 0 rgba(239, 250, 255, .4),
+                97vw 71vh 0 rgba(173, 215, 232, .34);
+            animation-duration: 78s;
+            animation-direction: reverse;
+        }
+
+        :root body.editorial.light::before,
+        :root body.editorial.light::after {
+            color: rgba(77, 123, 145, .28);
+        }
+        :root.exclusive-scrollbar {
+            --exclusive-scroll-track: #172936;
+            --exclusive-scroll-thumb: #5e9cb5;
+            --exclusive-scroll-thumb-hover: #8ed3e5;
+        }
+
+        :root.exclusive-scrollbar.light-scrollbar {
+            --exclusive-scroll-track: #dce8ef;
+            --exclusive-scroll-thumb: #397d98;
+            --exclusive-scroll-thumb-hover: #245a70;
+        }
+
+        @keyframes aka-winter-fall { to { transform: translateY(360px); } }
+
+        @media (prefers-reduced-motion: reduce) {
+            :root body.editorial::before,
+            :root body.editorial::after { animation: none; }
+        }
+
+        :root body.editorial.reduce-motion::before,
+        :root body.editorial.reduce-motion::after { animation: none; }
     </style>
 </head>
 

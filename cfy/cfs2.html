@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Chapter 2 — The Disconnected Number · The Silence Between Rings</title>
+    <style>
+        :root {
+            --paper: #d8ddd0;
+            --paper2: #cbd1c2;
+            --ink: #1d2b3a;
+            --soft: #4f6070;
+            --yellow: #e6c84c;
+            --blue: #2f5f8f;
+            --stamp: #b0443a;
+            --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+            --type: "American Typewriter", "Courier New", Courier, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--serif);
+            background-image: repeating-linear-gradient(0deg, transparent 0 31px, rgba(29, 43, 58, .05) 31px 32px),
+                repeating-linear-gradient(90deg, transparent 0 31px, rgba(29, 43, 58, .05) 31px 32px);
+            padding: env(safe-area-inset-top, 0) 0 env(safe-area-inset-bottom, 0)
+        }
+
+        #bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            width: 0;
+            background: var(--blue);
+            z-index: 5
+        }
+
+        .top {
+            max-width: 40rem;
+            margin: 0 auto;
+            padding: 22px 22px 0;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            font-family: var(--type);
+            font-size: .85rem
+        }
+
+        .top a {
+            color: var(--ink)
+        }
+
+        .top span {
+            color: var(--soft)
+        }
+
+        .wrap {
+            max-width: 40rem;
+            margin: 0 auto;
+            padding: 36px 22px 72px
+        }
+
+        .head {
+            padding-bottom: 30px;
+            margin-bottom: 34px;
+            border-bottom: 6px solid var(--ink)
+        }
+
+        .book {
+            font-style: italic;
+            color: var(--soft)
+        }
+
+        .head .ch {
+            font-family: var(--type);
+            font-size: .9rem;
+            color: var(--stamp);
+            margin-top: 26px
+        }
+
+        h1 {
+            font-size: clamp(2.3rem, 8vw, 3.8rem);
+            font-weight: 400;
+            line-height: 1.05;
+            margin-top: 6px
+        }
+
+        .kind {
+            margin-top: 14px;
+            color: var(--soft);
+            font-style: italic
+        }
+
+        article p {
+            font-size: 1.2rem;
+            line-height: 1.75;
+            margin-top: 1.05em
+        }
+
+        article p.lead {
+            margin-top: 0
+        }
+
+        .brk {
+            margin: 3em 0 1.2em;
+            height: 30px;
+            background: repeating-linear-gradient(180deg, transparent 0 6px, var(--ink) 6px 8px);
+            width: 56px
+        }
+
+        .readout {
+            margin: 1.8em 0;
+            font-family: var(--type);
+            font-size: .95rem;
+            line-height: 1.7
+        }
+
+        .card {
+            background: var(--paper2);
+            border: 3px solid var(--ink);
+            padding: 16px 18px;
+            position: relative
+        }
+
+        .card::after {
+            content: "";
+            position: absolute;
+            right: -3px;
+            top: -3px;
+            width: 34px;
+            height: 34px;
+            background: var(--yellow);
+            border: 3px solid var(--ink)
+        }
+
+        /* handwritten note slip */
+        .note {
+            margin: 1.8em 0;
+            background: #e9e6cf;
+            border: 3px solid var(--ink);
+            padding: 20px 22px;
+            transform: rotate(-.8deg);
+            font: italic 1.25rem/1.5 var(--serif);
+            box-shadow: 6px 6px 0 var(--ink)
+        }
+
+        /* floor plan figure */
+        .fig {
+            margin: 2em 0;
+            max-width: 30rem
+        }
+
+        .fp {
+            display: grid;
+            grid-template-columns: 70px repeat(8, 1fr);
+            grid-template-rows: 34px 34px 46px;
+            border: 4px solid var(--ink);
+            background: var(--paper2)
+        }
+
+        .fp i {
+            border: 2px solid var(--ink);
+            margin: -2px;
+            background: var(--paper)
+        }
+
+        .fp .st {
+            grid-area: 1/1/3/2;
+            background: repeating-linear-gradient(180deg, var(--paper) 0 7px, var(--ink) 7px 8px)
+        }
+
+        .fp button {
+            grid-area: 3/1;
+            margin: -2px;
+            border: 2px solid var(--ink);
+            background: var(--paper2);
+            font: .72rem var(--type);
+            color: var(--ink);
+            cursor: pointer;
+            background-image: repeating-linear-gradient(45deg, transparent 0 5px, rgba(29, 43, 58, .22) 5px 6px)
+        }
+
+        .fp button:hover {
+            background-color: var(--yellow)
+        }
+
+        .fp button:focus-visible {
+            outline: 3px solid var(--blue);
+            outline-offset: -5px
+        }
+
+        .fp button.on {
+            background: var(--blue);
+            color: #fff;
+            font-size: 1.25rem;
+            font-family: var(--serif);
+            background-image: none
+        }
+
+        figcaption {
+            font: .8rem var(--type);
+            color: var(--soft);
+            margin-top: 8px
+        }
+
+        nav.end {
+            margin-top: 64px;
+            border-top: 6px solid var(--ink);
+            padding-top: 26px;
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap
+        }
+
+        nav.end a {
+            color: var(--ink);
+            text-decoration: none;
+            font-size: 1.05rem;
+            border: 3px solid var(--ink);
+            padding: 12px 20px;
+            transition: background .2s
+        }
+
+        nav.end a:hover,
+        nav.end a:focus-visible {
+            background: var(--yellow);
+            outline: none
+        }
+
+        nav.end small {
+            display: block;
+            font: .8rem var(--type);
+            color: var(--soft)
+        }
+
+        nav.end .mid {
+            align-self: center;
+            border: 0;
+            padding: 0;
+            font: .9rem var(--type);
+            text-decoration: underline
+        }
+
+        @media (prefers-reduced-motion:reduce) {
+            * {
+                animation: none !important;
+                transition: none !important
+            }
+
+            html {
+                scroll-behavior: auto
+            }
+        }
+
+        @media (max-width:520px) {
+            article p {
+                font-size: 1.12rem
+            }
+
+            .note {
+                font-size: 1.1rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="bar"></div>
+    <div class="top"><a href="cfs.html">&larr; Floor plan</a><span>Chapter 2 of 8</span></div>
+
+    <main class="wrap">
+        <header class="head">
+            <p class="book">The Silence Between Rings</p>
+            <p class="ch">Chapter 2</p>
+            <h1>The Disconnected Number</h1>
+            <p class="kind">A psychological mystery / Crime thriller</p>
+        </header>
+
+        <article>
+            <p class="lead">Detective Jun Arata disliked being summoned before breakfast.</p>
+            <p>Especially when the person summoning him was an emergency dispatcher who claimed to have received a call
+                from a dead woman.</p>
+            <p>He looked at Ema across the small meeting room.</p>
+            <p>“Let’s start again.”</p>
+            <p>Ema sighed.</p>
+            <p>“I’ve already explained it twice.”</p>
+            <p>“And I’m asking for a third time.”</p>
+            <p>“You’re enjoying this.”</p>
+            <p>“Not particularly.”</p>
+            <p>He opened his notebook.</p>
+            <p>“Last night, 2:17 AM. Same number. Same woman?”</p>
+            <p>“Yes.”</p>
+            <p>“She identified herself as Rina.”</p>
+            <p>“Yes.”</p>
+            <p>“Rina Shiraishi?”</p>
+            <p>Ema nodded.</p>
+            <p>Jun looked through the attached documents.</p>
+            <p>“She was last seen eleven years ago. The official investigation treated her disappearance as a probable
+                death following the Aoba House fire.”</p>
+            <p>“Her body was never found.”</p>
+            <p>“Correct.”</p>
+            <p>“Then why was she declared dead?”</p>
+            <p>“Presumption of death after the required period. There was no confirmed body.”</p>
+            <p>Ema folded her arms.</p>
+            <p>“So she could be alive.”</p>
+            <p>“Possible. Doesn’t mean she is.”</p>
+            <p>Jun placed the documents down.</p>
+            <p>“Do you personally know her?”</p>
+            <p>“I lived at Aoba House.”</p>
+            <p>He looked up.</p>
+            <p>“For how long?”</p>
+            <p>“Seven months. I was fourteen.”</p>
+            <p>“And she worked there?”</p>
+            <p>“She was the night supervisor.”</p>
+            <p>Jun studied her for a moment.</p>
+            <p>“You didn’t mention that in the initial report.”</p>
+            <p>“Because I didn’t think it mattered.”</p>
+            <p>“It matters now.”</p>
+            <p>Ema looked away.</p>
+            <p>“She helped me when I was there.”</p>
+            <p>“Then you understand why we need to be careful. You might recognize her voice, but that doesn’t establish
+                who’s making these calls.”</p>
+            <p>Ema nodded.</p>
+            <p>“I know.”</p>
+            <p>Jun stood.</p>
+            <p>“Show me the recording.”</p>
+
+            <div class="brk" aria-hidden="true"></div>
+
+            <p class="lead">They listened to both calls.</p>
+            <p>Once.</p>
+            <p>Twice.</p>
+            <p>Then again.</p>
+            <p>Jun stopped the audio after the three knocks.</p>
+            <p>“What do you think?”</p>
+            <p>Ema looked at him.</p>
+            <p>“About what?”</p>
+            <p>“The knocks.”</p>
+            <p>“Three knocks.”</p>
+            <p>“Exactly.”</p>
+            <p>He replayed them.</p>
+            <p>“Could be someone tapping a desk.”</p>
+            <p>“Or a door.”</p>
+            <p>“Or something else.”</p>
+            <p>Ema sighed.</p>
+            <p>“You detectives always have a way of making simple things sound complicated.”</p>
+            <p>Jun smiled faintly.</p>
+            <p>“It’s usually the other way around.”</p>
+            <p>He opened the technical report.</p>
+            <p>“The number wasn’t active. The caller ID was carried through an old maintenance route.”</p>
+            <p>“Meaning?”</p>
+            <p>“Someone could have used an outdated connection to display that number. The number itself doesn’t prove
+                the caller was inside Aoba House.”</p>
+            <p>“So whoever called knows how to manipulate the system.”</p>
+            <p>“Or had access to someone who does.”</p>
+            <p>Jun closed the laptop.</p>
+            <p>“There’s another problem.”</p>
+            <p>“What?”</p>
+            <p>“Someone else has been asking about Rina Shiraishi.”</p>
+
+            <div class="brk" aria-hidden="true"></div>
+
+            <p class="lead">An hour later, a woman walked into the investigation office carrying a folder.</p>
+            <p>She had short dark hair, a camera hanging from her shoulder, and an expression that suggested she hadn’t
+                slept properly in several days.</p>
+            <p>“Detective Arata?”</p>
+            <p>Jun looked up.</p>
+            <p>“Yes?”</p>
+            <p>“Miyako Shiraishi. Journalist.”</p>
+            <p>She placed a business card on the desk.</p>
+            <p>“I’m investigating the Aoba House fire.”</p>
+            <p>Ema looked at the surname.</p>
+            <p>Shiraishi.</p>
+            <p>Miyako noticed.</p>
+            <p>“You’re the dispatcher?”</p>
+            <p>Ema nodded.</p>
+            <p>Miyako’s expression changed.</p>
+            <p>“Did she call you?”</p>
+            <p>Neither detective answered immediately.</p>
+            <p>Miyako understood.</p>
+            <p>“She called.”</p>
+            <p>Ema stood.</p>
+            <p>“How do you know?”</p>
+            <p>Miyako opened her folder.</p>
+            <p>Inside was a photograph of a young woman standing outside a small building.</p>
+            <p>Rina.</p>
+            <p>The same face.</p>
+            <p>A little younger than Ema remembered.</p>
+            <p>“She’s my older sister.”</p>
+            <p>Silence.</p>
+            <p>Miyako continued.</p>
+            <p>“Eleven years ago, I was thirteen. My sister worked at Aoba House. When the fire happened, the
+                authorities said she had probably died trying to help the residents.”</p>
+            <p>“But there was no body,” Ema said.</p>
+            <p>Miyako looked at her.</p>
+            <p>“Exactly.”</p>
+            <p>Jun pulled out a chair.</p>
+            <p>“Why are you investigating this now?”</p>
+            <p>“Because someone has been sending me letters.”</p>
+            <p>“From your sister?”</p>
+            <p>“I don’t know.”</p>
+            <p>She took out an envelope.</p>
+            <p>No return address.</p>
+            <p>Inside was a handwritten note.</p>
+
+            <div class="note">THE BUILDING IS GOING TO DISAPPEAR. FIND THE ROOM BEFORE THEY DO.</div>
+
+            <p>Jun read it twice.</p>
+            <p>“When did you receive this?”</p>
+            <p>“Three days ago.”</p>
+            <p>Ema looked at the handwriting.</p>
+            <p>“That’s hers.”</p>
+            <p>Miyako turned toward her.</p>
+            <p>“You remember?”</p>
+            <p>“She used to write notes for residents. Same handwriting.”</p>
+            <p>Miyako looked down.</p>
+            <p>“Then she’s alive.”</p>
+            <p>Jun wasn’t convinced.</p>
+            <p>“Or someone wants you to believe she is.”</p>
+            <p>Miyako’s expression hardened.</p>
+            <p>“Detective, I’ve spent eleven years being told to stop looking for my sister. I’m done listening.”</p>
+            <p>Jun closed the folder.</p>
+            <p>“Fine. But you’ll follow our instructions.”</p>
+            <p>Miyako gave a humourless laugh.</p>
+            <p>“That’s not really my speciality.”</p>
+
+            <div class="brk" aria-hidden="true"></div>
+
+            <p class="lead">That evening, the three of them visited the municipal archive.</p>
+            <p>The Aoba House fire report was incomplete.</p>
+            <p>Several pages were missing.</p>
+            <p>The building was registered as having sixteen rooms.</p>
+            <p>Sixteen.</p>
+            <p>But Ema remembered seventeen doors.</p>
+            <p>She pointed at the old floor plan.</p>
+
+            <figure class="fig">
+                <div class="fp" role="group" aria-label="Old floor plan of Aoba House">
+                    <i class="st"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                    <button id="stor" type="button" aria-label="Storage area behind the staircase">storage</button>
+                </div>
+                <figcaption id="cap">Tap the storage area.</figcaption>
+            </figure>
+
+            <p>“There’s something wrong.”</p>
+            <p>Jun leaned closer.</p>
+            <p>“What?”</p>
+            <p>“There was another room.”</p>
+            <p>Miyako looked at her.</p>
+            <p>“Where?”</p>
+            <p>“Near the west corridor. Behind the staircase.”</p>
+            <p>Jun checked the diagram.</p>
+            <p>“There’s a storage area there.”</p>
+            <p>“No. It wasn’t storage.”</p>
+            <p>Ema stared at the floor plan.</p>
+            <p>“I remember a telephone.”</p>
+            <p>Miyako turned a page.</p>
+            <p>“Wait.”</p>
+            <p>An old inventory list appeared.</p>
+
+            <div class="readout card">
+                <div>TELEPHONE EQUIPMENT — ONE INTERNAL LINE</div>
+                <div>LOCATION: UNLISTED</div>
+            </div>
+
+            <p>Jun looked at the entry.</p>
+            <p>“An unlisted telephone?”</p>
+            <p>Ema nodded slowly.</p>
+            <p>“Room seventeen.”</p>
+            <p>Miyako whispered:</p>
+            <p>“That’s the room.”</p>
+            <p>Jun closed the file.</p>
+            <p>“Tomorrow we’re going to Aoba House.”</p>
+            <p>He looked at the two women.</p>
+            <p>“And nobody goes there alone.”</p>
+            <div id="end"></div>
+        </article>
+
+        <nav class="end">
+            <a href="cfs1.html"><small>Previous</small>&larr; Chapter 1</a>
+            <a class="mid" href="cfs.html">Floor plan</a>
+            <span class="mid" aria-disabled="true">Chapter 3 is not available yet</span>
+        </nav>
+    </main>
+
+    <script>
+        const KEY = "silence-between-rings", N = 2;
+        const bar = document.getElementById("bar");
+        function prog() { const h = document.documentElement, m = h.scrollHeight - h.clientHeight; bar.style.width = (m > 0 ? Math.min(100, h.scrollTop / m * 100) : 0) + "%"; }
+        addEventListener("scroll", prog, { passive: true }); prog();
+
+        /* the "storage" area on the old plan was never storage */
+        const s = document.getElementById("stor"), cap = document.getElementById("cap");
+        s.addEventListener("click", () => {
+            const on = s.classList.toggle("on");
+            s.textContent = on ? "17" : "storage";
+            cap.textContent = on ? "The plate under the cabinet." : "Tap the storage area.";
+        });
+
+        /* mark this chapter read once the end is reached */
+        new IntersectionObserver((es, o) => {
+            es.forEach(e => {
+                if (e.isIntersecting) {
+                    try { const r = JSON.parse(localStorage.getItem(KEY) || "[]"); if (!r.includes(N)) { r.push(N); localStorage.setItem(KEY, JSON.stringify(r)); } } catch (x) { }
+                    o.disconnect();
+                }
+            })
+        }).observe(document.getElementById("end"));
+    </script>
+    <script src="../reader-progress.js"></script>
+</body>
+
+</html>

@@ -42,6 +42,7 @@
     route(/\/hah\/hah05\.html$/, 14, 1, function () { return 'ch0.5'; }, 'hahv2Read') ||
     route(/\/hah\/hah3-([1-8])\.html$/, 14, function (m) { return +m[1] + 1; }, function (m) { return 'ch' + m[1]; }, 'hahv2Read') ||
     route(/\/hah\/hah([1-5])\.html$/, 5, function (m) { return +m[1]; }) ||
+    route(/\/cfy\/cfs([1-2])\.html$/, 23, function (m) { return +m[1]; }) ||
     route(/\/cfy\/cfy(1[0-5]|[1-9])\.html$/, 6, function (m) { return +m[1]; }) ||
     route(/\/tsor\/tosor([1-5])\.html$/, 7, function (m) { return +m[1]; }) ||
     route(/\/tod\/tod(1[0-2]|[1-9])\.html$/, 16, function (m) { return +m[1]; }) ||

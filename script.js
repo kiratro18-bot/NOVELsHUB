@@ -1345,7 +1345,7 @@ function renderHeatmap() {
    CALENDAR
    ============================================================ */
 var upcomingReleases = [
-    { date: '2026-11-24', title: "The Silence Between Rings — Chapter 2: The Disconnected Number" },
+    { date: '2026-12-08', title: "The Silence Between Rings — Chapter 3" },
     { date: '2026-11-29', title: 'Petal Vol. 4 — chp 8' },
 ];
 var calSorted = [];
